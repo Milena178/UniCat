@@ -1,0 +1,60 @@
+# Byte-compiled / caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+.venv/*
+
+# PyCharm
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Django
+*.log
+*.pot
+*.pydevproject
+db.sqlite3
+media/
+staticfiles/
+# Wenn ihr statische Dateien per collectionstatic verwaltet, könnt ihr staticfiles/ ignorieren.
+
+# Environment / credentials
+.env
+.env.local
+.env.*.local
+secrets.json
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Test & coverage
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Coverage reports
+coverage.xml
+nosetests.xml
+test-results.xml
+
+# Migrations: normalerweise commited man migrations - also nicht ignorieren.
+# Wenn ihr ausnahmsweise migrations nicht teilen wollt (nicht empfohlen), fügt migrations/ hinzu.
