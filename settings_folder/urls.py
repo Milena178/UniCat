@@ -19,10 +19,13 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.generic.base import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("produkte/", include("Produkte.urls")),
+    path("produkte/", include("produkte.urls")),
+    path('home/', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('useradmin/', include('django.contrib.auth.urls')),
+    path('user/', include('profil.urls')),
 ]
 
 # Für Media-Dateien (Bilder, PDFs) im Development
