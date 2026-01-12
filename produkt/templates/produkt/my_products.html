@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Meine Produkte</title>
+</head>
+<body>
+    <h1>Meine Produkte</h1>
+
+    <a href="{% url 'product_create' %}">Neues Produkt erstellen</a>
+    <a href="{% url 'product_list' %}">Alle Produkte</a>
+
+    <div class="products-list">
+        {% for product in produkte %}
+        <div class="product-item">
+            <h3><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h3>
+            <p>Mindestpreis: {{ product.mindestpreis }} €</p>
+            <p>Listungen: {{ product.anzahlListungen }}/3</p>
+            <p>Endet: {{ product.auction_end|date:"d.m.Y H:i" }}</p>
+        </div>
+        {% empty %}
+        <p>Sie haben noch keine Produkte erstellt.</p>
+        <a href="{% url 'product_create' %}">Jetzt Produkt erstellen</a>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Produkt
+from .models import Produkt, Tag
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -7,8 +7,19 @@ class ProductForm(forms.ModelForm):
         fields = [
             "name",
             "beschreibung",
-            # "bild",
-            # "tags",
+            "bild",
+            "tags",
             "mindestpreis",
             "auktionsdauer",
         ]
+
+        widgets = {
+            'tags': forms.CheckboxSelectMultiple(),  # Mehrfachauswahl
+            'beschreibung': forms.Textarea(attrs={'rows': 5}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Nur bestehende Tags zur Auswahl
+        self.fields['tags'].queryset = Tag.objects.all()
+        self.fields['tags'].required = False

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Produkt erstellen</title>
+</head>
+<body>
+    <h1>Neues Produkt erstellen</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="field-wrapper">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span style="color: red;">*</span>
+                        {% endif %}
+                    </label>
+
+                    {% if field.name == 'tags' %}
+                        <!-- Spezielle Darstellung für Tags -->
+                        <div class="tags-container">
+                            {% for checkbox in field %}
+                                <label>
+                                    {{ checkbox.tag }}
+                                    <span>{{ checkbox.choice_label }}</span>
+                                </label>
+                            {% empty %}
+                                <p style="color: #999; margin: 0;">Keine Tags verfügbar. Ein Administrator muss Tags erstellen.</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if field.name == 'bild' %}
+                        <div class="image-preview" id="imagePreview"></div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit">✓ Produkt erstellen</button>
+                <a href="{% url 'product_list' %}" class="cancel-link">✗ Abbrechen</a>
+            </div>
+        </form>
+
+    <script>
+        // Bild-Vorschau beim Hochladen
+        const bildInput = document.querySelector('input[type="file"]');
+        const imagePreview = document.getElementById('imagePreview');
+
+        if (bildInput) {
+            bildInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = '<img src="' + e.target.result + '" alt="Vorschau">';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.innerHTML = '';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

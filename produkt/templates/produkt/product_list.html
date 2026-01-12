@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Alle Produkte</title>
+</head>
+<body>
+    <h1>Alle Produkte</h1>
+
+    {% if user.is_authenticated %}
+        <div style="margin: 20px;">
+            <a href="{% url 'product_create' %}" class="btn">Neues Produkt erstellen</a>
+            <a href="{% url 'my_products' %}" class="btn">Meine Produkte</a>
+        </div>
+    {% endif %}
+
+    <div class="product-grid">
+        {% for product in produkte %}
+        <div class="product-card">
+            <a href="{% url 'product_detail' product.pk %}">
+                {% if product.bild %}
+                    <img src="{{ product.bild.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <div class="no-image">Kein Bild</div>
+                {% endif %}
+
+                <h3>{{ product.name }}</h3>
+                <p><strong>{{ product.mindestpreis }} €</strong></p>
+                <p>Von: {{ product.verkaeufer_profil.username }}</p>
+                <p><small>Endet: {{ product.auction_end|date:"d.m.Y H:i" }}</small></p>
+
+                {% if product.tags.exists %}
+                    <div class="tags">
+                        {% for tag in product.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </a>
+        </div>
+        {% empty %}
+        <p>Noch keine Produkte vorhanden.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+
+    <!-- Verkäufer Info -->
+    <strong>Anbieter:</strong> {{ product.verkaeufer_profil.username }}
+    {% if product.verkaeufer_profil.bio %}
+        <br><small>{{ product.verkaeufer_profil.bio|truncatewords:20 }}</small>
+    {% endif %}
+
+    <!-- Bild anzeigen -->
+    {% if product.bild %}
+            <img src="{{ product.bild.url }}" alt="{{ product.name }}" class="product-image">
+    {% else %}
+            <div class="no-image">📷 Kein Bild vorhanden</div>
+    {% endif %}
+
+    <!-- Tags anzeigen -->
+    {% if product.tags.exists %}
+    <div class="tags">
+        <strong>Kategorien:</strong><br>
+        {% for tag in product.tags.all %}
+            <span class="tag">#{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="description">
+        <h2>Beschreibung</h2>
+        <p>{{ product.beschreibung|linebreaks }}</p>
+    </div>
+
+    <div class="detail-row">
+        <div class="detail-label">Mindestpreis:</div>
+        <div class="detail-value price">{{ product.mindestpreis }} €</div>
+    </div>
+
+    <div class="detail-row">
+        <div class="detail-label">Auktionsdauer:</div>
+        <div class="detail-value">{{ product.auktionsdauer }}</div>
+    </div>
+
+    <div class="detail-row">
+        <div class="detail-label">Auktion endet am:</div>
+        <div class="detail-value">{{ product.auction_end|date:"d.m.Y H:i" }} Uhr</div>
+    </div>
+
+    <!-- PDF Download & Navigation -->
+    <div class="actions">
+        <a href="{% url 'product_pdf' product.pk %}" class="btn-download">
+            📄 Produktinfo als PDF herunterladen
+        </a>
+        <a href="{% url 'product_list' %}" class="btn-back">
+            ← Zurück zur Übersicht
+        </a>
+    </div>
+</body>
+</html>
