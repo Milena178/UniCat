@@ -10,7 +10,7 @@ def product_create(request):
         form = ProductForm(request.POST, request.FILES) #  nutzt das Formular auf forms.py
         if form.is_valid():
             product = form.save(commit=False)
-            product.verkaeufer = request.user
+            # product.verkaeufer = request.user
             product.save()
             form.save_m2m()
             return redirect("product_detail", pk=product.pk)

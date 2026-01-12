@@ -7,8 +7,8 @@ class ProductForm(forms.ModelForm):
         fields = [
             "name",
             "beschreibung",
-            "bild",
-            "tags",
+            # "bild",
+            # "tags",
             "mindestpreis",
             "auktionsdauer",
         ]
