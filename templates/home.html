@@ -1,24 +1,21 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}UniCat – Home{% endblock %}
 
 {% block content %}
-    <h1>UniCat</h1>
+<h1>UniCat</h1>
 
-    {% if user.is_authenticated %}
-        <p>Willkommen, {{ user.username }}!</p>
-
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-
-    {% else %}
-        <p>Du bist nicht eingeloggt.</p>
-
-        <ul>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'signup' %}">Registrieren</a></li>
-        </ul>
-    {% endif %}
+{% if user.is_authenticated %}
+    <p>Willkommen, {{ user.username }}!</p>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% else %}
+    <p>Du bist nicht eingeloggt.</p>
+    <ul>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'signup' %}">Registrieren</a></li>
+    </ul>
+{% endif %}
 {% endblock %}

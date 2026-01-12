@@ -46,9 +46,11 @@ INSTALLED_APPS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Login URL für @login_required
+
+# Redirect nach Login / Logout
+LOGIN_REDIRECT_URL = '/home/'   # oder name='home', wenn du namespaced URLs verwendest
+LOGOUT_REDIRECT_URL = '/home/'  # Nach Logout auf Home
 LOGIN_URL = '/home/'  # Passe an deine Login-URL an
-LOGOUT_URL = '/home/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
