@@ -19,10 +19,12 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
+from. import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("produkte/", include("Produkte.urls")),
+    path('signup/', views.SignUp.as_view(), name='signup'),
 ]
 
 # Für Media-Dateien (Bilder, PDFs) im Development

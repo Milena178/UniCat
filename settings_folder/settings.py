@@ -47,7 +47,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Login URL für @login_required
-LOGIN_URL = '/login/'  # Passe an deine Login-URL an
+LOGIN_URL = '/home/'  # Passe an deine Login-URL an
+LOGOUT_URL = '/home/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

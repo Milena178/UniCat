@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Home Titel{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% block logged_in_content %}
+            <H1>Homepage</H1>
+            <p>Hi {{ user.username }}!</p>
+            <p><a href="{% url 'game_list' %}">Show me the games</a></p>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">logout</button>
+            </form>
+        {% endblock %}
+    {% else %}
+        {% block not_logged_in_content %}
+            <H1>Homepage</H1>
+            <p>You are not logged in</p>
+            <p><a href="{% url 'login' %}">Login</a></p>
+            <a href="{% url 'signup' %}">Signup</a>
+        {% endblock %}
+    {% endif %}
+{% endblock %}
