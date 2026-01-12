@@ -9,6 +9,6 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['bewertender', 'bewerteter', 'sterne', 'erstellt_am', 'gemeldet']
-    search_fields = ['bewertender__username', 'bewerteter__username', 'text']
+    list_display = ['author', 'profile', 'sterne', 'erstellt_am', 'gemeldet']
+    search_fields = ['author__username', 'profile__username', 'text']
     list_filter = ['sterne', 'gemeldet']

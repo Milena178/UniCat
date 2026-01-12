@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Home Titel{% endblock %}
+{% block title %}UniCat – Home{% endblock %}
 
 {% block content %}
+    <h1>UniCat</h1>
+
     {% if user.is_authenticated %}
-        {% block logged_in_content %}
-            <H1>Homepage</H1>
-            <p>Hi {{ user.username }}!</p>
-            <p><a href="{% url 'game_list' %}">Show me the games</a></p>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit">logout</button>
-            </form>
-        {% endblock %}
+        <p>Willkommen, {{ user.username }}!</p>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+
     {% else %}
-        {% block not_logged_in_content %}
-            <H1>Homepage</H1>
-            <p>You are not logged in</p>
-            <p><a href="{% url 'login' %}">Login</a></p>
-            <a href="{% url 'signup' %}">Signup</a>
-        {% endblock %}
+        <p>Du bist nicht eingeloggt.</p>
+
+        <ul>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'signup' %}">Registrieren</a></li>
+        </ul>
     {% endif %}
 {% endblock %}

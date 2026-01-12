@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Profil {{ profile.username }}{% endblock %}
+
+{% block content %}
+<h1>{{ profile.username }}</h1>
+
+<p>{{ profile.bio }}</p>
+<p>Typ: {{ profile.get_user_type_display }}</p>
+
+<hr>
+
+<h2>Bewertungen</h2>
+
+{% for review in reviews %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+        <strong>{{ review.author.username }}</strong>
+        – {{ review.sterne }} Sterne
+
+        <p>{{ review.text }}</p>
+
+        <p>
+            👍 {{ review.get_upvotes_count }}
+            👎 {{ review.get_downvotes_count }}
+
+            <a href="{% url 'review_vote' review.pk 'up' %}">Up</a>
+            <a href="{% url 'review_vote' review.pk 'down' %}">Down</a>
+        </p>
+    </div>
+{% empty %}
+    <p>Noch keine Bewertungen.</p>
+{% endfor %}
+
+{% endblock %}
