@@ -37,8 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products',
+    'Produkte',
+    'Profil',
 ]
+
+
+# Media Files (für Bilder und PDFs)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Login URL für @login_required
+LOGIN_URL = '/login/'  # Passe an deine Login-URL an
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

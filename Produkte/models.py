@@ -3,7 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-class Product(models.Model):
+class Produkte(models.Model):
 
     verkaeufer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="products")
 

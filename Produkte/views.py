@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Product
+from .models import Produkte
 from .forms import ProductForm
 
 #  Produkt anlegen
@@ -23,7 +23,7 @@ def product_create(request):
 
 #  Produkt anzeigen
 def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk, is_archived=False)
+    product = get_object_or_404(Produkte, pk=pk, is_archived=False)
     return render(request, "products/product_detail.html", {
         "product": product
     })
