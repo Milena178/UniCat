@@ -5,7 +5,7 @@ from .forms import ProductForm
 
 #  Produkt anlegen
 @login_required
-def produkt_erstellen(request):
+def product_create(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES) #  nutzt das Formular auf forms.py
         if form.is_valid():
