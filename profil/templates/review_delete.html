@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Bewertung löschen{% endblock %}
+
+{% block content %}
+
+<h1>Bewertung löschen</h1>
+
+<p>Möchtest du diese Bewertung wirklich löschen?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Ja, löschen</button>
+</form>
+
+<p>
+    <a href="{% url 'profil_detail' object.profile.pk %}">
+        Abbrechen
+    </a>
+</p>
+
+{% endblock %}

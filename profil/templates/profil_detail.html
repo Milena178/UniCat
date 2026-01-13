@@ -3,29 +3,62 @@
 {% block title %}Profil {{ profile.username }}{% endblock %}
 
 {% block content %}
+
 <h1>{{ profile.username }}</h1>
 
+{# ===== Profilbild anzeigen ===== #}
+{% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" alt="Profilbild von {{ profile.username }}" width="150">
+{% endif %}
+
 <p>{{ profile.bio }}</p>
+
+<p>Adresse: {{ profile.street }} {{ profile.house_number }}, {{ profile.zip_code }} {{ profile.city }}, {{ profile.country }}</p>
+
 <p>Typ: {{ profile.get_user_type_display }}</p>
+
+<hr>
+
+{# ===== Profil bearbeiten Button ===== #}
+
+{# Version zum Testen: jeder kann bearbeiten #}
+<p>
+    <a href="{% url 'profil_edit' profile.pk %}" class="btn btn-primary">
+        Profil bearbeiten
+    </a>
+</p>
 
 <hr>
 
 <h2>Bewertungen</h2>
 
+{# ===== Bewertung schreiben (nur andere User) ===== #}
+{% if user.is_authenticated and user != profile.user %}
+    <p>
+        <a href="{% url 'review_add' profile.pk %}" class="btn btn-success">
+            Bewertung schreiben
+        </a>
+    </p>
+{% endif %}
+
 {% for review in reviews %}
     <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>{{ review.author.username }}</strong>
-        – {{ review.sterne }} Sterne
+        <strong>{{ review.author.username }}</strong> – {{ review.sterne }} Sterne
 
         <p>{{ review.text }}</p>
 
         <p>
-            👍 {{ review.get_upvotes_count }}
-            👎 {{ review.get_downvotes_count }}
-
-            <a href="{% url 'review_vote' review.pk 'up' %}">Up</a>
-            <a href="{% url 'review_vote' review.pk 'down' %}">Down</a>
+            👍 <a href="{% url 'review_vote' review.pk 'up' %}">{{ review.get_upvotes_count }}</a>
+            👎 <a href="{% url 'review_vote' review.pk 'down' %}">{{ review.get_downvotes_count }}</a>
         </p>
+
+        {# ===== Review bearbeiten / löschen (nur Autor) ===== #}
+        {% if user == review.author %}
+            <p>
+                <a href="{% url 'review_edit' review.pk %}">Bearbeiten</a> |
+                <a href="{% url 'review_delete' review.pk %}">Löschen</a>
+            </p>
+        {% endif %}
     </div>
 {% empty %}
     <p>Noch keine Bewertungen.</p>
