@@ -8,25 +8,24 @@
 {% if user.is_authenticated %}
     <p>Willkommen, {{ user.username }}!</p>
 
+    {# Logout #}
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
 
+    {# user (kein Staff) #}
     {% if not user.is_staff %}
 
-        {% if user.profile_id %}
+        {# User HAT bereits ein Profil #}
+        {% if user.profile %}
             <p>
                 <a href="{% url 'profil_detail' user.profile.pk %}">
                     Profil ansehen
                 </a>
             </p>
 
-            <p>
-                <a href="{% url 'profil_edit' user.profile.pk %}">
-                    Profil bearbeiten
-                </a>
-            </p>
+        {# User hat noch kein Profil #}
         {% else %}
             <p>
                 <a href="{% url 'profil_create' %}" class="btn btn-primary">
@@ -37,6 +36,7 @@
 
     {% endif %}
 
+    {# Kunden Service #}
     {% if user.is_staff %}
         <p>
             <a href="{% url 'cs_review_list' %}" class="btn btn-danger">

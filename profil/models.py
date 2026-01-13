@@ -9,11 +9,11 @@ def user_directory_path(instance, filename):
 class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='profile'
+        on_delete=models.CASCADE, # Profil wird gelöscht, wenn User gelöscht wird
+        related_name='profile'    # Zugriff über user.profile
     )
 
-    # Anzeige-Daten
+    # Angezeigte Daten
     username = models.CharField(max_length=50)
     bio = models.TextField(blank=True)
 
@@ -31,6 +31,7 @@ class UserProfile(models.Model):
         null=True
     )
 
+    #Erstelldatum
     erstellt_am = models.DateField(default=date.today)
 
     class Meta:
@@ -42,22 +43,29 @@ class UserProfile(models.Model):
         return self.username
 
 class Review(models.Model):
+    # Sterne-Bewertung (1–5)
     STERNE_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
+    # Bewertetes Profil
     profile = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
         related_name='reviews'
     )
-
+    # Autor der Bewertung
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
 
+    # Bewertungsdaten
     sterne = models.IntegerField(choices=STERNE_CHOICES)
     text = models.TextField()
+
+    # Zeit der erstellung
     erstellt_am = models.DateTimeField(auto_now_add=True)
+
+    # Bewertungen melden
     gemeldet = models.BooleanField(default=False)
 
     class Meta:
@@ -65,26 +73,29 @@ class Review(models.Model):
         verbose_name = 'Bewertung'
         verbose_name_plural = 'Bewertungen'
 
-    # ===== Voting-Logik =====
-
+    # Gibt alle Upvotes für diese Bewertung zurück
     def get_upvotes(self):
         return ReviewVote.objects.filter(
             vote_type='U',
             review=self
         )
 
+    #Anzahl der Upvotes
     def get_upvotes_count(self):
         return self.get_upvotes().count()
 
+    #Gibt alle Downvotes für diese Bewertung zurück
     def get_downvotes(self):
         return ReviewVote.objects.filter(
             vote_type='D',
             review=self
         )
 
+    #Anzahl der Downvotes
     def get_downvotes_count(self):
         return self.get_downvotes().count()
 
+    #Gesamt-Score
     def score(self):
         return self.get_upvotes_count() - self.get_downvotes_count()
 
@@ -98,12 +109,12 @@ class Review(models.Model):
             review=self
         ).first()
 
-        # Gleiches Vote → entfernen
+        # Gleiches Vote = entfernen
         if existing_vote and existing_vote.vote_type == vote_value:
             existing_vote.delete()
             return
 
-        # Vote wechseln
+        # Vote wechseln falls gleich
         if existing_vote:
             existing_vote.vote_type = vote_value
             existing_vote.save()
@@ -125,23 +136,29 @@ class ReviewVote(models.Model):
         ('D', 'Downvote'),
     ]
 
+    # Art des Votes
     vote_type = models.CharField(
         max_length=1,
         choices=VOTE_TYPES
     )
+
+    # Zeitpunkt des Votes
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    # Wer hat gevotet
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
 
+    # Welche Bewertung wurde gevotet
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='votes'
     )
 
+    # Ein User darf nur ein Vote pro Review haben
     class Meta:
         unique_together = ('user', 'review')
         verbose_name = 'Bewertungs-Vote'
