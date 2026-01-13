@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages
 from .models import Produkt
-from .forms import ProductForm
-from .utils import generate_product_pdf
+from .forms import ProduktForm
+from .utils import generate_produkt_pdf
 
 #  Produkt anlegen
 @login_required
-def product_create(request):
+def produkt_erstellen(request):
     # Prüfe ob User ein Profil hat, falls nicht -> erstellen lassen
     try:
         user_profile = request.user.userprofile
@@ -17,36 +17,36 @@ def product_create(request):
         return redirect("profile_create")
 
     if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
+        form = ProduktForm(request.POST, request.FILES)
         if form.is_valid():
-            product = form.save(commit=False)
-            product.verkaeufer_profil = user_profile
-            product.save()
+            produkt = form.save(commit=False)
+            produkt.verkaeufer_profil = user_profile
+            produkt.save()
             form.save_m2m()  # Tags speichern
             messages.success(request, "Produkt erfolgreich erstellt!")
-            return redirect("product_detail", pk=product.pk)
+            return redirect("product_detail", pk=produkt.pk)
     else:
-        form = ProductForm()
+        form = ProduktForm()
 
-    return render(request, "produkt/product_form.html", {
+    return render(request, "produkt/produkt_erstellen.html", {
         "form": form
     })
 
 #  Produkt anzeigen
 def product_detail(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk, istArchiviert=False)
-    return render(request, "produkt/product_detail.html", {
-        "product": produkt
+    return render(request, "produkt/produkt_detail.html", {
+        "produkt": produkt
     })
 
 
 # PDF Download
 @login_required
-def product_pdf_download(request, pk):
+def produkt_pdf_download(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
 
     # Generiere PDF
-    pdf_buffer = generate_product_pdf(produkt)
+    pdf_buffer = generate_produkt_pdf(produkt)
 
     # Sende als Download
     response = HttpResponse(pdf_buffer.getvalue(), content_type='application/pdf')
@@ -55,7 +55,7 @@ def product_pdf_download(request, pk):
 
 
 # Öffentliche Produktliste (wie bei Kleinanzeigen)
-def product_list(request):
+def produkt_liste(request):
     produkte = Produkt.objects.filter(istArchiviert=False).select_related('verkaeufer_profil')
 
     # Optional: Filter nach Tags
@@ -63,20 +63,20 @@ def product_list(request):
     if tag_filter:
         produkte = produkte.filter(tags__name=tag_filter)
 
-    return render(request, "produkt/product_list.html", {
+    return render(request, "produkt/produkt_liste.html", {
         "produkte": produkte,
         "tag_filter": tag_filter
     })
 
 @login_required
-def my_products(request):
+def meine_produkte(request):
     try:
         user_profile = request.user.userprofile
         produkte = Produkt.objects.filter(
             verkaeufer_profil=user_profile,
             istArchiviert=False
         )
-        return render(request, "produkt/my_products.html", {
+        return render(request, "produkt/meine_produkte.html", {
             "produkte": produkte
         })
     except:

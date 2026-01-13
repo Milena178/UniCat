@@ -58,7 +58,7 @@ class Produkt(models.Model):
             )
 
     #  Berechnung des Enddatums der Auktion
-    def auction_end(self):
+    def auktion_endet(self):
         return self.erstelltAm + self.auktionsdauer
 
     #  Listungscounter erhöht sich nach Auktionsende
@@ -68,6 +68,11 @@ class Produkt(models.Model):
             self.save(update_fields=['anzahlListungen'])
             return True
         return False
+
+    #  Archivierung verkaufter Produkte
+    def archive(self):
+        self.istArchiviert = True
+        self.save(update_fields=["istArchiviert"])
 
     def __str__(self):
         return self.name
