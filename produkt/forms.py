@@ -1,7 +1,7 @@
 from django import forms
 from .models import Produkt, Tag
 
-class ProductForm(forms.ModelForm):
+class ProduktForm(forms.ModelForm):
     class Meta:
         model = Produkt
         fields = [

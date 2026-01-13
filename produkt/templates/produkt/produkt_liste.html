@@ -18,20 +18,20 @@
         {% for product in produkte %}
         <div class="product-card">
             <a href="{% url 'product_detail' product.pk %}">
-                {% if product.bild %}
+                {% if produkt.bild %}
                     <img src="{{ product.bild.url }}" alt="{{ product.name }}" class="product-image">
                 {% else %}
                     <div class="no-image">Kein Bild</div>
                 {% endif %}
 
-                <h3>{{ product.name }}</h3>
-                <p><strong>{{ product.mindestpreis }} €</strong></p>
-                <p>Von: {{ product.verkaeufer_profil.username }}</p>
-                <p><small>Endet: {{ product.auction_end|date:"d.m.Y H:i" }}</small></p>
+                <h3>{{ produkt.name }}</h3>
+                <p><strong>{{ produkt.mindestpreis }} €</strong></p>
+                <p>Von: {{ produkt.verkaeufer_profil.username }}</p>
+                <p><small>Endet: {{ produkt.auktion_endet|date:"d.m.Y H:i" }}</small></p>
 
-                {% if product.tags.exists %}
+                {% if produkt.tags.exists %}
                     <div class="tags">
-                        {% for tag in product.tags.all %}
+                        {% for tag in produkt.tags.all %}
                             <span class="tag">{{ tag.name }}</span>
                         {% endfor %}
                     </div>

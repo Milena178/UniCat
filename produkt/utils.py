@@ -1,7 +1,7 @@
 from io import BytesIO
 from reportlab.pdfgen import canvas
 
-def generate_product_pdf(produkt):
+def generate_produkt_pdf(produkt):
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
 
