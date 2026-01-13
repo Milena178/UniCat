@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ produkt.name }}</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}{{ produkt.name }}{% endblock %}
+
+{% block content %}
+
     <h1>{{ produkt.name }}</h1>
 
     <!-- Verkäufer Info -->
@@ -30,25 +29,38 @@
     </div>
     {% endif %}
 
-    <div class="description">
-        <h2>Beschreibung</h2>
-        <p>{{ produkt.beschreibung|linebreaks }}</p>
-    </div>
+    <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
 
-    <div class="detail-row">
-        <div class="detail-label">Mindestpreis:</div>
-        <div class="detail-value price">{{ produkt.mindestpreis }} €</div>
-    </div>
+    <p>
+        <strong>Aktuelles Höchstgebot:</strong>
+        {% if produkt.hoechstgebot %}
+            {{ produkt.hoechstgebot.biethoehe }} €
+        {% else %}
+            Noch keine Gebote
+        {% endif %}
+    </p>
 
-    <div class="detail-row">
-        <div class="detail-label">Auktionsdauer:</div>
-        <div class="detail-value">{{ produkt.auktionsdauer }}</div>
-    </div>
+    {% if produkt.auktion_aktiv %}
+        <p>Auktion endet am: {{ produkt.auktion_ende }}</p>
 
-    <div class="detail-row">
-        <div class="detail-label">Auktion endet am:</div>
-        <div class="detail-value">{{ produkt.auction_end|date:"d.m.Y H:i" }} Uhr</div>
-    </div>
+        {% if user.is_authenticated %}
+            <h3>Gebot abgeben</h3>
+
+            {% if error %}
+                <p style="color:red">{{ error }}</p>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ gebot_form.as_p }}
+                <button type="submit">Bieten</button>
+            </form>
+        {% else %}
+            <p>Bitte anmelden, um zu bieten.</p>
+        {% endif %}
+    {% else %}
+        <p><strong>Auktion beendet</strong></p>
+    {% endif %}
 
     <!-- PDF Download & Navigation -->
     <div class="actions">
@@ -59,5 +71,4 @@
             ← Zurück zur Übersicht
         </a>
     </div>
-</body>
-</html>
+{% endblock %}

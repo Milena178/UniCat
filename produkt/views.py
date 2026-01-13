@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages
+from gebot.models import Gebot
+from gebot.views import GebotForm
 from .models import Produkt
 from .forms import ProduktForm
 from .utils import generate_produkt_pdf
@@ -34,9 +36,35 @@ def produkt_erstellen(request):
 
 #  Produkt anzeigen
 def produkt_detail(request, pk):
-    produkt = get_object_or_404(Produkt, pk=pk, istArchiviert=False)
+    produkt = get_object_or_404(Produkt, pk=pk)
+    produkt.archive() if produkt.auktion_beendet() else None
+
+    gebot_form = None
+    error = None
+
+    if request.user.is_authenticated and produkt.auktion_aktiv():
+        if request.method == "POST":
+            gebot_form = GebotForm(request.POST)
+            if gebot_form.is_valid():
+                gebot = gebot_form.save(commit=False)
+                gebot.produkt = produkt
+                gebot.bieter = request.user
+
+                hoechst = produkt.hoechstgebot()
+                mindest = hoechst.biethoehe if hoechst else produkt.mindestpreis
+
+                if gebot.biethoehe <= mindest:
+                    error = f"Gebot muss höher als {mindest} € sein."
+                else:
+                    gebot.save()
+                    return redirect("produkt_detail", pk=produkt.pk)
+        else:
+            gebot_form = GebotForm()
+
     return render(request, "produkt/produkt_detail.html", {
-        "produkt": produkt
+        "produkt": produkt,
+        "gebot_form": gebot_form,
+        "error": error,
     })
 
 

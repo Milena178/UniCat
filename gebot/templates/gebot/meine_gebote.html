@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Meine Gebote{% endblock %}
+
+{% block content %}
+    <h1>Meine Gebote</h1>
+
+    <table>
+        <tr>
+            <th>Produkt</th>
+            <th>Mein Gebot</th>
+            <th>Status</th>
+        </tr>
+
+        {% for gebot in gebote %}
+            <tr>
+                <td>{{ gebot.produkt.name }}</td>
+                <td>{{ gebot.biethoehe }} €</td>
+                <td>
+                    {% if gebot.produkt.auktion_aktiv %}
+                        {% if gebot == gebot.produkt.hoechstgebot %}
+                            Führend 🟢
+                        {% else %}
+                            Überboten 🔴
+                        {% endif %}
+                    {% else %}
+                        {% if gebot == gebot.produkt.hoechstgebot %}
+                            Gewonnen 🏆
+                        {% else %}
+                            Verloren ❌
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">Du hast noch keine Gebote abgegeben.</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.conf import settings
 
 class Tag(models.Model):
     #  Tags können nur von Superusern erstellt werden
@@ -36,7 +35,7 @@ class Produkt(models.Model):
     mindestpreis = models.DecimalField(max_digits=8, decimal_places=2)
     auktionsdauer = models.DurationField(help_text="Dauer der Auktion (z. B. 7 Tage)")
 
-    anzahlListungen = models.PositiveSmallIntegerField(default=0, editable=False, help_text="Interner Counter - wird automatisch erhöht")
+    anzahlListungen = models.PositiveSmallIntegerField(default=1, editable=False, help_text="Wie oft das Produkt insgesamt gelistet wurde")
     istArchiviert = models.BooleanField(default=False)
     erstelltAm = models.DateTimeField(auto_now_add=True)
 
@@ -47,32 +46,65 @@ class Produkt(models.Model):
 
     #  Validierung
     def clean(self):
+        errors = {}
+
         if self.anzahlListungen > 3:
-            raise ValidationError(
+            errors["anzahl_listungen"] = (
                 "Ein Produkt darf maximal 3 Mal gelistet werden."
             )
 
         if self.mindestpreis <= 0:
-            raise ValidationError(
+            errors["mindestpreis"] = (
                 "Der Mindestpreis muss größer als 0 sein."
             )
 
-    #  Berechnung des Enddatums der Auktion
-    def auktion_endet(self):
+        if self.auktionsdauer.total_seconds() <= 0:
+            errors["auktionsdauer"] = (
+                "Die Auktionsdauer muss größer als 0 sein."
+            )
+
+        if errors:
+            raise ValidationError(errors)
+
+    #  Validierungen erzwingen
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    #  Aktuelles Höchstgebot ermitteln
+    def hoechstgebot(self):
+        return self.gebote.order_by("-biethoehe").first()
+
+    #  Auktion endet
+    def auktion_ende(self):
         return self.erstelltAm + self.auktionsdauer
 
-    #  Listungscounter erhöht sich nach Auktionsende
-    def increment_listings(self):
-        if self.anzahlListungen < 3:
-            self.anzahlListungen += 1
-            self.save(update_fields=['anzahlListungen'])
-            return True
-        return False
+    #  Auktion läuft
+    def auktion_aktiv(self):
+        return (
+            not self.istArchiviert and
+            timezone.now() < self.auktion_ende()
+        )
+
+    #  Auktionsende erreicht?
+    def auktion_beendet(self):
+        return timezone.now() >= self.auktion_ende()
 
     #  Archivierung verkaufter Produkte
     def archive(self):
         self.istArchiviert = True
         self.save(update_fields=["istArchiviert"])
+
+    #  Listungscounter erhöht sich nach Auktionsende
+    def relisten(self):
+        if self.anzahlListungen >= 3:
+            return False
+
+        self.anzahlListungen += 1
+        self.istArchiviert = False
+        self.erstelltAm = timezone.now()
+        self.save()
+        return True
 
     def __str__(self):
         return self.name

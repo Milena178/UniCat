@@ -17,8 +17,21 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Produkt)
 class ProduktAdmin(admin.ModelAdmin):
-    list_display = ['name', 'verkaeufer_profil', 'mindestpreis', 'anzahlListungen', 'erstelltAm', 'istArchiviert']
+    list_display = ['name', 'verkaeufer_profil', 'mindestpreis', 'anzahlListungen', 'erstelltAm', 'istArchiviert', "auktion_status"]
     list_filter = ['istArchiviert', 'tags', 'erstelltAm']
     search_fields = ['name', 'beschreibung', 'verkaeufer_profil__username']
-    readonly_fields = ['erstelltAm']
+    readonly_fields = ["anzahlListungen", 'erstelltAm', "auktion_ende"]
     filter_horizontal = ['tags']
+    actions = ["produkte_archivieren"]
+
+    @admin.display(description="Auktion", boolean=True)
+    def auktion_status(self, obj):
+        return obj.auktion_aktiv()
+
+    @admin.display(description="Auktionsende")
+    def auktion_ende(self, obj):
+        return obj.auktion_ende()
+
+    @admin.action(description="Ausgewählte Produkte archivieren")
+    def produkte_archivieren(self, request, queryset):
+        queryset.update(ist_archiviert=True)

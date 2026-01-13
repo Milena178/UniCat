@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Meine Produkte</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Meine Produkte{% endblock %}
+
+{% block content %}
     <h1>Meine Produkte</h1>
 
     <a href="{% url 'prokukt_erstellen' %}">Neues Produkt erstellen</a>
@@ -21,6 +19,5 @@
         <p>Sie haben noch keine Produkte erstellt.</p>
         <a href="{% url 'produkt_erstellen' %}">Jetzt Produkt erstellen</a>
     {% endfor %}
-    </div>
-</body>
-</html>
+
+{% endblock %}
