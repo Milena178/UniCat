@@ -2,33 +2,44 @@ from datetime import date
 from django.db import models
 from django.conf import settings
 
-class UserProfile(models.Model):
-    USER_TYPES = [
-        ('K', 'Käufer'),
-        ('V', 'Verkäufer'),
-        ('B', 'Beides'),
-    ]
+def user_directory_path(instance, filename):
+    # Profilbilder landen unter: media/profile_pictures/user_<id>/<filename>
+    return f'profile_pictures/user_{instance.user.id}/{filename}'
 
+class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='profile'
     )
-    username = models.CharField(max_length=50)  # optional, zur Anzeige
+
+    # Anzeige-Daten
+    username = models.CharField(max_length=50)
     bio = models.TextField(blank=True)
-    user_type = models.CharField(max_length=1, choices=USER_TYPES, default='K')
+
+    # Adresse
+    street = models.CharField("Straße", max_length=100, blank=True)
+    house_number = models.CharField("Hausnummer", max_length=10, blank=True)
+    zip_code = models.CharField("PLZ", max_length=10, blank=True)
+    city = models.CharField("Ort", max_length=50, blank=True)
+    country = models.CharField("Land", max_length=50, blank=True)
+
+    # Profilbild
+    profile_picture = models.ImageField(
+        upload_to=user_directory_path,
+        blank=True,
+        null=True
+    )
+
     erstellt_am = models.DateField(default=date.today)
 
     class Meta:
-        ordering = ['user_type', 'username']
+        ordering = ['username']
         verbose_name = 'User Profil'
         verbose_name_plural = 'User Profile'
 
     def __str__(self):
-        return f"{self.username} ({self.get_user_type_display()})"
-
-    def __repr__(self):
-        return f"{self.username} / {self.get_user_type_display()}"
-
+        return self.username
 
 class Review(models.Model):
     STERNE_CHOICES = [(i, str(i)) for i in range(1, 6)]

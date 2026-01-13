@@ -3,9 +3,8 @@ from .models import UserProfile, Review
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['username', 'user_type', 'erstellt_am']
+    list_display = ['username', 'erstellt_am']
     search_fields = ['username', 'user__username']
-    list_filter = ['user_type']
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
