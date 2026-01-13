@@ -9,17 +9,17 @@
 
     {% if user.is_authenticated %}
         <div style="margin: 20px;">
-            <a href="{% url 'product_create' %}" class="btn">Neues Produkt erstellen</a>
-            <a href="{% url 'my_products' %}" class="btn">Meine Produkte</a>
+            <a href="{% url 'produkt_erstellen' %}" class="btn">Neues Produkt erstellen</a>
+            <a href="{% url 'meine_produkte' %}" class="btn">Meine Produkte</a>
         </div>
     {% endif %}
 
     <div class="product-grid">
-        {% for product in produkte %}
+        {% for produkt in produkte %}
         <div class="product-card">
-            <a href="{% url 'product_detail' product.pk %}">
+            <a href="{% url 'product_detail' produkt.pk %}">
                 {% if produkt.bild %}
-                    <img src="{{ product.bild.url }}" alt="{{ product.name }}" class="product-image">
+                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
                 {% else %}
                     <div class="no-image">Kein Bild</div>
                 {% endif %}

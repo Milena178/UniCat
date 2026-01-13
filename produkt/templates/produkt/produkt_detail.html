@@ -15,7 +15,7 @@
 
     <!-- Bild anzeigen -->
     {% if produkt.bild %}
-            <img src="{{ product.bild.url }}" alt="{{ product.name }}" class="product-image">
+            <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}">
     {% else %}
             <div class="no-image">📷 Kein Bild vorhanden</div>
     {% endif %}
@@ -52,7 +52,7 @@
 
     <!-- PDF Download & Navigation -->
     <div class="actions">
-        <a href="{% url 'product_pdf' product.pk %}" class="btn-download">
+        <a href="{% url 'product_pdf' produkt.pk %}" class="btn-download">
             📄 Produktinfo als PDF herunterladen
         </a>
         <a href="{% url 'product_list' %}" class="btn-back">

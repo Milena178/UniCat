@@ -33,7 +33,7 @@ def produkt_erstellen(request):
     })
 
 #  Produkt anzeigen
-def product_detail(request, pk):
+def produkt_detail(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk, istArchiviert=False)
     return render(request, "produkt/produkt_detail.html", {
         "produkt": produkt
