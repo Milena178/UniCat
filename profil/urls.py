@@ -16,4 +16,13 @@ urlpatterns = [
 
     # ===== Profil bearbeiten =====
     path('<int:pk>/edit/', views.ProfileUpdateView.as_view(), name='profil_edit'),
+    path('review/<int:pk>/report/', views.review_report, name='review_report'),
+    path('cs/reviews/', views.cs_review_list, name='cs_review_list'),
+    path('cs/review/<int:pk>/delete/', views.cs_review_disable, name='cs_review_disable'),
+    path('cs/review/<int:pk>/delete/', views.cs_review_disable, name='cs_review_disable'),
+    path('cs/review/<int:pk>/unreport/', views.cs_review_unreport, name='cs_review_unreport'),
+
+    # Profil erstellen für neue User
+    path('create/', views.ProfileCreateView.as_view(), name='profil_create'),
+
 ]

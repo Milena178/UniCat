@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Gemeldete Bewertungen – Customer Service{% endblock %}
+
+{% block content %}
+<h1>Gemeldete Bewertungen</h1>
+
+{% if reviews %}
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>Bewertung</th>
+            <th>Autor</th>
+            <th>Profil</th>
+            <th>Gemeldet am</th>
+            <th>Aktionen</th>
+        </tr>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review.text|truncatechars:200 }} ({{ review.sterne }} Sterne)</td>
+            <td>{{ review.author.username }}</td>
+            <td><a href="{% url 'profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
+            <td>{{ review.erstellt_am }}</td>
+            <td>
+                <a href="{% url 'cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
+                <a href="{% url 'cs_review_unreport' review.pk %}" class="btn btn-secondary btn-sm">Meldung zurücksetzen</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Keine gemeldeten Bewertungen.</p>
+{% endif %}
+
+{% endblock %}

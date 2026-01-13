@@ -15,18 +15,16 @@
 
 <p>Adresse: {{ profile.street }} {{ profile.house_number }}, {{ profile.zip_code }} {{ profile.city }}, {{ profile.country }}</p>
 
-<p>Typ: {{ profile.get_user_type_display }}</p>
-
 <hr>
 
-{# ===== Profil bearbeiten Button ===== #}
-
-{# Version zum Testen: jeder kann bearbeiten #}
-<p>
-    <a href="{% url 'profil_edit' profile.pk %}" class="btn btn-primary">
-        Profil bearbeiten
-    </a>
-</p>
+{# ===== Profil bearbeiten Button nur für Profilbesitzer ===== #}
+{% if user.is_authenticated and user == profile.user %}
+    <p>
+        <a href="{% url 'profil_edit' profile.pk %}" class="btn btn-primary">
+            Profil bearbeiten
+        </a>
+    </p>
+{% endif %}
 
 <hr>
 
@@ -44,7 +42,6 @@
 {% for review in reviews %}
     <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
         <strong>{{ review.author.username }}</strong> – {{ review.sterne }} Sterne
-
         <p>{{ review.text }}</p>
 
         <p>
@@ -59,9 +56,19 @@
                 <a href="{% url 'review_delete' review.pk %}">Löschen</a>
             </p>
         {% endif %}
+
+        {# ===== Review melden (alle anderen angemeldeten Nutzer) ===== #}
+        {% if user.is_authenticated and user != review.author %}
+            {% if not review.gemeldet %}
+                <form action="{% url 'review_report' review.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning btn-sm">Melden</button>
+                </form>
+            {% else %}
+                <span style="color:red;">Gemeldet</span>
+            {% endif %}
+        {% endif %}
     </div>
-{% empty %}
-    <p>Noch keine Bewertungen.</p>
 {% endfor %}
 
 {% endblock %}

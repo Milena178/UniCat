@@ -1,6 +1,8 @@
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404
@@ -10,36 +12,82 @@ from django.views.generic import DetailView, UpdateView, DeleteView
 from .models import UserProfile, Review
 from .forms import UserProfileForm, ReviewForm
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import require_POST
 
-#class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-#    model = UserProfile
-#    form_class = UserProfileForm
-#    template_name = 'profil_edit.html'
 
-#    def test_func(self):
-#        return self.get_object().user == self.request.user
-
-#    def get_success_url(self):
-#        return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
-
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
     template_name = 'profil_edit.html'
 
-    # nur eigener Nutzer darf bearbeiten
-#    def test_func(self):
-#        return self.get_object().user == self.request.user
+    def dispatch(self, request, *args, **kwargs):
+        # Prüfen, ob der angemeldete Nutzer das Profil besitzt
+        obj = self.get_object()
+        if obj.user != request.user:
+            # Wenn nicht, Zugriff verweigern
+            raise PermissionDenied("Du darfst dieses Profil nicht bearbeiten.")
+        return super().dispatch(request, *args, **kwargs)
 
-    # zum Testen: kein Login, jeder kann das Profil bearbeiten
+    def get_success_url(self):
+        return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
+# ===== Profil-Erstellen View für neue User =====
+# ===== Profil-Erstellen View für neue User (nur normale User, nicht Staff) =====
+class ProfileCreateView(LoginRequiredMixin, generic.CreateView):
+    model = UserProfile
+    form_class = UserProfileForm
+    template_name = 'profil_create.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Staff darf kein Profil erstellen
+        if request.user.is_staff:
+            return redirect('home')
+
+        # Prüfen, ob Profil existiert
+        try:
+            profile = request.user.profile
+            return redirect('profil_edit', pk=profile.pk)
+        except UserProfile.DoesNotExist:
+            # WICHTIG: return!
+            return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Zusätzliche Sicherheit
+        if self.request.user.is_staff:
+            raise PermissionDenied
+
+        if UserProfile.objects.filter(user=self.request.user).exists():
+            return redirect('profil_edit', pk=self.request.user.profile.pk)
+
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
 
 
+    def form_valid(self, form):
+        # User automatisch setzen
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Nach Erstellung auf Profil-Detail weiterleiten
+        return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
+
+# ===== Signup-View =====
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
+
+    def form_valid(self, form):
+        user = form.save()
+
+        # User direkt einloggen
+        login(self.request, user)
+
+        # 🔁 DIREKT zur Profil-Erstellung
+        return redirect('profil_create')
 
 @login_required
 def review_vote(request, pk, direction):
@@ -70,6 +118,36 @@ def review_create(request, pk):
         'profile': profile
     })
 
+# ===== Review melden =====
+@login_required
+@require_POST
+def review_report(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    review.gemeldet = True
+    review.save()
+    return redirect('profil_detail', pk=review.profile.pk)
+
+# ===== Customer-Service Ansicht =====
+@staff_member_required
+def cs_review_list(request):
+    """Liste aller gemeldeten Reviews"""
+    reviews = Review.objects.filter(gemeldet=True).order_by('-erstellt_am')
+    return render(request, 'cs_review_list.html', {'reviews': reviews})
+
+@staff_member_required
+def cs_review_disable(request, pk):
+    """Customer-Service kann Review deaktivieren (z.B. gemeldet = False / löschen)"""
+    review = get_object_or_404(Review, pk=pk)
+    review.delete()  # Review löschen
+    return redirect('cs_review_list')
+
+@staff_member_required
+def cs_review_unreport(request, pk):
+    """Customer-Service kann Meldung zurücksetzen, wenn Review in Ordnung ist"""
+    review = get_object_or_404(Review, pk=pk)
+    review.gemeldet = False
+    review.save()
+    return redirect('cs_review_list')
 class ProfileDetailView(DetailView):
     model = UserProfile
     template_name = 'profil_detail.html'
