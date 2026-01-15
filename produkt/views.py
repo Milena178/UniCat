@@ -7,16 +7,17 @@ from gebot.views import GebotForm
 from .models import Produkt
 from .forms import ProduktForm
 from .utils import generate_produkt_pdf
+from profil.views import ProfileCreateView
 
 #  Produkt anlegen
 @login_required
 def produkt_erstellen(request):
     # Prüfe ob User ein Profil hat, falls nicht -> erstellen lassen
     try:
-        user_profile = request.user.userprofile
+        user_profile = request.user.profile
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profile_create")
+        return redirect("profil_create")
 
     if request.method == "POST":
         form = ProduktForm(request.POST, request.FILES)
@@ -26,7 +27,7 @@ def produkt_erstellen(request):
             produkt.save()
             form.save_m2m()  # Tags speichern
             messages.success(request, "Produkt erfolgreich erstellt!")
-            return redirect("product_detail", pk=produkt.pk)
+            return redirect("produkt_detail", pk=produkt.pk)
     else:
         form = ProduktForm()
 
@@ -99,7 +100,7 @@ def produkt_liste(request):
 @login_required
 def meine_produkte(request):
     try:
-        user_profile = request.user.userprofile
+        user_profile = request.user.profile
         produkte = Produkt.objects.filter(
             verkaeufer_profil=user_profile,
             istArchiviert=False
@@ -109,4 +110,4 @@ def meine_produkte(request):
         })
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profile_create")
+        return redirect("profil_create")
