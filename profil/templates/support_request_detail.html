@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Support-Ticket #{{ ticket.id }}{% endblock %}
+
+{% block content %}
+<h2>Ticket #{{ ticket.id }} – {{ ticket.subject }}</h2>
+
+<hr>
+
+<h3>Nachrichten</h3>
+
+{% for message in ticket.messages.all %}
+    <div style="margin-bottom: 10px;">
+        <strong>{{ message.sender.username }}</strong>
+        <small>({{ message.created_at|date:"d.m.Y H:i" }})</small>
+        <p>{{ message.text }}</p>
+    </div>
+{% empty %}
+    <p>Noch keine Nachrichten.</p>
+{% endfor %}
+
+<hr>
+
+{% if not ticket.closed %}
+<h3>Antwort schreiben</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="text" rows="4" cols="60" required></textarea><br><br>
+    <button type="submit">Antwort senden</button>
+</form>
+{% else %}
+<p><strong>Dieses Ticket ist geschlossen.</strong></p>
+{% endif %}
+
+<p>
+    {% if user.is_staff %}
+        <a href="{% url 'support_request_list' %}">Zurück zur Übersicht</a>
+    {% else %}
+        <a href="{% url 'support_user_list' %}">Zurück zu meinen Tickets</a>
+    {% endif %}
+</p>
+{% endblock %}

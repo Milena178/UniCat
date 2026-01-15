@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Kundenservice kontaktieren{% endblock %}
+
+{% block content %}
+<h2>Kundenservice kontaktieren</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <p>
+        <label for="id_subject">Betreff</label><br>
+        {{ form.subject }}
+    </p>
+
+    <p>
+        <label for="id_message">Nachricht</label><br>
+        {{ form.message }}
+    </p>
+
+    <button type="submit">Ticket absenden</button>
+</form>
+
+<p>
+    <a href="{% url 'home' %}">Zurück zur Startseite</a>
+</p>
+{% endblock %}

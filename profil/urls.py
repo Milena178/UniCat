@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import support_request_create, support_user_list, support_request_detail, support_request_list
 
 urlpatterns = [
     # Registrierung
@@ -25,5 +26,12 @@ urlpatterns = [
     path('cs/reviews/', views.cs_review_list, name='cs_review_list'),
     path('cs/review/<int:pk>/delete/', views.cs_review_disable, name='cs_review_disable'),
     path('cs/review/<int:pk>/unreport/', views.cs_review_unreport, name='cs_review_unreport'),
+
+    path('support/admin/<int:pk>/',views.support_request_answer,name='support_request_answer'),
+    path('support/create/', support_request_create, name='support_create'),
+    path('support/', support_user_list, name='support_user_list'),
+    path('support/<int:pk>/', support_request_detail, name='support_detail'),
+    path('support/admin/',support_request_list,name='support_request_list'),
+
 ]
 

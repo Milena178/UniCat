@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile, Review
+from .models import UserProfile, Review, SupportRequest
 
 
 class UserProfileForm(forms.ModelForm):
@@ -20,3 +20,8 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['sterne', 'text']
+
+class SupportRequestForm(forms.ModelForm):
+    class Meta:
+        model = SupportRequest
+        fields = ['subject']

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Support-Tickets verwalten{% endblock %}
+
+{% block content %}
+<h2>Alle Support-Anfragen</h2>
+
+{% if tickets %}
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Betreff</th>
+            <th>Status</th>
+            <th>Aktion</th>
+        </tr>
+
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.id }}</td>
+            <td>{{ ticket.user.username }}</td>
+            <td>{{ ticket.subject }}</td>
+            <td>
+                {% if ticket.closed %}
+                    geschlossen
+                {% else %}
+                    offen
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'support_detail' ticket.pk %}">
+                    Öffnen
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Keine Support-Anfragen vorhanden.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'home' %}">Zurück zur Startseite</a>
+</p>
+{% endblock %}

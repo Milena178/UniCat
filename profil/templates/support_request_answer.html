@@ -1,0 +1,31 @@
+{# templates/support_request_answer.html #}
+{% extends "base.html" %}
+
+{% block title %}Support-Anfrage beantworten{% endblock %}
+
+{% block content %}
+<h2>{{ support.subject }}</h2>
+
+<p>
+    <strong>Von:</strong> {{ support.user.username }}
+</p>
+
+<hr>
+
+<p>
+    {{ support.message }}
+</p>
+
+<hr>
+
+<form method="post">
+    {% csrf_token %}
+
+    <p>
+        <label for="answer">Antwort:</label><br>
+        <textarea name="answer" rows="6" style="width:100%;">{{ support.answer }}</textarea>
+    </p>
+
+    <button type="submit">Antwort speichern</button>
+</form>
+{% endblock %}

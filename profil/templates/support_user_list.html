@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Mein Kundenservice-Postfach{% endblock %}
+
+{% block content %}
+<h2>Meine Support-Anfragen</h2>
+
+{% if tickets %}
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                <a href="{% url 'support_detail' ticket.pk %}">
+                    Ticket #{{ ticket.id }} – {{ ticket.subject }}
+                </a>
+                {% if ticket.closed %}
+                    (geschlossen)
+                {% else %}
+                    (offen)
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Du hast noch keine Support-Anfragen.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'support_create' %}">Neue Anfrage erstellen</a>
+</p>
+
+<p>
+    <a href="{% url 'home' %}">Zurück zur Startseite</a>
+</p>
+{% endblock %}

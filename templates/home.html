@@ -33,11 +33,27 @@
                 </a>
             </p>
         {% endif %}
-
+        <hr>
+        <p>
+            <a href="{% url 'support_user_list' %}">
+                Mein Kundenservice-Postfach
+            </a>
+        </p>
+            <p>
+                <a href="{% url 'support_create' %}" class="btn btn-secondary">
+                    Kundenservice kontaktieren
+                </a>
+            </p>
     {% endif %}
 
     {# Kunden Service #}
     {% if user.is_staff %}
+        <p>
+            <a href="{% url 'support_request_list' %}">
+                Support-Anfragen verwalten
+            </a>
+        </p>
+
         <p>
             <a href="{% url 'cs_review_list' %}" class="btn btn-danger">
                 Gemeldete Bewertungen prüfen

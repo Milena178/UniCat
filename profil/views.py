@@ -9,8 +9,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
 from django.views.generic import DetailView, UpdateView, DeleteView
 
-from .models import UserProfile, Review
-from .forms import UserProfileForm, ReviewForm
+from .models import UserProfile, Review, SupportRequest, SupportMessage
+from .forms import UserProfileForm, ReviewForm, SupportRequestForm
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
@@ -184,3 +184,98 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             kwargs={'pk': self.object.profile.pk}
         )
 
+@login_required
+def support_request_create(request):
+    if request.method == 'POST':
+        form = SupportRequestForm(request.POST)
+        if form.is_valid():
+            support = form.save(commit=False)
+            support.user = request.user
+            support.save()
+            return redirect('home')
+    else:
+        form = SupportRequestForm()
+
+    return render(request, 'support_request_form.html', {'form': form})
+
+@staff_member_required
+def support_request_list(request):
+    requests = SupportRequest.objects.all().order_by('-created_at')
+    return render(request, 'support_request_list.html', {'requests': requests})
+
+@staff_member_required
+def support_request_answer(request, pk):
+    support = get_object_or_404(SupportRequest, pk=pk)
+
+    if request.method == 'POST':
+        support.answer = request.POST.get('answer')
+        support.status = 'answered'
+        support.save()
+        return redirect('support_request_list')
+
+    return render(request, 'support_request_answer.html', {'support': support})
+
+@login_required
+def support_request_create(request):
+    if request.method == 'POST':
+        form = SupportRequestForm(request.POST)
+        message_text = request.POST.get('message')
+
+        if form.is_valid() and message_text:
+            support = form.save(commit=False)
+            support.user = request.user
+            support.save()
+
+            SupportMessage.objects.create(
+                request=support,
+                sender=request.user,
+                text=message_text
+            )
+
+            return redirect('support_user_list')
+    else:
+        form = SupportRequestForm()
+
+    return render(request, 'support_request_form.html', {'form': form})
+
+@login_required
+def support_user_list(request):
+    tickets = SupportRequest.objects.filter(user=request.user)
+    return render(
+        request,
+        'support_user_list.html',
+        {'tickets': tickets}
+    )
+
+@login_required
+def support_request_detail(request, pk):
+    ticket = get_object_or_404(SupportRequest, pk=pk)
+
+    # Sicherheitscheck
+    if not request.user.is_staff and ticket.user != request.user:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        if text:
+            SupportMessage.objects.create(
+                request=ticket,
+                sender=request.user,
+                text=text
+            )
+            return redirect('support_detail', pk=pk)
+
+    return render(
+        request,
+        'support_request_detail.html',
+        {'ticket': ticket}
+    )
+
+@staff_member_required
+def support_request_list(request):
+    tickets = SupportRequest.objects.all().order_by('-created_at')
+    return render(
+        request,
+        'support_request_list.html',
+        {'tickets': tickets}
+    )
