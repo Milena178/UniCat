@@ -33,7 +33,7 @@ class Produkt(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name="produkte")
 
     mindestpreis = models.DecimalField(max_digits=8, decimal_places=2)
-    auktionsdauer = models.DurationField(help_text="Dauer der Auktion (z. B. 7 Tage)")
+    auktionsdauer = models.DurationField(help_text="Dauer der Auktion", null=False, blank=False)
 
     anzahlListungen = models.PositiveSmallIntegerField(default=1, editable=False, help_text="Wie oft das Produkt insgesamt gelistet wurde")
     istArchiviert = models.BooleanField(default=False)
@@ -56,11 +56,6 @@ class Produkt(models.Model):
         if self.mindestpreis <= 0:
             errors["mindestpreis"] = (
                 "Der Mindestpreis muss größer als 0 sein."
-            )
-
-        if self.auktionsdauer.total_seconds() <= 0:
-            errors["auktionsdauer"] = (
-                "Die Auktionsdauer muss größer als 0 sein."
             )
 
         if errors:

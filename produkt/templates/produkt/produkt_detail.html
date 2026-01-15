@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load produkt_tags %}
 
 {% block title %}{{ produkt.name }}{% endblock %}
 
@@ -41,7 +42,10 @@
     </p>
 
     {% if produkt.auktion_aktiv %}
-        <p>Auktion endet am: {{ produkt.auktion_ende }}</p>
+        <p>
+            <strong>Verbleibende Zeit:</strong>
+            <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
+        </p>
 
         {% if user.is_authenticated %}
             <h3>Gebot abgeben</h3>
@@ -71,4 +75,54 @@
             ← Zurück zur Übersicht
         </a>
     </div>
+
+     <script>
+        {% if produkt.auktion_aktiv %}
+        // Live Countdown
+        const endTime = {% countdown_js produkt %};
+        const countdownEl = document.getElementById('countdown-{{ produkt.pk }}');
+
+        function updateCountdown() {
+            const now = Date.now();
+            const remaining = endTime - now;
+
+            if (remaining <= 0) {
+                countdownEl.textContent = 'Auktion beendet';
+                countdownEl.style.color = 'red';
+                location.reload(); // Seite neu laden
+                return;
+            }
+
+            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+            let text = '';
+            if (days > 0) text += `${days}T `;
+            if (hours > 0 || days > 0) text += `${hours}h `;
+            text += `${minutes}min ${seconds}s`;
+
+            countdownEl.textContent = text;
+
+            // Warnung bei weniger als 5 Minuten
+            if (remaining < 5 * 60 * 1000) {
+                countdownEl.style.color = 'red';
+                countdownEl.style.fontWeight = 'bold';
+            }
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        {% endif %}
+     </script>
+
+    <style>
+        .countdown {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+    </style>
+
 {% endblock %}

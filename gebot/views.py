@@ -17,7 +17,7 @@ def bieten(request, product_id):
     if not produkt.auktion_aktiv():
         return HttpResponseForbidden("Auktion beendet")
 
-    if produkt.verkaeufer == request.user:
+    if produkt.verkaeufer_profil == request.user.profile:
         return HttpResponseForbidden(
             "Du kannst nicht auf dein eigenes Produkt bieten."
         )
@@ -28,7 +28,7 @@ def bieten(request, product_id):
         if form.is_valid():
             gebot = form.save(commit=False)
             gebot.produkt = produkt
-            gebot.bieter = request.user
+            gebot.bieter = request.user.profile
 
             hoechstgebot = produkt.hoechstgebot()
 
@@ -59,7 +59,7 @@ def bieten(request, product_id):
 @login_required
 def meine_gebote(request):
     gebote = Gebot.objects.filter(
-        bieter=request.user
+        bieter=request.user.profile
     ).select_related("produkt")
 
     return render(request, "gebot/meine_gebote.html", {

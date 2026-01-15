@@ -49,7 +49,7 @@ def produkt_detail(request, pk):
             if gebot_form.is_valid():
                 gebot = gebot_form.save(commit=False)
                 gebot.produkt = produkt
-                gebot.bieter = request.user
+                gebot.bieter = request.user.profile
 
                 hoechst = produkt.hoechstgebot()
                 mindest = hoechst.biethoehe if hoechst else produkt.mindestpreis

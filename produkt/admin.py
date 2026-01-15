@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.utils import timezone
 from .models import Produkt, Tag
 
 @admin.register(Tag)
@@ -32,6 +34,32 @@ class ProduktAdmin(admin.ModelAdmin):
     def auktion_ende(self, obj):
         return obj.auktion_ende()
 
+    @admin.display(description="Verbleibende Zeit", ordering='erstelltAm')
+    def verbleibende_zeit(self, obj):
+        """Zeigt die verbleibende Zeit neutral an"""
+        if obj.istArchiviert:
+            return "Archiviert"
+
+        if not obj.auktion_aktiv():
+            return "Beendet"
+
+        delta = obj.auktion_ende() - timezone.now()
+
+        days = delta.days
+        hours = delta.seconds // 3600
+        minutes = (delta.seconds % 3600) // 60
+        seconds = delta.seconds % 60
+
+        parts = []
+        if days > 0:
+            parts.append(f"{days}T")
+        if hours > 0 or days > 0:
+            parts.append(f"{hours}h")
+        parts.append(f"{minutes}min")
+
+        return " ".join(parts)
+
     @admin.action(description="Ausgewählte Produkte archivieren")
     def produkte_archivieren(self, request, queryset):
-        queryset.update(ist_archiviert=True)
+        count = queryset.update(ist_archiviert=True)
+        self.message_user(request, f"{count} Produkt(e) wurden archiviert.")

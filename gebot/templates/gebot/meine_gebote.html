@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load produkt_tags %}
 
 {% block title %}Meine Gebote{% endblock %}
 
@@ -14,8 +15,15 @@
 
         {% for gebot in gebote %}
             <tr>
-                <td>{{ gebot.produkt.name }}</td>
+                <td><a href="{% url 'produkt_detail' gebot.produkt.pk %}">{{ gebot.produkt.name }}</a></td>
                 <td>{{ gebot.biethoehe }} €</td>
+                <td>
+                    {% if gebot.produkt.auktion_aktiv %}
+                        <span id="countdown-{{ gebot.produkt.pk }}">{{ gebot.produkt|format_countdown }}</span>
+                    {% else %}
+                        Beendet
+                    {% endif %}
+                </td>
                 <td>
                     {% if gebot.produkt.auktion_aktiv %}
                         {% if gebot == gebot.produkt.hoechstgebot %}
@@ -34,8 +42,42 @@
             </tr>
         {% empty %}
             <tr>
-                <td colspan="3">Du hast noch keine Gebote abgegeben.</td>
+                <td colspan="4">Du hast noch keine Gebote abgegeben.</td>
             </tr>
         {% endfor %}
     </table>
+
+    <script>
+        {% for gebot in gebote %}
+        {% if gebot.produkt.auktion_aktiv %}
+        (function() {
+            const endTime = {% countdown_js gebot.produkt %};
+            const countdownEl = document.getElementById('countdown-{{ gebot.produkt.pk }}');
+
+            function update() {
+                const remaining = endTime - Date.now();
+                if (remaining <= 0) {
+                    countdownEl.textContent = 'Beendet';
+                    location.reload();
+                    return;
+                }
+
+                const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+                let text = '';
+                if (days > 0) text += `${days}T `;
+                if (hours > 0 || days > 0) text += `${hours}h `;
+                text += `${minutes}min`;
+
+                countdownEl.textContent = text;
+            }
+
+            update();
+            setInterval(update, 60000);
+        })();
+        {% endif %}
+        {% endfor %}
+    </script>
 {% endblock %}
