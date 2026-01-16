@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -5,6 +6,9 @@ from django.contrib import messages
 from django.db.models import Q, Avg, Count
 from django.utils import timezone
 from datetime import timedelta
+
+from django.views.decorators.http import require_POST
+
 from gebot.models import Gebot
 from gebot.views import GebotForm
 from .models import Produkt
@@ -167,3 +171,42 @@ def meine_produkte(request):
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
         redirect("profil_edit", pk=request.user.profile.pk)
+
+@login_required
+def produkt_report(request, pk):
+    produkt = get_object_or_404(Produkt, pk=pk)
+
+    if request.method == "POST":
+        produkt.gemeldet = True
+        produkt.save()
+
+    return redirect('produkt_detail', pk=produkt.pk)
+
+@staff_member_required
+def support_produkt_list(request):
+    produkte = Produkt.objects.filter(gemeldet=True).order_by('-erstelltAm')
+    return render(request, "admin/support_produkt_list.html", {
+        "produkte": produkte
+    })
+
+@staff_member_required
+def support_produkt_list(request):
+    produkte = Produkt.objects.filter(gemeldet=True).order_by('-erstelltAm')
+    return render(request, "admin/support_produkt_list.html", {
+        "produkte": produkte
+    })
+
+@staff_member_required
+@require_POST
+def support_produkt_unreport(request, pk):
+    produkt = get_object_or_404(Produkt, pk=pk)
+    produkt.gemeldet = False
+    produkt.save()
+    return redirect('support_produkt_list')
+
+@staff_member_required
+@require_POST
+def support_produkt_delete(request, pk):
+    produkt = get_object_or_404(Produkt, pk=pk)
+    produkt.delete()
+    return redirect('support_produkt_list')

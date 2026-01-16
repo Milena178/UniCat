@@ -17,6 +17,21 @@
 
 <hr>
 
+{# ===== Durchschnittsbewertung Profil ===== #}
+<h2>Profilbewertung</h2>
+<p>
+    Durchschnitt: {{ profil_durchschnitt|default:"0" }} Sterne
+    {% for i in "12345" %}
+        {% if forloop.counter <= profil_durchschnitt|default:0 %}
+            ★
+        {% else %}
+            ☆
+        {% endif %}
+    {% endfor %}
+</p>
+
+<hr>
+
 {# ===== Profil bearbeiten Button nur für Profilbesitzer ===== #}
 {% if user.is_authenticated and user == profile.user %}
     <p>
@@ -42,7 +57,17 @@
 {% for review in reviews %}
     <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
         <strong>{{ review.author.username }}</strong> – {{ review.sterne }} Sterne
+    <p>
+        {% for i in "12345" %}
+            {% if forloop.counter <= review.sterne %}
+                ★
+            {% else %}
+                    ☆
+            {% endif %}
+        {% endfor %}
+    </p>
         <p>{{ review.text }}</p>
+
 
         <p>
             👍 <a href="{% url 'review_vote' review.pk 'up' %}">{{ review.get_upvotes_count }}</a>

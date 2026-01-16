@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Avg
 
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404
@@ -105,6 +106,30 @@ def review_create(request, pk):
         'profile': profile
     })
 
+#Bewertungen Durchschnitt
+class ProfileDetailView(DetailView):
+    model = UserProfile
+    template_name = 'profil/profil_detail.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Alle Reviews des Profils
+        context['reviews'] = self.object.reviews.all()
+
+        # Durchschnitt aller Reviews des Profils
+        durchschnitt = self.object.reviews.aggregate(avg_sterne=Avg('sterne'))['avg_sterne']
+        context['profil_durchschnitt'] = round(durchschnitt or 0, 2)
+
+        # Durchschnitt pro Produkt
+        produkte = self.object.produkte.filter(istArchiviert=False).annotate(
+            durchschnitt_bewertung=Avg('verkaeufer_profil__reviews__sterne')
+        )
+        context['produkte'] = produkte
+
+        return context
+
 #Bewertungen melden von dem User
 @login_required
 @require_POST
@@ -123,14 +148,12 @@ def cs_review_list(request):
 
 @staff_member_required
 def cs_review_disable(request, pk):
-    """Customer-Service kann Review deaktivieren (z.B. gemeldet = False / löschen)"""
     review = get_object_or_404(Review, pk=pk)
     review.delete()  # Review löschen
     return redirect('cs_review_list')
 
 @staff_member_required
 def cs_review_unreport(request, pk):
-    """Customer-Service kann Meldung zurücksetzen, wenn Review in Ordnung ist"""
     review = get_object_or_404(Review, pk=pk)
     review.gemeldet = False
     review.save()

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Gemeldete Produkte{% endblock %}
+
+{% block content %}
+
+<h1>Gemeldete Produkte</h1>
+<hr>
+
+{% if produkte %}
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Verkäufer</th>
+                <th>Erstellt am</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produkt in produkte %}
+                <tr>
+                    <td>{{ produkt.id }}</td>
+                    <td>{{ produkt.name }}</td>
+                    <td>{{ produkt.verkaeufer_profil.username }}</td>
+                    <td>{{ produkt.erstelltAm }}</td>
+                    <td>
+                        {# Produkt wieder freigeben #}
+                        <form action="{% url 'cs_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Freigeben</button>
+                        </form>
+                        {# Produkt löschen #}
+                        <form action="{% url 'cs_produkt_delete' produkt.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Keine gemeldeten Produkte.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'admin_dashboard' %}">Zurück zum Admin Dashboard</a>
+</p>
+
+{% endblock %}

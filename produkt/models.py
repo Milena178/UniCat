@@ -39,6 +39,9 @@ class Produkt(models.Model):
     istArchiviert = models.BooleanField(default=False)
     erstelltAm = models.DateTimeField(auto_now_add=True)
 
+    # Produkt melden
+    gemeldet = models.BooleanField(default=False)
+
     class Meta:
         ordering = ['-erstelltAm']
         verbose_name = 'Produkt'
