@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'gebot',
 ]
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media Files (für Bilder und PDFs)
 MEDIA_URL = '/media/'

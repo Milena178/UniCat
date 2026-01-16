@@ -1,0 +1,48 @@
+{% load static %}
+
+<header>
+    <nav>
+        <div class="logo">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="UniCat Logo">
+            </a>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="{% url 'produkt:produkt_erstellen' %}">Versteigern</a></li>
+            <li><a href="{% url 'gebot:meine_gebote' %}">Meine Gebote</a></li>
+            <li><a href="{% url 'profil:support_request_list' %}">Kontakt</a></li>
+        </ul>
+
+        <div class="user-section">
+            {% if user.is_authenticated %}
+                <div class="user-profile">
+                    <div class="profile-image">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild">
+                        {% endif %}
+                    </div>
+                    <div class="user-info">
+                        <span class="username">{{ user.username }}</span>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="guest-profile">
+                    <div class="profile-image">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Gast">
+                    </div>
+                    <div class="auth-links">
+                        <a href="{% url 'login' %}" class="login-btn">Login</a>
+                        <a href="{% url 'signup' %}" class="signup-btn">Registrieren</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+</header>

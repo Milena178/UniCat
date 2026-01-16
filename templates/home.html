@@ -14,18 +14,18 @@
         <button type="submit">Logout</button>
     </form>
     {% if user.profile %}
-        <a href="{% url 'profil_detail' user.profile.pk %}">Profil ansehen</a>
+        <a href="{% url 'profil:profil_detail' user.profile.pk %}">Profil ansehen</a>
     {% endif %}
 
     {% if not user.is_staff %}
         <hr>
         <p>
-            <a href="{% url 'support_user_list' %}">
+            <a href="{% url 'profil:support_user_list' %}">
                 Mein Kundenservice-Postfach
             </a>
         </p>
             <p>
-                <a href="{% url 'support_create' %}" class="btn btn-secondary">
+                <a href="{% url 'profil:support_create' %}" class="btn btn-secondary">
                     Kundenservice kontaktieren
                 </a>
             </p>
@@ -34,7 +34,7 @@
     {# Kunden Service #}
     {% if user.is_staff %}
         <p>
-            <a href="{% url 'admin_dashboard' %}">
+            <a href="{% url 'profil:admin_dashboard' %}">
                 Kundenservice Seite
             </a>
         </p>

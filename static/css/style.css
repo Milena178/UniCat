@@ -1,0 +1,92 @@
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-profile, .guest-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-image img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.85rem;
+    text-decoration: underline;
+}
+
+.auth-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.login-btn, .signup-btn {
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+}
+
+.login-btn {
+    color: #333;
+}
+
+.signup-btn {
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+}
