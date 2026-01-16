@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .views import support_request_create, support_user_list, support_request_detail, support_request_list
+from .views import support_request_create, support_user_list, support_request_detail, support_request_list, \
+    admin_dashboard
 
 urlpatterns = [
     # Registrierung
@@ -31,5 +32,7 @@ urlpatterns = [
     path('support/admin/',support_request_list,name='support_request_list'),
     path('support/admin/<int:pk>/close/',views.support_close,name='support_close'    ),
     path('support/<int:pk>/delete/',views.support_delete,name='support_delete'),
+    path("dashboard/", admin_dashboard, name="admin_dashboard"),
+
 ]
 

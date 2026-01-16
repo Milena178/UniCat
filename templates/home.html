@@ -13,21 +13,11 @@
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
+    {% if user.profile %}
+        <a href="{% url 'profil_detail' user.profile.pk %}">Profil ansehen</a>
+    {% endif %}
 
-    {# user (kein Staff) #}
     {% if not user.is_staff %}
-        <p>
-            <a href="{% url 'profil_detail' user.profile.pk %}">
-                Profil ansehen
-            </a>
-        </p>
-
-        <p>
-            <a href="{% url 'profil_edit' user.profile.pk %}">
-                Profil bearbeiten
-            </a>
-        </p>
-
         <hr>
         <p>
             <a href="{% url 'support_user_list' %}">
@@ -44,14 +34,8 @@
     {# Kunden Service #}
     {% if user.is_staff %}
         <p>
-            <a href="{% url 'support_request_list' %}">
-                Support-Anfragen verwalten
-            </a>
-        </p>
-
-        <p>
-            <a href="{% url 'cs_review_list' %}" class="btn btn-danger">
-                Gemeldete Bewertungen prüfen
+            <a href="{% url 'admin_dashboard' %}">
+                Kundenservice Seite
             </a>
         </p>
     {% endif %}

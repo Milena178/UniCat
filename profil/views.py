@@ -41,7 +41,7 @@ class SignUp(generic.CreateView):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
-    template_name = 'profil_edit.html'
+    template_name = 'profil/profil_edit.html'
 
 #Nur der Profilbesitzer darf dieses Profil bearbeiten
     def dispatch(self, request, *args, **kwargs):
@@ -67,7 +67,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 #Profil anzeigen
 class ProfileDetailView(DetailView):
     model = UserProfile
-    template_name = 'profil_detail.html'
+    template_name = 'profil/profil_detail.html'
     context_object_name = 'profile'
 
     def get_context_data(self, **kwargs):
@@ -100,7 +100,7 @@ def review_create(request, pk):
     else:
         form = ReviewForm()
 
-    return render(request, 'review_form.html', {
+    return render(request, 'bewertung/review_form.html', {
         'form': form,
         'profile': profile
     })
@@ -119,7 +119,7 @@ def review_report(request, pk):
 def cs_review_list(request):
     """Liste aller gemeldeten Reviews"""
     reviews = Review.objects.filter(gemeldet=True).order_by('-erstellt_am')
-    return render(request, 'cs_review_list.html', {'reviews': reviews})
+    return render(request, 'admin/cs_review_list.html', {'reviews': reviews})
 
 @staff_member_required
 def cs_review_disable(request, pk):
@@ -140,7 +140,7 @@ def cs_review_unreport(request, pk):
 class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Review
     fields = ['sterne', 'text']
-    template_name = 'review_edit.html'
+    template_name = 'bewertung/review_edit.html'
 
     def test_func(self):
         return self.get_object().author == self.request.user
@@ -153,7 +153,7 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Review
-    template_name = 'review_delete.html'
+    template_name = 'bewertung/review_delete.html'
 
     def test_func(self):
         return self.get_object().author == self.request.user
@@ -184,7 +184,7 @@ def support_request_answer(request, pk):
 
     return render(
         request,
-        'support_request_answer.html',
+        'anfragen/support_request_answer.html',
         {'anfrage': anfrage}
     )
 
@@ -211,12 +211,12 @@ def support_request_create(request):
     else:
         form = SupportRequestForm()
 
-    return render(request, 'support_request_form.html', {'form': form})
+    return render(request, 'anfragen/support_request_form.html', {'form': form})
 
 @login_required
 def support_user_list(request):
     anfragen = SupportRequest.objects.filter(user=request.user)
-    return render(request, 'support_user_list.html', {'anfragen': anfragen})
+    return render(request, 'anfragen/support_user_list.html', {'anfragen': anfragen})
 
 @login_required
 def support_request_detail(request, pk):
@@ -243,7 +243,7 @@ def support_request_detail(request, pk):
             # gleiche Seite neu rendern
     return render(
         request,
-        'support_request_detail.html',
+        'anfragen/support_request_detail.html',
         {'anfrage': anfrage}
     )
 
@@ -255,7 +255,7 @@ def support_request_list(request):
 
     return render(
         request,
-        'support_request_list.html',
+        'admin/support_request_list.html',
         {'anfragen': anfragen}
     )
 
@@ -273,3 +273,7 @@ def support_delete(request, pk):
     anfrage = get_object_or_404(SupportRequest, pk=pk)
     anfrage.delete()
     return redirect('support_request_list')
+
+@staff_member_required
+def admin_dashboard(request):
+    return render(request, "admin/admin_dashboard.html")

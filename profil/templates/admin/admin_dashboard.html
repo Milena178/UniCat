@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<h1>Admin Dashboard</h1>
+<hr>
+
+<h2>Admin-Bereich</h2>
+
+<ul>
+    <li>
+        <a href="{% url 'support_request_list' %}">
+            Support-Anfragen verwalten
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'cs_review_list' %}">
+            Gemeldete Bewertungen prüfen
+        </a>
+    </li>
+</ul>
+    <p>
+        <a href="{% url 'home' %}">Zurück zur Startseite</a>
+    </p>
+{% endblock %}
