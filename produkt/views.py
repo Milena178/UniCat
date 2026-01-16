@@ -19,8 +19,8 @@ def produkt_erstellen(request):
     try:
         user_profile = request.user.profile
     except:
-        messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profil_create")
+        messages.warning(request, "Bitte vervolständigen Sie zuerst Ihr Profil.")
+        return redirect("profil_edit",pk=request.user.profile.pk)
 
     if request.method == "POST":
         form = ProduktForm(request.POST, request.FILES)
@@ -166,4 +166,4 @@ def meine_produkte(request):
         })
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profil_create")
+        redirect("profil_edit", pk=request.user.profile.pk)

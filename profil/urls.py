@@ -6,9 +6,6 @@ urlpatterns = [
     # Registrierung
     path('signup/', views.SignUp.as_view(), name='signup'),
 
-    # Profil erstellen
-    path('create/', views.ProfileCreateView.as_view(), name='profil_create'),
-
     # Profil bearbeiten
     path('<int:pk>/edit/', views.ProfileUpdateView.as_view(), name='profil_edit'),
 

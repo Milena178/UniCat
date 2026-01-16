@@ -16,23 +16,18 @@
 
     {# user (kein Staff) #}
     {% if not user.is_staff %}
+        <p>
+            <a href="{% url 'profil_detail' user.profile.pk %}">
+                Profil ansehen
+            </a>
+        </p>
 
-        {# User HAT bereits ein Profil #}
-        {% if user.profile %}
-            <p>
-                <a href="{% url 'profil_detail' user.profile.pk %}">
-                    Profil ansehen
-                </a>
-            </p>
+        <p>
+            <a href="{% url 'profil_edit' user.profile.pk %}">
+                Profil bearbeiten
+            </a>
+        </p>
 
-        {# User hat noch kein Profil #}
-        {% else %}
-            <p>
-                <a href="{% url 'profil_create' %}" class="btn btn-primary">
-                    Profil erstellen
-                </a>
-            </p>
-        {% endif %}
         <hr>
         <p>
             <a href="{% url 'support_user_list' %}">

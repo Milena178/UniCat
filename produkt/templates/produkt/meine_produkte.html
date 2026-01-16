@@ -6,7 +6,7 @@
 {% block content %}
     <h1>Meine Produkte</h1>
 
-    <a href="{% url 'prokukt_erstellen' %}">Neues Produkt erstellen</a>
+    <a href="{% url 'produkt_erstellen' %}">Neues Produkt erstellen</a>
     <a href="{% url 'produkt_liste' %}">Alle Produkte</a>
 
     {% for produkt in produkte %}

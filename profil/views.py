@@ -16,6 +16,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 
 #Signup-View
+from .models import UserProfile
+
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     template_name = 'registration/signup.html'
@@ -23,39 +25,17 @@ class SignUp(generic.CreateView):
     def form_valid(self, form):
         user = form.save()
 
-        # User direkt einloggen
+        # Leeres Profil direkt anlegen
+        UserProfile.objects.create(
+            user=user,
+            username=user.username  # sinnvoll vorbelegen
+        )
+
+        # User einloggen
         login(self.request, user)
 
-        #Weiterleitung zur Profil-Erstellung
-        return redirect('profil_create')
-
-#Profil erstellen
-class ProfileCreateView(LoginRequiredMixin, generic.CreateView):
-    model = UserProfile
-    form_class = UserProfileForm
-    template_name = 'profil_create.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        # Staff darf kein Profil erstellen
-        if request.user.is_staff:
-            return redirect('home')
-
-        # Prüfen, ob Profil existiert
-        try:
-            profile = request.user.profile
-            return redirect('profil_edit', pk=profile.pk)
-        except UserProfile.DoesNotExist:
-            return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        if self.request.user.is_staff:
-            raise PermissionDenied
-
-        if UserProfile.objects.filter(user=self.request.user).exists():
-            return redirect('profil_edit', pk=self.request.user.profile.pk)
-
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+        # Direkt zur Profil-Bearbeitung
+        return redirect('profil_edit', pk=user.profile.pk)
 
 #Eigenes Profil bearbeiten
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
