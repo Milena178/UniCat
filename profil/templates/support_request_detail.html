@@ -1,16 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Support-Ticket #{{ ticket.id }}{% endblock %}
+{% block title %}Support-Anfragen{% endblock %}
 
 {% block content %}
-<h2>Ticket #{{ ticket.id }} – {{ ticket.subject }}</h2>
+<h2>Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}</h2>
+
+<p>
+    <strong>Status:</strong>
+    {{ anfrage.get_status_display }}
+</p>
 
 <hr>
 
 <h3>Nachrichten</h3>
 
-{% for message in ticket.messages.all %}
-    <div style="margin-bottom: 10px;">
+{% for message in anfrage.messages.all %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
         <strong>{{ message.sender.username }}</strong>
         <small>({{ message.created_at|date:"d.m.Y H:i" }})</small>
         <p>{{ message.text }}</p>
@@ -21,23 +26,45 @@
 
 <hr>
 
-{% if not ticket.closed %}
-<h3>Antwort schreiben</h3>
-
+{% if anfrage.status != 'closed' %}
 <form method="post">
     {% csrf_token %}
-    <textarea name="text" rows="4" cols="60" required></textarea><br><br>
-    <button type="submit">Antwort senden</button>
+    <textarea name="text"
+              rows="5"
+              style="width:100%;"
+              required></textarea>
+    <br><br>
+    <button type="submit">
+        Nachricht senden
+    </button>
 </form>
 {% else %}
-<p><strong>Dieses Ticket ist geschlossen.</strong></p>
+<p><strong>Diese Anfrage wurde abgeschlossen.</strong></p>
 {% endif %}
+
+{% if user.is_staff and anfrage.status != 'closed' %}
+<hr>
+<form method="post" action="{% url 'support_close' anfrage.pk %}">
+    {% csrf_token %}
+    <button type="submit"
+            style="background:#c62828;color:white;">
+        Anfragen schließen
+    </button>
+</form>
+{% endif %}
+
+<hr>
 
 <p>
     {% if user.is_staff %}
-        <a href="{% url 'support_request_list' %}">Zurück zur Übersicht</a>
+        <a href="{% url 'support_request_list' %}">
+            ← Zurück zum Postfach
+        </a>
     {% else %}
-        <a href="{% url 'support_user_list' %}">Zurück zu meinen Tickets</a>
+        <a href="{% url 'support_user_list' %}">
+            ← Zurück zum Postfach
+        </a>
     {% endif %}
 </p>
+
 {% endblock %}

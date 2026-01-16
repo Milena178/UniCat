@@ -5,30 +5,39 @@
 {% block content %}
 <h2>Meine Support-Anfragen</h2>
 
-{% if tickets %}
-    <ul>
-        {% for ticket in tickets %}
-            <li>
-                <a href="{% url 'support_detail' ticket.pk %}">
-                    Ticket #{{ ticket.id }} – {{ ticket.subject }}
+{% if anfragen %}
+<ul style="list-style:none; padding:0;">
+    {% for anfrage in anfragen %}
+        <li style="border:1px solid #ccc; padding:12px; margin-bottom:10px;">
+            <strong>
+                Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}
+            </strong>
+            <br>
+            <small>Status: {{ anfrage.get_status_display }}</small>
+
+            <div style="margin-top:8px;">
+                <a href="{% url 'support_detail' anfrage.pk %}">
+                    Öffnen
                 </a>
-                {% if ticket.closed %}
-                    (geschlossen)
-                {% else %}
-                    (offen)
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
 {% else %}
-    <p>Du hast noch keine Support-Anfragen.</p>
+<p>Du hast noch keine Support-Anfragen.</p>
 {% endif %}
 
+<hr>
+
 <p>
-    <a href="{% url 'support_create' %}">Neue Anfrage erstellen</a>
+    <a href="{% url 'support_create' %}">
+        ➕ Neue Anfrage erstellen
+    </a>
 </p>
 
 <p>
-    <a href="{% url 'home' %}">Zurück zur Startseite</a>
+    <a href="{% url 'home' %}">
+        ← Zurück zur Startseite
+    </a>
 </p>
 {% endblock %}

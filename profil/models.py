@@ -168,17 +168,31 @@ class ReviewVote(models.Model):
         return f"{self.user.username} → {self.vote_type}"
 
 class SupportRequest(models.Model):
+    STATUS_OPEN = 'open'
+    STATUS_ANSWERED = 'answered'
+    STATUS_CLOSED = 'closed'
+
+    STATUS_CHOICES = [
+        (STATUS_OPEN, 'Offen'),
+        (STATUS_ANSWERED, 'Beantwortet'),
+        (STATUS_CLOSED, 'Geschlossen'),
+    ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='support_requests'
     )
     subject = models.CharField(max_length=200)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=STATUS_OPEN
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    closed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Ticket #{self.id} von {self.user.username}"
+        return f"Anfrage #{self.id} – {self.subject}"
 
 class SupportMessage(models.Model):
     request = models.ForeignKey(

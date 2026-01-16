@@ -184,36 +184,30 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             kwargs={'pk': self.object.profile.pk}
         )
 
-@login_required
-def support_request_create(request):
-    if request.method == 'POST':
-        form = SupportRequestForm(request.POST)
-        if form.is_valid():
-            support = form.save(commit=False)
-            support.user = request.user
-            support.save()
-            return redirect('home')
-    else:
-        form = SupportRequestForm()
-
-    return render(request, 'support_request_form.html', {'form': form})
-
-@staff_member_required
-def support_request_list(request):
-    requests = SupportRequest.objects.all().order_by('-created_at')
-    return render(request, 'support_request_list.html', {'requests': requests})
-
 @staff_member_required
 def support_request_answer(request, pk):
-    support = get_object_or_404(SupportRequest, pk=pk)
+    anfrage = get_object_or_404(SupportRequest, pk=pk)
 
     if request.method == 'POST':
-        support.answer = request.POST.get('answer')
-        support.status = 'answered'
-        support.save()
+        text = request.POST.get('text')
+        if text:
+            SupportMessage.objects.create(
+                request=anfrage,
+                sender=request.user,
+                text=text
+            )
+            anfrage.status = SupportRequest.STATUS_ANSWERED
+            anfrage.save()
+
+        # zurück zur Tabelle
         return redirect('support_request_list')
 
-    return render(request, 'support_request_answer.html', {'support': support})
+    return render(
+        request,
+        'support_request_answer.html',
+        {'anfrage': anfrage}
+    )
+
 
 @login_required
 def support_request_create(request):
@@ -222,12 +216,13 @@ def support_request_create(request):
         message_text = request.POST.get('message')
 
         if form.is_valid() and message_text:
-            support = form.save(commit=False)
-            support.user = request.user
-            support.save()
+            anfrage = form.save(commit=False)
+            anfrage.user = request.user
+            anfrage.status = SupportRequest.STATUS_OPEN
+            anfrage.save()
 
             SupportMessage.objects.create(
-                request=support,
+                request=anfrage,
                 sender=request.user,
                 text=message_text
             )
@@ -240,42 +235,61 @@ def support_request_create(request):
 
 @login_required
 def support_user_list(request):
-    tickets = SupportRequest.objects.filter(user=request.user)
-    return render(
-        request,
-        'support_user_list.html',
-        {'tickets': tickets}
-    )
+    anfragen = SupportRequest.objects.filter(user=request.user)
+    return render(request, 'support_user_list.html', {'anfragen': anfragen})
 
 @login_required
 def support_request_detail(request, pk):
-    ticket = get_object_or_404(SupportRequest, pk=pk)
+    anfrage = get_object_or_404(SupportRequest, pk=pk)
 
-    # Sicherheitscheck
-    if not request.user.is_staff and ticket.user != request.user:
+    # Zugriffsschutz
+    if not request.user.is_staff and anfrage.user != request.user:
         raise PermissionDenied
 
-    if request.method == 'POST':
+    if request.method == 'POST' and anfrage.status != SupportRequest.STATUS_CLOSED:
         text = request.POST.get('text')
         if text:
             SupportMessage.objects.create(
-                request=ticket,
+                request=anfrage,
                 sender=request.user,
                 text=text
             )
-            return redirect('support_detail', pk=pk)
 
+            #Status setzen nach Admin Antwort
+            if request.user.is_staff:
+                anfrage.status = SupportRequest.STATUS_ANSWERED
+                anfrage.save()
+
+            # gleiche Seite neu rendern
     return render(
         request,
         'support_request_detail.html',
-        {'ticket': ticket}
+        {'anfrage': anfrage}
     )
 
 @staff_member_required
 def support_request_list(request):
-    tickets = SupportRequest.objects.all().order_by('-created_at')
+    anfragen = SupportRequest.objects.exclude(
+        status=SupportRequest.STATUS_CLOSED
+    ).order_by('-created_at')
+
     return render(
         request,
         'support_request_list.html',
-        {'tickets': tickets}
+        {'anfragen': anfragen}
     )
+
+@staff_member_required
+@require_POST
+def support_close(request, pk):
+    anfrage = get_object_or_404(SupportRequest, pk=pk)
+    anfrage.status = SupportRequest.STATUS_CLOSED
+    anfrage.save()
+    return redirect('support_detail', pk=pk)
+
+@staff_member_required
+@require_POST
+def support_delete(request, pk):
+    anfrage = get_object_or_404(SupportRequest, pk=pk)
+    anfrage.delete()
+    return redirect('support_request_list')

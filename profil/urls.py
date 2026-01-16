@@ -32,6 +32,7 @@ urlpatterns = [
     path('support/', support_user_list, name='support_user_list'),
     path('support/<int:pk>/', support_request_detail, name='support_detail'),
     path('support/admin/',support_request_list,name='support_request_list'),
-
+    path('support/admin/<int:pk>/close/',views.support_close,name='support_close'    ),
+    path('support/<int:pk>/delete/',views.support_delete,name='support_delete'),
 ]
 

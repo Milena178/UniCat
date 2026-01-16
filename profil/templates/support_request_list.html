@@ -1,42 +1,54 @@
 {% extends "base.html" %}
 
-{% block title %}Support-Tickets verwalten{% endblock %}
+{% block title %}Support-Anfragen{% endblock %}
 
 {% block content %}
-<h2>Alle Support-Anfragen</h2>
+<h2>Support-Anfragen (Admin)</h2>
 
-{% if tickets %}
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>ID</th>
-            <th>User</th>
-            <th>Betreff</th>
-            <th>Status</th>
-            <th>Aktion</th>
-        </tr>
+{% if anfragen %}
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Betreff</th>
+        <th>Status</th>
+        <th>Aktionen</th>
+    </tr>
 
-        {% for ticket in tickets %}
-        <tr>
-            <td>{{ ticket.id }}</td>
-            <td>{{ ticket.user.username }}</td>
-            <td>{{ ticket.subject }}</td>
-            <td>
-                {% if ticket.closed %}
-                    geschlossen
-                {% else %}
-                    offen
-                {% endif %}
-            </td>
-            <td>
-                <a href="{% url 'support_detail' ticket.pk %}">
-                    Öffnen
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    {% for anfrage in anfragen %}
+    <tr>
+        <td>#{{ anfrage.id }}</td>
+        <td>{{ anfrage.user.username }}</td>
+        <td>
+            <a href="{% url 'support_detail' anfrage.pk %}">
+                {{ anfrage.subject }}
+            </a>
+        </td>
+        <td>
+            {{ anfrage.get_status_display }}
+        </td>
+        <td>
+            <a href="{% url 'support_detail' anfrage.pk %}">
+                Öffnen
+            </a>
+
+            <form
+                method="post"
+                action="{% url 'support_delete' anfrage.pk %}"
+                style="display:inline;"
+            >
+                {% csrf_token %}
+                <button type="submit"
+                        onclick="return confirm('Anfrage wirklich löschen?')">
+                    Löschen
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% else %}
-    <p>Keine Support-Anfragen vorhanden.</p>
+<p>Keine offenen oder beantworteten Anfragen.</p>
 {% endif %}
 
 <p>

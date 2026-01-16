@@ -3,25 +3,25 @@
 {% block title %}Kundenservice kontaktieren{% endblock %}
 
 {% block content %}
-<h2>Kundenservice kontaktieren</h2>
+<h2>Neue Support-Anfrage</h2>
 
 <form method="post">
     {% csrf_token %}
 
     <p>
-        <label for="id_subject">Betreff</label><br>
+        <label>Betreff</label><br>
         {{ form.subject }}
     </p>
 
     <p>
-        <label for="id_message">Nachricht</label><br>
-        {{ form.message }}
+        <label>Nachricht</label><br>
+        <textarea name="message" rows="6" style="width:100%;" required></textarea>
     </p>
 
-    <button type="submit">Ticket absenden</button>
+    <button type="submit">Anfrage absenden</button>
 </form>
 
 <p>
-    <a href="{% url 'home' %}">Zurück zur Startseite</a>
+    <a href="{% url 'home' %}">Abbrechen</a>
 </p>
 {% endblock %}

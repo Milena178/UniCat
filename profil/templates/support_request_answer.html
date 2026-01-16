@@ -1,31 +1,57 @@
-{# templates/support_request_answer.html #}
 {% extends "base.html" %}
 
 {% block title %}Support-Anfrage beantworten{% endblock %}
 
 {% block content %}
-<h2>{{ support.subject }}</h2>
+<h2>Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}</h2>
 
 <p>
-    <strong>Von:</strong> {{ support.user.username }}
+    <strong>Von:</strong> {{ anfrage.user.username }}
+</p>
+
+<p>
+    <strong>Status:</strong> {{ anfrage.get_status_display }}
 </p>
 
 <hr>
 
-<p>
-    {{ support.message }}
-</p>
+<h3>Konversation</h3>
+
+{% for message in anfrage.messages.all %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+        <strong>{{ message.sender.username }}</strong>
+        <small>({{ message.created_at|date:"d.m.Y H:i" }})</small>
+        <p>{{ message.text }}</p>
+    </div>
+{% empty %}
+    <p>Noch keine Nachrichten.</p>
+{% endfor %}
 
 <hr>
+
+{% if anfrage.status != 'closed' %}
+<h3>Antwort schreiben</h3>
 
 <form method="post">
     {% csrf_token %}
-
-    <p>
-        <label for="answer">Antwort:</label><br>
-        <textarea name="answer" rows="6" style="width:100%;">{{ support.answer }}</textarea>
-    </p>
-
-    <button type="submit">Antwort speichern</button>
+    <textarea name="text" rows="5" style="width:100%;" required></textarea>
+    <br><br>
+    <button type="submit">Antwort senden</button>
 </form>
+
+<hr>
+
+<form method="post" action="{% url 'support_close' anfrage.pk %}">
+    {% csrf_token %}
+    <button style="background:#c00;color:#fff;">
+        Problem gelöst – Anfrage schließen
+    </button>
+</form>
+{% else %}
+<p><strong>Dieses Anfrage ist geschlossen.</strong></p>
+{% endif %}
+
+<p>
+    <a href="{% url 'support_request_list' %}">Zurück zur Übersicht</a>
+</p>
 {% endblock %}
