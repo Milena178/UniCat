@@ -36,7 +36,7 @@ class SignUp(generic.CreateView):
         login(self.request, user)
 
         # Direkt zur Profil-Bearbeitung
-        return redirect('profil_edit', pk=user.profile.pk)
+        return redirect('profil:profil_edit', pk=user.profile.pk)
 
 #Eigenes Profil bearbeiten
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -53,7 +53,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 #Nach erfolgreichem Speichern wird man zu Profil-Detailseite geleitet
     def get_success_url(self):
-        return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.pk})
 
 #User automatisch setzten und doppelte Profile verhindern
     def form_valid(self, form):
@@ -63,7 +63,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 #Profil anzeigen nach der erstellung
     def get_success_url(self):
         # Nach Erstellung auf Profil-Detail weiterleiten
-        return reverse_lazy('profil_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.pk})
 
 #Profil anzeigen
 class ProfileDetailView(DetailView):
@@ -81,14 +81,14 @@ class ProfileDetailView(DetailView):
 def review_vote(request, pk, direction):
     review = get_object_or_404(Review, pk=pk)
     review.vote(request.user, direction)
-    return redirect('profil_detail', pk=review.profile.pk)
+    return redirect('profil:profil_detail', pk=review.profile.pk)
 
 @login_required
 def review_create(request, pk):
     profile = get_object_or_404(UserProfile, pk=pk)
 
     if profile.user == request.user:
-        return redirect('profil_detail', pk=pk)
+        return redirect('profil:profil_detail', pk=pk)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -97,7 +97,7 @@ def review_create(request, pk):
             review.profile = profile
             review.author = request.user
             review.save()
-            return redirect('profil_detail', pk=pk)
+            return redirect('profil:profil_detail', pk=pk)
     else:
         form = ReviewForm()
 
@@ -137,7 +137,7 @@ def review_report(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.gemeldet = True
     review.save()
-    return redirect('profil_detail', pk=review.profile.pk)
+    return redirect('profil:profil_detail', pk=review.profile.pk)
 
 #Kunden-Service Meldungen Ansehen
 @staff_member_required
@@ -150,14 +150,14 @@ def cs_review_list(request):
 def cs_review_disable(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.delete()  # Review löschen
-    return redirect('cs_review_list')
+    return redirect('profil:cs_review_list')
 
 @staff_member_required
 def cs_review_unreport(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.gemeldet = False
     review.save()
-    return redirect('cs_review_list')
+    return redirect('profil:cs_review_list')
 
 #Review bearbeiten/löschen
 class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -170,7 +170,7 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            'profil_detail',
+            'profil:profil_detail',
             kwargs={'pk': self.object.profile.pk}
         )
 
@@ -183,7 +183,7 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy(
-            'profil_detail',
+            'profil:profil_detail',
             kwargs={'pk': self.object.profile.pk}
         )
 
@@ -203,7 +203,7 @@ def support_request_answer(request, pk):
             anfrage.save()
 
         # zurück zur Tabelle
-        return redirect('support_request_list')
+        return redirect('profil:support_request_list')
 
     return render(
         request,
@@ -230,7 +230,7 @@ def support_request_create(request):
                 text=message_text
             )
 
-            return redirect('support_user_list')
+            return redirect('profil:support_user_list')
     else:
         form = SupportRequestForm()
 
@@ -288,14 +288,14 @@ def support_close(request, pk):
     anfrage = get_object_or_404(SupportRequest, pk=pk)
     anfrage.status = SupportRequest.STATUS_CLOSED
     anfrage.save()
-    return redirect('support_detail', pk=pk)
+    return redirect('profil:support_detail', pk=pk)
 
 @staff_member_required
 @require_POST
 def support_delete(request, pk):
     anfrage = get_object_or_404(SupportRequest, pk=pk)
     anfrage.delete()
-    return redirect('support_request_list')
+    return redirect('profil:support_request_list')
 
 @staff_member_required
 def admin_dashboard(request):

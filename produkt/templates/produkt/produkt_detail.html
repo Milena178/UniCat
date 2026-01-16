@@ -126,7 +126,7 @@
     </style>
     {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
         {% if not produkt.gemeldet %}
-            <form action="{% url 'produkt_report' produkt.pk %}" method="post" style="display:inline;">
+            <form action="{% url 'produkt:produkt_report' produkt.pk %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-warning btn-sm">Produkt melden</button>
             </form>

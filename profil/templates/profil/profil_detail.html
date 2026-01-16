@@ -48,7 +48,7 @@
 {# ===== Bewertung schreiben (nur andere User) ===== #}
 {% if user.is_authenticated and user != profile.user %}
     <p>
-        <a href="{% url 'review_add' profile.pk %}" class="btn btn-success">
+        <a href="{% url 'profil:review_add' profile.pk %}" class="btn btn-success">
             Bewertung schreiben
         </a>
     </p>
@@ -57,35 +57,34 @@
 {% for review in reviews %}
     <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
         <strong>{{ review.author.username }}</strong> – {{ review.sterne }} Sterne
-    <p>
-        {% for i in "12345" %}
-            {% if forloop.counter <= review.sterne %}
-                ★
-            {% else %}
+        <p>
+            {% for i in "12345" %}
+                {% if forloop.counter <= review.sterne %}
+                    ★
+                {% else %}
                     ☆
-            {% endif %}
-        {% endfor %}
-    </p>
+                {% endif %}
+            {% endfor %}
+        </p>
         <p>{{ review.text }}</p>
 
-
         <p>
-            👍 <a href="{% url 'review_vote' review.pk 'up' %}">{{ review.get_upvotes_count }}</a>
-            👎 <a href="{% url 'review_vote' review.pk 'down' %}">{{ review.get_downvotes_count }}</a>
+            👍 <a href="{% url 'profil:review_vote' review.pk 'up' %}">{{ review.get_upvotes_count }}</a>
+            👎 <a href="{% url 'profil:review_vote' review.pk 'down' %}">{{ review.get_downvotes_count }}</a>
         </p>
 
         {# ===== Review bearbeiten / löschen (nur Autor) ===== #}
         {% if user == review.author %}
             <p>
-                <a href="{% url 'review_edit' review.pk %}">Bearbeiten</a> |
-                <a href="{% url 'review_delete' review.pk %}">Löschen</a>
+                <a href="{% url 'profil:review_edit' review.pk %}">Bearbeiten</a> |
+                <a href="{% url 'profil:review_delete' review.pk %}">Löschen</a>
             </p>
         {% endif %}
 
         {# ===== Review melden (alle anderen angemeldeten Nutzer) ===== #}
         {% if user.is_authenticated and user != review.author %}
             {% if not review.gemeldet %}
-                <form action="{% url 'review_report' review.pk %}" method="post" style="display:inline;">
+                <form action="{% url 'profil:review_report' review.pk %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-warning btn-sm">Melden</button>
                 </form>

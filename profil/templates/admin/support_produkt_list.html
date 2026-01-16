@@ -27,12 +27,12 @@
                     <td>{{ produkt.erstelltAm }}</td>
                     <td>
                         {# Produkt wieder freigeben #}
-                        <form action="{% url 'cs_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
+                        <form action="{% url 'produkt:support_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-success btn-sm">Freigeben</button>
                         </form>
                         {# Produkt löschen #}
-                        <form action="{% url 'cs_produkt_delete' produkt.pk %}" method="post" style="display:inline;">
+                        <form action="{% url 'produkt:support_produkt_delete' produkt.pk %}" method="post" style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
                         </form>
@@ -46,7 +46,7 @@
 {% endif %}
 
 <p>
-    <a href="{% url 'admin_dashboard' %}">Zurück zum Admin Dashboard</a>
+    <a href="{% url 'profil:admin_dashboard' %}">Zurück zum Admin Dashboard</a>
 </p>
 
 {% endblock %}

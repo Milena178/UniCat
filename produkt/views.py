@@ -65,7 +65,7 @@ def produkt_detail(request, pk):
                     error = f"Gebot muss höher als {mindest} € sein."
                 else:
                     gebot.save()
-                    return redirect("produkt_detail", pk=produkt.pk)
+                    return redirect("produkt:produkt_detail", pk=produkt.pk)
         else:
             gebot_form = GebotForm()
 
@@ -170,7 +170,7 @@ def meine_produkte(request):
         })
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        redirect("profil_edit", pk=request.user.profile.pk)
+        redirect("profil:profil_edit", pk=request.user.profile.pk)
 
 @login_required
 def produkt_report(request, pk):
@@ -180,14 +180,7 @@ def produkt_report(request, pk):
         produkt.gemeldet = True
         produkt.save()
 
-    return redirect('produkt_detail', pk=produkt.pk)
-
-@staff_member_required
-def support_produkt_list(request):
-    produkte = Produkt.objects.filter(gemeldet=True).order_by('-erstelltAm')
-    return render(request, "admin/support_produkt_list.html", {
-        "produkte": produkte
-    })
+    return redirect('produkt:produkt_detail', pk=produkt.pk)
 
 @staff_member_required
 def support_produkt_list(request):
@@ -202,11 +195,11 @@ def support_produkt_unreport(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
     produkt.gemeldet = False
     produkt.save()
-    return redirect('support_produkt_list')
+    return redirect('produkt:support_produkt_list')
 
 @staff_member_required
 @require_POST
 def support_produkt_delete(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
     produkt.delete()
-    return redirect('support_produkt_list')
+    return redirect('produkt:support_produkt_list')

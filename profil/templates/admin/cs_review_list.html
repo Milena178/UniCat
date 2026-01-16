@@ -18,7 +18,7 @@
         <tr>
             <td>{{ review.text|truncatechars:200 }} ({{ review.sterne }} Sterne)</td>
             <td>{{ review.author.username }}</td>
-            <td><a href="{% url 'profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
+            <td><a href="{% url 'profil:profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
             <td>{{ review.erstellt_am }}</td>
             <td>
                 <a href="{% url 'profil:cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
