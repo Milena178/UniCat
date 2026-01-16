@@ -44,7 +44,7 @@
 
 {% if user.is_staff and anfrage.status != 'closed' %}
 <hr>
-<form method="post" action="{% url 'support_close' anfrage.pk %}">
+<form method="post" action="{% url 'profil:support_close' anfrage.pk %}">
     {% csrf_token %}
     <button type="submit"
             style="background:#c62828;color:white;">
@@ -57,11 +57,11 @@
 
 <p>
     {% if user.is_staff %}
-        <a href="{% url 'support_request_list' %}">
+        <a href="{% url 'profil:support_request_list' %}">
             ← Zurück zum Postfach
         </a>
     {% else %}
-        <a href="{% url 'support_user_list' %}">
+        <a href="{% url 'profil:support_user_list' %}">
             ← Zurück zum Postfach
         </a>
     {% endif %}

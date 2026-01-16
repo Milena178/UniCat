@@ -20,7 +20,7 @@
         <td>#{{ anfrage.id }}</td>
         <td>{{ anfrage.user.username }}</td>
         <td>
-            <a href="{% url 'support_detail' anfrage.pk %}">
+            <a href="{% url 'profil:support_detail' anfrage.pk %}">
                 {{ anfrage.subject }}
             </a>
         </td>
@@ -28,13 +28,13 @@
             {{ anfrage.get_status_display }}
         </td>
         <td>
-            <a href="{% url 'support_detail' anfrage.pk %}">
+            <a href="{% url 'profil:support_detail' anfrage.pk %}">
                 Öffnen
             </a>
 
             <form
                 method="post"
-                action="{% url 'support_delete' anfrage.pk %}"
+                action="{% url 'profil:support_delete' anfrage.pk %}"
                 style="display:inline;"
             >
                 {% csrf_token %}
@@ -52,6 +52,6 @@
 {% endif %}
 
 <p>
-    <a href="{% url 'admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
+    <a href="{% url 'profil:admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
 </p>
 {% endblock %}

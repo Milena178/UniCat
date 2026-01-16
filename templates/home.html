@@ -7,15 +7,13 @@
 
 {% if user.is_authenticated %}
     <p>Willkommen, {{ user.username }}!</p>
+{% else %}
+    <p>Du bist derzeit nicht eingeloggt. Um Produkte zu ersteigern musst du angemeldet sein.</p>
+{% endif %}
 
-    {# Logout #}
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-    {% if user.profile %}
-        <a href="{% url 'profil:profil_detail' user.profile.pk %}">Profil ansehen</a>
-    {% endif %}
+{% include 'produkt/produkt_liste.html' %}
+
+{% if user.is_authenticated %}
 
     {% if not user.is_staff %}
         <hr>
@@ -39,13 +37,6 @@
             </a>
         </p>
     {% endif %}
-
-{% else %}
-    <p>Du bist nicht eingeloggt.</p>
-    <ul>
-        <li><a href="{% url 'login' %}">Login</a></li>
-        <li><a href="{% url 'signup' %}">Registrieren</a></li>
-    </ul>
 {% endif %}
 
 {% endblock %}

@@ -4,7 +4,7 @@
     <nav>
         <div class="logo">
             <a href="{% url 'home' %}">
-                <img src="{% static 'images/logo.png' %}" alt="UniCat Logo">
+                <img src="{% static 'images/logo.png' %}" alt="UniCat Logo" style="width: 7em; height: auto;">
             </a>
         </div>
 
@@ -21,7 +21,7 @@
                         {% if user.profile.avatar %}
                             <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}">
                         {% else %}
-                            <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild">
+                            <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild" style="width: 5em; height: auto;">
                         {% endif %}
                     </div>
                     <div class="user-info">
@@ -35,7 +35,7 @@
             {% else %}
                 <div class="guest-profile">
                     <div class="profile-image">
-                        <img src="{% static 'images/default-avatar.png' %}" alt="Gast">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Gast" style="width: 5em; height: auto;">
                     </div>
                     <div class="auth-links">
                         <a href="{% url 'login' %}" class="login-btn">Login</a>

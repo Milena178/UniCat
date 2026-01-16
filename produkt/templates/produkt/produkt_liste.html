@@ -1,5 +1,3 @@
-{% extends "base.html" %}
-
 {% block title %}Alle Produkte{% endblock %}
 
 {% block content %}
@@ -7,8 +5,8 @@
 
     {% if user.is_authenticated %}
         <div style="margin: 20px;">
-            <a href="{% url 'produkt_erstellen' %}" class="btn">Neues Produkt erstellen</a>
-            <a href="{% url 'meine_produkte' %}" class="btn">Meine Produkte</a>
+            <a href="{% url 'produkt:produkt_erstellen' %}" class="btn">Neues Produkt erstellen</a>
+            <a href="{% url 'produkt:meine_produkte' %}" class="btn">Meine Produkte</a>
         </div>
     {% endif %}
 
@@ -50,7 +48,7 @@
 
             <div class="filter-buttons">
                 <button type="submit" class="btn btn-primary">Filter anwenden</button>
-                <a href="{% url 'produkt_liste' %}" class="btn btn-secondary">Zurücksetzen</a>
+                <a href="{% url 'produkt:produkt_liste' %}" class="btn btn-secondary">Zurücksetzen</a>
             </div>
         </form>
     </div>
@@ -58,7 +56,7 @@
     <div class="product-grid">
         {% for produkt in produkte %}
         <div class="product-card">
-            <a href="{% url 'produkt_detail' produkt.pk %}">
+            <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
                 {% if produkt.bild %}
                     <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
                 {% else %}

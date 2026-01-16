@@ -21,8 +21,8 @@
             <td><a href="{% url 'profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
             <td>{{ review.erstellt_am }}</td>
             <td>
-                <a href="{% url 'cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
-                <a href="{% url 'cs_review_unreport' review.pk %}" class="btn btn-secondary btn-sm">Meldung zurücksetzen</a>
+                <a href="{% url 'profil:cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
+                <a href="{% url 'profil:cs_review_unreport' review.pk %}" class="btn btn-secondary btn-sm">Meldung zurücksetzen</a>
             </td>
         </tr>
         {% endfor %}
@@ -32,7 +32,7 @@
 {% endif %}
 
     <p>
-        <a href="{% url 'admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
+        <a href="{% url 'profil:admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
     </p>
 
 {% endblock %}

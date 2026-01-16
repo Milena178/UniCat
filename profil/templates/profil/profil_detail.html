@@ -20,7 +20,7 @@
 {# ===== Profil bearbeiten Button nur für Profilbesitzer ===== #}
 {% if user.is_authenticated and user == profile.user %}
     <p>
-        <a href="{% url 'profil_edit' profile.pk %}" class="btn btn-primary">
+        <a href="{% url 'profil:profil_edit' profile.pk %}" class="btn btn-primary">
             Profil bearbeiten
         </a>
     </p>

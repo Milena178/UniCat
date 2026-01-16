@@ -16,7 +16,7 @@
             <small>Status: {{ anfrage.get_status_display }}</small>
 
             <div style="margin-top:8px;">
-                <a href="{% url 'support_detail' anfrage.pk %}">
+                <a href="{% url 'profil:support_detail' anfrage.pk %}">
                     Öffnen
                 </a>
             </div>
@@ -30,7 +30,7 @@
 <hr>
 
 <p>
-    <a href="{% url 'support_create' %}">
+    <a href="{% url 'profil:support_create' %}">
         ➕ Neue Anfrage erstellen
     </a>
 </p>

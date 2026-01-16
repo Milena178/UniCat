@@ -15,7 +15,7 @@
 
         {% for gebot in gebote %}
             <tr>
-                <td><a href="{% url 'produkt_detail' gebot.produkt.pk %}">{{ gebot.produkt.name }}</a></td>
+                <td><a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">{{ gebot.produkt.name }}</a></td>
                 <td>{{ gebot.biethoehe }} €</td>
                 <td>
                     {% if gebot.produkt.auktion_aktiv %}
