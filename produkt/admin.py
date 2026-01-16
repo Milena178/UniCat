@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django.utils import timezone
 from .models import Produkt, Tag
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -17,26 +17,51 @@ class TagAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
 
+
 @admin.register(Produkt)
 class ProduktAdmin(admin.ModelAdmin):
-    list_display = ['name', 'verkaeufer_profil', 'mindestpreis', 'anzahlListungen', 'erstelltAm', 'istArchiviert', "auktion_status"]
+    list_display = ['name', 'verkaeufer_profil', 'mindestpreis', 'anzahlListungen', 'erstelltAm', 'istArchiviert',
+                    "auktion_status"]
     list_filter = ['istArchiviert', 'tags', 'erstelltAm']
     search_fields = ['name', 'beschreibung', 'verkaeufer_profil__username']
-    readonly_fields = ["anzahlListungen", 'erstelltAm', "auktion_ende"]
+    readonly_fields = ["anzahlListungen", 'erstelltAm', "auktion_ende_display", "verbleibende_zeit"]
     filter_horizontal = ['tags']
     actions = ["produkte_archivieren"]
 
+    fieldsets = (
+        ('Grunddaten', {
+            'fields': ('name', 'beschreibung', 'bild', 'verkaeufer_profil')
+        }),
+        ('Auktionsdetails', {
+            'fields': ('mindestpreis', 'auktionsdauer', 'tags'),
+            'description': 'Auktionsdauer im Format: Tage HH:MM:SS (z.B. "3 00:00:00" für 3 Tage)'
+        }),
+        ('Status', {
+            'fields': ('istArchiviert', 'anzahlListungen', 'erstelltAm', 'auktion_ende_display', 'verbleibende_zeit')
+        }),
+    )
+
     @admin.display(description="Auktion", boolean=True)
     def auktion_status(self, obj):
+        # Prüfen ob obj bereits gespeichert wurde
+        if not obj.pk or not obj.erstelltAm or not obj.auktionsdauer:
+            return None
         return obj.auktion_aktiv()
 
     @admin.display(description="Auktionsende")
-    def auktion_ende(self, obj):
+    def auktion_ende_display(self, obj):
+        # Nur anzeigen wenn Objekt existiert
+        if not obj.pk or not obj.erstelltAm or not obj.auktionsdauer:
+            return "—"
         return obj.auktion_ende()
 
     @admin.display(description="Verbleibende Zeit", ordering='erstelltAm')
     def verbleibende_zeit(self, obj):
         """Zeigt die verbleibende Zeit neutral an"""
+        # Prüfen ob alle benötigten Felder vorhanden sind
+        if not obj.pk or not obj.erstelltAm or not obj.auktionsdauer:
+            return "—"
+
         if obj.istArchiviert:
             return "Archiviert"
 
@@ -61,5 +86,5 @@ class ProduktAdmin(admin.ModelAdmin):
 
     @admin.action(description="Ausgewählte Produkte archivieren")
     def produkte_archivieren(self, request, queryset):
-        count = queryset.update(ist_archiviert=True)
+        count = queryset.update(istArchiviert=True)
         self.message_user(request, f"{count} Produkt(e) wurden archiviert.")

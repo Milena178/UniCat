@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages
+from django.db.models import Q, Avg, Count
+from django.utils import timezone
+from datetime import timedelta
 from gebot.models import Gebot
 from gebot.views import GebotForm
 from .models import Produkt
-from .forms import ProduktForm
+from .forms import ProduktForm, ProduktFilterForm
 from .utils import generate_produkt_pdf
-from profil.views import ProfileCreateView
+from profil.models import Review
 
 #  Produkt anlegen
 @login_required
@@ -87,14 +90,67 @@ def produkt_pdf_download(request, pk):
 def produkt_liste(request):
     produkte = Produkt.objects.filter(istArchiviert=False).select_related('verkaeufer_profil')
 
-    # Optional: Filter nach Tags
-    tag_filter = request.GET.get('tag')
-    if tag_filter:
-        produkte = produkte.filter(tags__name=tag_filter)
+    produkte = produkte.annotate(
+        durchschnitt_bewertung=Avg('verkaeufer_profil__reviews__sterne')
+    )
+
+    form = ProduktFilterForm(request.GET or None)
+
+    if form.is_valid():
+        # Textsuche im Produktnamen
+        suche = form.cleaned_data.get('suche')
+        if suche:
+            produkte = produkte.filter(
+                Q(name__icontains=suche) | Q(beschreibung__icontains=suche)
+            )
+
+        # Tag-Filter
+        tags = form.cleaned_data.get('tags')
+        if tags:
+            produkte = produkte.filter(tags__in=tags).distinct()
+
+        # Bewertungsfilter
+        min_bewertung = form.cleaned_data.get('min_bewertung')
+        if min_bewertung:
+            min_sterne = int(min_bewertung)
+            produkte = produkte.filter(durchschnitt_bewertung__gte=min_sterne)
+
+        # "Endet bald" Filter (nächste 3 Stunden)
+        endet_bald = form.cleaned_data.get('endet_bald')
+        if endet_bald:
+            jetzt = timezone.now()
+            grenze = jetzt + timedelta(hours=3)
+
+            # Filtere Produkte, deren Auktionsende in den nächsten 3 Stunden liegt
+            gefilterte_ids = []
+            for p in produkte:
+                ende = p.auktion_ende()
+                if jetzt < ende <= grenze:
+                    gefilterte_ids.append(p.pk)
+
+            produkte = produkte.filter(pk__in=gefilterte_ids)
+
+        # Sortierung
+        sortierung = form.cleaned_data.get('sortierung')
+        if sortierung == 'neueste':
+            produkte = produkte.order_by('-erstelltAm')
+        elif sortierung == 'aelteste':
+            produkte = produkte.order_by('erstelltAm')
+        elif sortierung == 'preis_aufsteigend':
+            produkte = produkte.order_by('mindestpreis')
+        elif sortierung == 'preis_absteigend':
+            produkte = produkte.order_by('-mindestpreis')
+        elif sortierung == 'endet_bald':
+            # Für "Endet bald" sortieren wir manuell
+            produkte_mit_ende = []
+            for p in produkte:
+                produkte_mit_ende.append((p, p.auktion_ende()))
+            produkte_mit_ende.sort(key=lambda x: x[1])
+            produkte = [p[0] for p in produkte_mit_ende]
 
     return render(request, "produkt/produkt_liste.html", {
         "produkte": produkte,
-        "tag_filter": tag_filter
+        "filter_form": form,
     })
 
 @login_required

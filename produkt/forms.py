@@ -94,3 +94,53 @@ class ProduktForm(forms.ModelForm):
             self.save_m2m()  # Tags speichern
 
         return instance
+
+
+class ProduktFilterForm(forms.Form):
+    BEWERTUNG_CHOICES = [
+        ('', 'Alle Bewertungen'),
+        ('5', '5 Sterne'),
+        ('4', '4+ Sterne'),
+        ('3', '3+ Sterne'),
+    ]
+
+    SORTIERUNG_CHOICES = [
+        ('neueste', 'Neueste zuerst'),
+        ('aelteste', 'Älteste zuerst'),
+        ('preis_aufsteigend', 'Preis aufsteigend'),
+        ('preis_absteigend', 'Preis absteigend'),
+        ('endet_bald', 'Endet bald'),
+    ]
+
+    suche = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Produktname durchsuchen...',
+            'class': 'search-input'
+        })
+    )
+
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Tags'
+    )
+
+    min_bewertung = forms.ChoiceField(
+        choices=BEWERTUNG_CHOICES,
+        required=False,
+        label='Mindestbewertung Verkäufer'
+    )
+
+    endet_bald = forms.BooleanField(
+        required=False,
+        label='Endet in den nächsten 3 Stunden'
+    )
+
+    sortierung = forms.ChoiceField(
+        choices=SORTIERUNG_CHOICES,
+        required=False,
+        initial='neueste',
+        label='Sortierung'
+    )

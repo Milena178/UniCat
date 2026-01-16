@@ -12,10 +12,53 @@
         </div>
     {% endif %}
 
+        <!-- Filter und Suchbereich -->
+    <div class="filter-section">
+        <form method="get" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="{{ filter_form.suche.id_for_label }}">Suche:</label>
+                    {{ filter_form.suche }}
+                </div>
+
+                <div class="filter-group">
+                    <label for="{{ filter_form.min_bewertung.id_for_label }}">{{ filter_form.min_bewertung.label }}:</label>
+                    {{ filter_form.min_bewertung }}
+                </div>
+
+                <div class="filter-group">
+                    <label for="{{ filter_form.sortierung.id_for_label }}">{{ filter_form.sortierung.label }}:</label>
+                    {{ filter_form.sortierung }}
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-group checkbox-group">
+                    {{ filter_form.endet_bald }}
+                    <label for="{{ filter_form.endet_bald.id_for_label }}">{{ filter_form.endet_bald.label }}</label>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-group tags-group">
+                    <label>{{ filter_form.tags.label }}:</label>
+                    <div class="tags-checkboxes">
+                        {{ filter_form.tags }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button type="submit" class="btn btn-primary">Filter anwenden</button>
+                <a href="{% url 'produkt_liste' %}" class="btn btn-secondary">Zurücksetzen</a>
+            </div>
+        </form>
+    </div>
+
     <div class="product-grid">
         {% for produkt in produkte %}
         <div class="product-card">
-            <a href="{% url 'product_detail' produkt.pk %}">
+            <a href="{% url 'produkt_detail' produkt.pk %}">
                 {% if produkt.bild %}
                     <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
                 {% else %}
@@ -25,7 +68,25 @@
                 <h3>{{ produkt.name }}</h3>
                 <p><strong>{{ produkt.mindestpreis }} €</strong></p>
                 <p>Von: {{ produkt.verkaeufer_profil.username }}</p>
+
+                <!-- Verkäufer-Bewertung anzeigen -->
+                {% if produkt.durchschnitt_bewertung %}
+                    <p class="seller-rating">
+                        ⭐ {{ produkt.durchschnitt_bewertung|floatformat:1 }} Sterne
+                    </p>
+                {% else %}
+                    <p class="seller-rating">Noch keine Bewertungen</p>
+                {% endif %}
+
                 <p><small>Endet: {{ produkt.auktion_endet|date:"d.m.Y H:i" }}</small></p>
+
+                {% if produkt.auktion_aktiv %}
+                    {% with stunden_bis_ende=produkt.auktion_ende|timeuntil %}
+                        {% if "Stunde" in stunden_bis_ende or "Minute" in stunden_bis_ende %}
+                            <p class="urgent">🔥 Endet bald!</p>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
 
                 {% if produkt.tags.exists %}
                     <div class="tags">
@@ -37,7 +98,7 @@
             </a>
         </div>
         {% empty %}
-        <p>Noch keine Produkte vorhanden.</p>
+        <p>Keine Produkte gefunden, die Ihren Filterkriterien entsprechen.</p>
         {% endfor %}
     </div>
 {% endblock %}
