@@ -13,7 +13,14 @@
 
 <p>{{ profile.bio }}</p>
 
-<p>Adresse: {{ profile.street }} {{ profile.house_number }}, {{ profile.zip_code }} {{ profile.city }}, {{ profile.country }}</p>
+{# ===== Private Daten ===== #}
+{% if user.is_authenticated and user == profile.user %}
+    <h2>Das sind deine privaten Daten. Niemand außer dir kann diese Daten hier sehen.</h2>
+    <strong>Adresse:</strong>
+    <p>{{ profile.street }} {{ profile.house_number }}</p>
+    <p>{{ profile.zip_code }} {{ profile.city }}</p>
+    <p>{{ profile.country }}</p>
+{% endif %}
 
 <hr>
 
@@ -32,13 +39,68 @@
 
 <hr>
 
-{# ===== Profil bearbeiten Button nur für Profilbesitzer ===== #}
+{# ===== Profil bearbeiten und Produkte verwalten Button nur für Profilbesitzer ===== #}
 {% if user.is_authenticated and user == profile.user %}
     <p>
         <a href="{% url 'profil:profil_edit' profile.pk %}" class="btn btn-primary">
             Profil bearbeiten
         </a>
+        <a href="{% url 'produkt:meine_produkte' %}" class="btn btn-primary">
+            Meine Produkte verwalten
+        </a>
     </p>
+{% endif %}
+
+<hr>
+
+{# ===== Produkte des Nutzers (nur bei fremden Profilen) ===== #}
+{% if user != profile.user %}
+    <h2>Aktuelle Angebote von {{ profile.username }}</h2>
+
+    <div class="product-grid">
+        {% for produkt in user_produkte %}
+        <div class="product-card">
+            <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
+                {% if produkt.bild %}
+                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                {% else %}
+                    <div class="no-image">Kein Bild</div>
+                {% endif %}
+
+                <h3>{{ produkt.name }}</h3>
+                <p><strong>Mindestpreis: {{ produkt.mindestpreis }} €</strong></p>
+
+                {% if produkt.hoechstes_gebot %}
+                    <p><strong>Aktuelles Höchstgebot: {{ produkt.hoechstes_gebot }} €</strong></p>
+                {% else %}
+                    <p>Noch keine Gebote</p>
+                {% endif %}
+
+                <p><small>Endet: {{ produkt.auktion_endet|date:"d.m.Y H:i" }}</small></p>
+
+                {% if produkt.auktion_aktiv %}
+                    {% with stunden_bis_ende=produkt.auktion_ende|timeuntil %}
+                        {% if "Stunde" in stunden_bis_ende or "Minute" in stunden_bis_ende %}
+                            <p class="urgent">🔥 Endet bald!</p>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+
+                {% if produkt.tags.exists %}
+                    <div class="tags">
+                        {% for tag in produkt.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </a>
+        </div>
+        {% empty %}
+        <p>{{ profile.username }} hat derzeit keine aktiven Angebote.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
 {% endif %}
 
 <hr>

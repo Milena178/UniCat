@@ -1,64 +1,183 @@
 {% extends "base.html" %}
 {% load produkt_tags %}
-
 {% block title %}Meine Produkte{% endblock %}
-
 {% block content %}
     <h1>Meine Produkte</h1>
+    <a href="{% url 'produkt:produkt_erstellen' %}" class="btn-primary">Neues Produkt erstellen</a>
 
-    <a href="{% url 'produkt:produkt_erstellen' %}">Neues Produkt erstellen</a>
-    <a href="{% url 'produkt:produkt_liste' %}">Alle Produkte</a>
+    <!-- Filter-Links -->
+    <div class="filter-tabs">
+        <a href="{% url 'produkt:meine_produkte' %}" class="{% if not zeige_archiviert %}active{% endif %}">
+            Aktive & Unverkaufte Produkte
+        </a>
+        <a href="{% url 'produkt:meine_produkte' %}?archiviert=true" class="{% if zeige_archiviert %}active{% endif %}">
+            Archivierte Produkte
+        </a>
+    </div>
 
-    {% for produkt in produkte %}
-        <div class="product-item">
-            <h3><a href="{% url 'produkt:produkt_detail' produkt.pk %}">{{ produkt.name }}</a></h3>
-            <p>Mindestpreis: {{ produkt.mindestpreis }} €</p>
-            <p>Listungen: {{ produkt.anzahlListungen }}/3</p>
-            <p>
-                {% if produkt.auktion_aktiv %}
+    {% if not zeige_archiviert %}
+        <!-- AKTIVE PRODUKTE -->
+        <h2>Aktive Produkte</h2>
+        {% for produkt in aktive_produkte %}
+            <div class="product-item">
+                <h3><a href="{% url 'produkt:produkt_detail' produkt.pk %}">{{ produkt.name }}</a></h3>
+                {% if produkt.bild %}
+                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                {% else %}
+                    <div class="no-image">Kein Bild</div>
+                {% endif %}
+                <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
+                <p>
+                    <strong>Aktuelles Höchstgebot:</strong>
+                    {% if produkt.hoechstgebot %}
+                        {{ produkt.hoechstgebot.biethoehe }} €
+                    {% else %}
+                        Noch keine Gebote
+                    {% endif %}
+                </p>
+                <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
+                {% if produkt.tags.exists %}
+                    <div class="tags">
+                        {% for tag in produkt.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <p>
                     <strong>⏱️ Verbleibend:</strong>
                     <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
+                </p>
+            </div>
+        {% empty %}
+            <p>Sie haben keine aktiven Produkte.</p>
+        {% endfor %}
+
+        <!-- UNVERKAUFTE PRODUKTE (Auktion beendet, aber nicht verkauft) -->
+        {% if unverkaufte_produkte %}
+            <h2>Unverkaufte Produkte (Auktion beendet)</h2>
+            {% for produkt in unverkaufte_produkte %}
+                <div class="product-item unverkauft">
+                    <h3>{{ produkt.name }}</h3>
+                    {% if produkt.bild %}
+                        <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                    {% else %}
+                        <div class="no-image">Kein Bild</div>
+                    {% endif %}
+                    <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
+                    <p>
+                        <strong>Höchstes Gebot:</strong>
+                        {% if produkt.hoechstgebot %}
+                            {{ produkt.hoechstgebot.biethoehe }} € (nicht bestätigt)
+                        {% else %}
+                            Keine Gebote
+                        {% endif %}
+                    </p>
+                    <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
+                    <p><strong>Status:</strong> Auktion beendet ohne Verkauf</p>
+
+                    <div class="product-actions">
+                        {% if produkt.kann_relistet_werden %}
+                            <a href="{% url 'produkt:produkt_bearbeiten' produkt.pk %}" class="btn-primary">
+                                🔄 Auktion erneut einstellen ({{ produkt.anzahlListungen }}/3)
+                            </a>
+                        {% else %}
+                            <p class="warning">⚠️ Maximale Anzahl Listungen erreicht (3/3)</p>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'produkt:produkt_archivieren' produkt.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-secondary" onclick="return confirm('Produkt wirklich archivieren?')">
+                                📦 Produkt archivieren
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- VERKAUFTE PRODUKTE -->
+        {% if verkaufte_produkte %}
+            <h2>Verkaufte Produkte</h2>
+            <div class="verkaufte-produkte">
+                {% for verkauf in verkaufte_produkte %}
+                    <div class="verkauf-card">
+                        {% if verkauf.produkt.bild %}
+                            <img src="{{ verkauf.produkt.bild.url }}" alt="{{ verkauf.produkt.name }}" class="product-image-small">
+                        {% endif %}
+                        <h3>{{ verkauf.produkt.name }}</h3>
+                        <p><strong>Verkaufspreis:</strong> {{ verkauf.gebot.biethoehe }} €</p>
+                        <p><strong>Käufer:</strong> {{ verkauf.kaeufer.user.get_full_name|default:verkauf.kaeufer.user.username }}</p>
+
+                        <div class="kaeufer-adresse">
+                            <strong>Lieferadresse:</strong><br>
+                            {% if verkauf.kaeufer.strasse %}
+                                {{ verkauf.kaeufer.strasse }}<br>
+                            {% endif %}
+                            {% if verkauf.kaeufer.plz and verkauf.kaeufer.stadt %}
+                                {{ verkauf.kaeufer.plz }} {{ verkauf.kaeufer.stadt }}<br>
+                            {% endif %}
+                            {% if verkauf.kaeufer.land %}
+                                {{ verkauf.kaeufer.land }}
+                            {% endif %}
+                        </div>
+
+                        <p><strong>Verkauft am:</strong> {{ verkauf.gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- ARCHIVIERTE PRODUKTE -->
+        <h2>Archivierte Produkte</h2>
+        {% for produkt in archivierte_produkte %}
+            <div class="product-item archiviert">
+                <h3>{{ produkt.name }}</h3>
+                {% if produkt.bild %}
+                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
                 {% else %}
-                    <strong>Status:</strong> Beendet
+                    <div class="no-image">Kein Bild</div>
                 {% endif %}
-            </p>
-        </div>
-    {% empty %}
-        <p>Sie haben noch keine Produkte erstellt.</p>
-        <a href="{% url 'produkt:produkt_erstellen' %}">Jetzt Produkt erstellen</a>
-    {% endfor %}
+                <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
+                <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
+                <p><strong>Erstellt am:</strong> {{ produkt.erstelltAm|date:"d.m.Y H:i" }}</p>
+                {% if produkt.tags.exists %}
+                    <div class="tags">
+                        {% for tag in produkt.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Keine archivierten Produkte vorhanden.</p>
+        {% endfor %}
+    {% endif %}
 
     <script>
-        {% for produkt in produkte %}
-        {% if produkt.auktion_aktiv %}
+        {% for produkt in aktive_produkte %}
         (function() {
             const endTime = {% countdown_js produkt %};
             const countdownEl = document.getElementById('countdown-{{ produkt.pk }}');
-
             function update() {
                 const remaining = endTime - Date.now();
                 if (remaining <= 0) {
                     countdownEl.textContent = 'Beendet';
+                    location.reload();
                     return;
                 }
-
                 const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-
                 let text = '';
                 if (days > 0) text += `${days}T `;
                 if (hours > 0 || days > 0) text += `${hours}h `;
                 text += `${minutes}min`;
-
                 countdownEl.textContent = text;
             }
-
             update();
-            setInterval(update, 60000); // Alle 60 Sekunden
+            setInterval(update, 60000);
         })();
-        {% endif %}
         {% endfor %}
     </script>
-
 {% endblock %}

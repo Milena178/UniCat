@@ -6,11 +6,13 @@
 {% block content %}
     <h1>Meine Gebote</h1>
 
+    <h2>Aktive & Beendete Gebote</h2>
     <table>
         <tr>
             <th>Produkt</th>
             <th>Mein Gebot</th>
             <th>Status</th>
+            <th>Aktion</th>
         </tr>
 
         {% for gebot in gebote %}
@@ -32,8 +34,12 @@
                             Überboten 🔴
                         {% endif %}
                     {% else %}
-                        {% if gebot == gebot.produkt.hoechstgebot %}
-                            Gewonnen 🏆
+                        {% if gebot.ist_gewonnen %}
+                            <strong>Gewonnen 🏆</strong>
+                            <form method="post" action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-primary">Gewonnenes Produkt kaufen</button>
+                            </form>
                         {% else %}
                             Verloren ❌
                         {% endif %}
@@ -42,10 +48,28 @@
             </tr>
         {% empty %}
             <tr>
-                <td colspan="4">Du hast noch keine Gebote abgegeben.</td>
+                <td colspan="4">Du hast noch keine aktiven Gebote.</td>
             </tr>
         {% endfor %}
     </table>
+
+    {% if gekaufte_produkte %}
+        <h2>Gekaufte Produkte</h2>
+        <div class="gekaufte-produkte">
+            {% for gebot in gekaufte_produkte %}
+                <div class="produkt-card">
+                    {% if gebot.produkt.bild %}
+                        <img src="{{ gebot.produkt.bild.url }}" alt="{{ gebot.produkt.name }}" class="product-image-small">
+                    {% endif %}
+                    <h3>{{ gebot.produkt.name }}</h3>
+                    <p><strong>Kaufpreis:</strong> {{ gebot.biethoehe }} €</p>
+                    <p><strong>Verkäufer:</strong> {{ gebot.produkt.verkaeufer_profil.user.get_full_name|default:gebot.produkt.verkaeufer_profil.user.username }}</p>
+                    <p><strong>Gekauft am:</strong> {{ gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
+                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">Details ansehen</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <script>
         {% for gebot in gebote %}

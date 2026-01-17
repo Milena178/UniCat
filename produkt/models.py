@@ -88,13 +88,47 @@ class Produkt(models.Model):
     def auktion_beendet(self):
         return timezone.now() >= self.auktion_ende()
 
-    #  Archivierung verkaufter Produkte
-    def archive(self):
-        self.istArchiviert = True
-        self.save(update_fields=["istArchiviert"])
+    #  wurde das Produkt verkauft?
+    def ist_unverkauft(self):
+        """Auktion beendet, aber kein Gebot oder Gebot nicht bestätigt"""
+        if not self.auktion_beendet():
+            return False
 
-    #  Listungscounter erhöht sich nach Auktionsende
+        hoechstgebot = self.hoechstgebot()
+
+        # Kein Gebot abgegeben
+        if not hoechstgebot:
+            return True
+
+        # Gebot vorhanden, aber nicht bestätigt
+        return not hoechstgebot.kauf_bestaetigt
+
+    # Kann das Produkt erneut gelistet werden?
+    def kann_relistet_werden(self):
+        return self.anzahlListungen < 3
+
+    def archive(self):
+        """
+        WICHTIG: Archiviert nur wenn:
+        1. Produkt wurde verkauft (Gebot bestätigt), ODER
+        2. Produkt wurde bereits 3x gelistet und ist immer noch unverkauft
+        """
+        hoechstgebot = self.hoechstgebot()
+
+        # Fall 1: Produkt wurde verkauft
+        if hoechstgebot and hoechstgebot.kauf_bestaetigt:
+            self.istArchiviert = True
+            self.save(update_fields=["istArchiviert"])
+            return
+
+        # Fall 2: Maximale Listungen erreicht UND unverkauft
+        if self.anzahlListungen >= 3:
+            self.istArchiviert = True
+            self.save(update_fields=["istArchiviert"])
+            return
+
     def relisten(self):
+        """Produkt erneut einstellen - NUR Counter erhöhen und Status zurücksetzen"""
         if self.anzahlListungen >= 3:
             return False
 

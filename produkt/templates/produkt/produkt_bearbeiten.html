@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Produkt erneut einstellen{% endblock %}
+
+{% block content %}
+    <h1>Produkt erneut einstellen</h1>
+    
+    <div class="info-box">
+        <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
+        <p>Sie können Ihr Produkt bearbeiten und erneut einstellen.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.beschreibung.label }}</label>
+            {{ form.beschreibung }}
+            {% if form.beschreibung.errors %}
+                <div class="error">{{ form.beschreibung.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.bild.label }}</label>
+            {% if produkt.bild %}
+                <div class="current-image">
+                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" style="max-width: 200px;">
+                    <p>Aktuelles Bild</p>
+                </div>
+            {% endif %}
+            {{ form.bild }}
+            {% if form.bild.errors %}
+                <div class="error">{{ form.bild.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.tags.label }}</label>
+            {{ form.tags }}
+            {% if form.tags.errors %}
+                <div class="error">{{ form.tags.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.mindestpreis.label }}</label>
+            {{ form.mindestpreis }}
+            {% if form.mindestpreis.errors %}
+                <div class="error">{{ form.mindestpreis.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Auktionsdauer</label>
+            <div style="display: flex; gap: 10px;">
+                <div>
+                    {{ form.auktionsdauer_stunden }}
+                    <small>{{ form.auktionsdauer_stunden.help_text }}</small>
+                </div>
+                <div>
+                    {{ form.auktionsdauer_minuten }}
+                    <small>{{ form.auktionsdauer_minuten.help_text }}</small>
+                </div>
+            </div>
+            {% if form.auktionsdauer_stunden.errors %}
+                <div class="error">{{ form.auktionsdauer_stunden.errors }}</div>
+            {% endif %}
+            {% if form.auktionsdauer_minuten.errors %}
+                <div class="error">{{ form.auktionsdauer_minuten.errors }}</div>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Produkt erneut einstellen</button>
+            <a href="{% url 'produkt:meine_produkte' %}" class="btn-secondary">Abbrechen</a>
+        </div>
+    </form>
+{% endblock %}

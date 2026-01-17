@@ -8,9 +8,12 @@
     <h1>{{ produkt.name }}</h1>
 
     <!-- Verkäufer Info -->
-    <strong>Anbieter:</strong> {{ produkt.verkaeufer_profil.username }}
-    {% if produkt.verkaeufer_profil.bio %}
-        <br><small>{{ produkt.verkaeufer_profil.bio|truncatewords:20 }}</small>
+    {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
+        <strong>Anbieter:</strong>
+        <a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">{{ produkt.verkaeufer_profil.username }}</a>
+        {% if produkt.verkaeufer_profil.bio %}
+            <br><small>{{ produkt.verkaeufer_profil.bio|truncatewords:20 }}</small>
+        {% endif %}
     {% endif %}
 
     <!-- Bild anzeigen -->
@@ -47,7 +50,7 @@
             <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
         </p>
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
             <h3>Gebot abgeben</h3>
 
             {% if error %}
@@ -59,6 +62,8 @@
                 {{ gebot_form.as_p }}
                 <button type="submit">Bieten</button>
             </form>
+        {% elif user.is_authenticated and user == produkt.verkaeufer_profil.user %}
+            <p><em>Sie können nicht auf Ihr eigenes Produkt bieten.</em></p>
         {% else %}
             <p>Bitte anmelden, um zu bieten.</p>
         {% endif %}
@@ -75,6 +80,17 @@
             ← Zurück zur Übersicht
         </a>
     </div>
+
+    {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
+        {% if not produkt.gemeldet %}
+            <form action="{% url 'produkt:produkt_report' produkt.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning btn-sm">Produkt melden</button>
+            </form>
+        {% else %}
+            <span style="color:red;">Produkt wurde gemeldet</span>
+        {% endif %}
+    {% endif %}
 
      <script>
         {% if produkt.auktion_aktiv %}
@@ -124,14 +140,5 @@
             color: #2c5aa0;
         }
     </style>
-    {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
-        {% if not produkt.gemeldet %}
-            <form action="{% url 'produkt:produkt_report' produkt.pk %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-warning btn-sm">Produkt melden</button>
-            </form>
-        {% else %}
-            <span style="color:red;">Produkt wurde gemeldet</span>
-        {% endif %}
-    {% endif %}
+
 {% endblock %}

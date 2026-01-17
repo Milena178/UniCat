@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 
 #Signup-View
 from .models import UserProfile
+from produkt.models import Produkt
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
@@ -122,11 +123,23 @@ class ProfileDetailView(DetailView):
         durchschnitt = self.object.reviews.aggregate(avg_sterne=Avg('sterne'))['avg_sterne']
         context['profil_durchschnitt'] = round(durchschnitt or 0, 2)
 
-        # Durchschnitt pro Produkt
-        produkte = self.object.produkte.filter(istArchiviert=False).annotate(
-            durchschnitt_bewertung=Avg('verkaeufer_profil__reviews__sterne')
-        )
-        context['produkte'] = produkte
+        # Aktive Produkte des Profilbesitzers (nur für fremde Profile sichtbar)
+        if self.request.user != self.object.user:
+            from produkt.models import Produkt
+            from django.utils import timezone  # HINZUGEFÜGT
+
+            # Alle nicht-archivierten Produkte holen
+            produkte = Produkt.objects.filter(
+                verkaeufer_profil=self.object,
+                istArchiviert=False
+            )
+
+            # Manuell filtern nach Auktionsende (da auktion_aktiv() eine Methode ist)
+            aktive_produkte = [p for p in produkte if p.auktion_aktiv()]
+
+            context['user_produkte'] = aktive_produkte
+        else:
+            context['user_produkte'] = []
 
         return context
 

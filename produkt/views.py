@@ -24,7 +24,7 @@ def produkt_erstellen(request):
         user_profile = request.user.profile
     except:
         messages.warning(request, "Bitte vervolständigen Sie zuerst Ihr Profil.")
-        return redirect("profil_edit",pk=request.user.profile.pk)
+        return redirect("profil:profil_edit",pk=request.user.profile.pk)
 
     if request.method == "POST":
         form = ProduktForm(request.POST, request.FILES)
@@ -34,7 +34,7 @@ def produkt_erstellen(request):
             produkt.save()
             form.save_m2m()  # Tags speichern
             messages.success(request, "Produkt erfolgreich erstellt!")
-            return redirect("produkt_detail", pk=produkt.pk)
+            return redirect("produkt:produkt_detail", pk=produkt.pk)
     else:
         form = ProduktForm()
 
@@ -45,7 +45,11 @@ def produkt_erstellen(request):
 #  Produkt anzeigen
 def produkt_detail(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
-    produkt.archive() if produkt.auktion_beendet() else None
+
+    # Archiviere nur wenn Auktion beendet ist
+    # Die archive() Methode entscheidet selbst, ob archiviert wird
+    if produkt.auktion_beendet():
+        produkt.archive()
 
     gebot_form = None
     error = None
@@ -90,7 +94,7 @@ def produkt_pdf_download(request, pk):
     return response
 
 
-# Öffentliche Produktliste (wie bei Kleinanzeigen)
+# Öffentliche Produktliste
 def produkt_liste(request):
     produkte = Produkt.objects.filter(istArchiviert=False).select_related('verkaeufer_profil')
 
@@ -157,20 +161,115 @@ def produkt_liste(request):
         "filter_form": form,
     })
 
+
 @login_required
 def meine_produkte(request):
     try:
         user_profile = request.user.profile
-        produkte = Produkt.objects.filter(
-            verkaeufer_profil=user_profile,
-            istArchiviert=False
-        )
+
+        # Filter-Parameter
+        zeige_archiviert = request.GET.get('archiviert', 'false') == 'true'
+
+        if zeige_archiviert:
+            # Archivierte Produkte
+            produkte = Produkt.objects.filter(
+                verkaeufer_profil=user_profile,
+                istArchiviert=True
+            )
+            archivierte_produkte = produkte
+            aktive_produkte = []
+            unverkaufte_produkte = []
+            verkaufte_produkte = []
+        else:
+            # Aktive und unverkaufte Produkte
+            alle_produkte = Produkt.objects.filter(
+                verkaeufer_profil=user_profile,
+                istArchiviert=False
+            )
+
+            aktive_produkte = []
+            unverkaufte_produkte = []
+
+            for produkt in alle_produkte:
+                if produkt.auktion_aktiv():
+                    aktive_produkte.append(produkt)
+                elif produkt.ist_unverkauft():
+                    unverkaufte_produkte.append(produkt)
+
+            # Verkaufte Produkte
+            verkaufte_produkte = []
+            archivierte = Produkt.objects.filter(
+                verkaeufer_profil=user_profile,
+                istArchiviert=True
+            )
+
+            for produkt in archivierte:
+                hoechstgebot = produkt.hoechstgebot()
+                if hoechstgebot and hoechstgebot.kauf_bestaetigt:
+                    verkaufte_produkte.append({
+                        'produkt': produkt,
+                        'gebot': hoechstgebot,
+                        'kaeufer': hoechstgebot.bieter
+                    })
+
+            archivierte_produkte = []
+
         return render(request, "produkt/meine_produkte.html", {
-            "produkte": produkte
+            "aktive_produkte": aktive_produkte,
+            "unverkaufte_produkte": unverkaufte_produkte,
+            "verkaufte_produkte": verkaufte_produkte,
+            "archivierte_produkte": archivierte_produkte,
+            "zeige_archiviert": zeige_archiviert
         })
     except:
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        redirect("profil:profil_edit", pk=request.user.profile.pk)
+        return redirect("profil:profil_edit", pk=request.user.profile.pk)
+
+
+# Produkt bearbeiten für Relisting
+@login_required
+def produkt_bearbeiten(request, pk):
+    produkt = get_object_or_404(Produkt, pk=pk, verkaeufer_profil=request.user.profile)
+
+    # Nur unverkaufte Produkte dürfen bearbeitet werden
+    if not produkt.ist_unverkauft():
+        messages.error(request, "Dieses Produkt kann nicht mehr bearbeitet werden.")
+        return redirect("produkt:meine_produkte")
+
+    if not produkt.kann_relistet_werden():
+        messages.error(request, "Dieses Produkt kann nicht mehr erneut eingestellt werden (maximale Anzahl erreicht).")
+        return redirect("produkt:meine_produkte")
+
+    if request.method == "POST":
+        form = ProduktForm(request.POST, request.FILES, instance=produkt)
+        if form.is_valid():
+            produkt = form.save(commit=False)
+            # Relisting durchführen
+            produkt.relisten()
+            form.save_m2m()  # Tags speichern
+            messages.success(request, f"Produkt erfolgreich erneut eingestellt! (Listung {produkt.anzahlListungen}/3)")
+            return redirect("produkt:produkt_detail", pk=produkt.pk)
+    else:
+        form = ProduktForm(instance=produkt)
+
+    return render(request, "produkt/produkt_bearbeiten.html", {
+        "form": form,
+        "produkt": produkt
+    })
+
+# Produkt endgültig archivieren
+@login_required
+@require_POST
+def produkt_archivieren(request, pk):
+    produkt = get_object_or_404(Produkt, pk=pk, verkaeufer_profil=request.user.profile)
+
+    if not produkt.ist_unverkauft():
+        messages.error(request, "Nur unverkaufte Produkte können archiviert werden.")
+        return redirect("produkt:meine_produkte")
+
+    produkt.archive()
+    messages.success(request, f"Produkt '{produkt.name}' wurde archiviert.")
+    return redirect("produkt:meine_produkte")
 
 @login_required
 def produkt_report(request, pk):

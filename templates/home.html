@@ -3,40 +3,28 @@
 {% block title %}UniCat – Home{% endblock %}
 
 {% block content %}
+
 <h1>UniCat</h1>
 
+<h2>Willkommen auf Unicat, dem Auktionsportal von und für Künstler und Kunstfans</h2>
+<p>Hier bei Unicat kannst du deine Kunstwerke versteigern. Egal ob Hobbykünstler, Profi oder einfach nur kunstbegeistert. Hier bist du Herzlich Willkommen!</p>
+<p>Ersteigere echte Unikate von Kunstschaffenden, mit Liebe produziert.</p>
+
 {% if user.is_authenticated %}
-    <p>Willkommen, {{ user.username }}!</p>
+
+    <h3>Willkommen, {{ user.username }}!</h3>
+
+    <a href="{% url 'produkt:produkt_liste' %}">Entdecke neue Produkte</a>
+
 {% else %}
-    <p>Du bist derzeit nicht eingeloggt. Um Produkte zu ersteigern musst du angemeldet sein.</p>
-{% endif %}
 
-{% include 'produkt/produkt_liste.html' %}
+    <h3>Du bist derzeit nicht eingeloggt. Um Produkte zu ersteigern musst du angemeldet sein.</h3>
 
-{% if user.is_authenticated %}
+    <a href="{% url 'login' %}" class="login-btn">Login</a>
+    <a href="{% url 'profil:signup' %}" class="signup-btn">Registrieren</a>
 
-    {% if not user.is_staff %}
-        <hr>
-        <p>
-            <a href="{% url 'profil:support_user_list' %}">
-                Mein Kundenservice-Postfach
-            </a>
-        </p>
-            <p>
-                <a href="{% url 'profil:support_create' %}" class="btn btn-secondary">
-                    Kundenservice kontaktieren
-                </a>
-            </p>
-    {% endif %}
+    <a href="{% url 'produkt:produkt_liste' %}">Entdecke neue Produkte</a>
 
-    {# Kunden Service #}
-    {% if user.is_staff %}
-        <p>
-            <a href="{% url 'profil:admin_dashboard' %}">
-                Kundenservice Seite
-            </a>
-        </p>
-    {% endif %}
 {% endif %}
 
 {% endblock %}

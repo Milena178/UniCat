@@ -9,38 +9,50 @@
         </div>
 
         <ul class="nav-links">
-            <li><a href="{% url 'produkt:produkt_erstellen' %}">Versteigern</a></li>
+            <li><a href="{% url 'produkt:produkt_liste' %}">Stöbern</a></li>
+            <li><a href="{% url 'produkt:meine_produkte' %}">Versteigern</a></li>
             <li><a href="{% url 'gebot:meine_gebote' %}">Meine Gebote</a></li>
-            <li><a href="{% url 'profil:support_request_list' %}">Kontakt</a></li>
+            <li><a href="{% url 'profil:support_user_list' %}">Kontakt</a></li>
+
+
+            {% if user.is_authenticated and user.is_staff %}
+                <li><a href="{% url 'profil:admin_dashboard' %}">Adminportal</a></li>
+            {% endif %}
         </ul>
 
         <div class="user-section">
             {% if user.is_authenticated %}
                 <div class="user-profile">
-                    <div class="profile-image">
-                        {% if user.profile.avatar %}
-                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}">
-                        {% else %}
-                            <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild" style="width: 5em; height: auto;">
-                        {% endif %}
-                    </div>
+
                     <div class="user-info">
-                        <span class="username">{{ user.username }}</span>
+                        <a href="{% url 'profil:profil_detail' user.pk %}" class="username">{{ user.username }}</a>
                         <form method="post" action="{% url 'logout' %}" class="logout-form">
                             {% csrf_token %}
                             <button type="submit" class="logout-btn">Logout</button>
                         </form>
                     </div>
+
+                    <a href="{% url 'profil:profil_detail' user.pk %}" class="profile-image">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild" style="width: 5em; height: auto;">
+                        {% endif %}
+                    </a>
+
                 </div>
             {% else %}
                 <div class="guest-profile">
-                    <div class="profile-image">
-                        <img src="{% static 'images/default-avatar.png' %}" alt="Gast" style="width: 5em; height: auto;">
-                    </div>
+
                     <div class="auth-links">
                         <a href="{% url 'login' %}" class="login-btn">Login</a>
                         <a href="{% url 'profil:signup' %}" class="signup-btn">Registrieren</a>
                     </div>
+
+                    <div class="profile-image">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Gast" style="width: 5em; height: auto;">
+                    </div>
+
                 </div>
             {% endif %}
         </div>
