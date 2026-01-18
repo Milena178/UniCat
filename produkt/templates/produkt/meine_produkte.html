@@ -107,20 +107,20 @@
                         <h3>{{ verkauf.produkt.name }}</h3>
                         <p><strong>Verkaufspreis:</strong> {{ verkauf.gebot.biethoehe }} €</p>
                         <p><strong>Käufer:</strong> {{ verkauf.kaeufer.user.get_full_name|default:verkauf.kaeufer.user.username }}</p>
-
-                        <div class="kaeufer-adresse">
+                        {% if user.is_authenticated and user == verkauf.produkt.verkaeufer_profil.user %}
+                            <div class="kaeufer-adresse">
                             <strong>Lieferadresse:</strong><br>
-                            {% if verkauf.kaeufer.strasse %}
-                                {{ verkauf.kaeufer.strasse }}<br>
-                            {% endif %}
-                            {% if verkauf.kaeufer.plz and verkauf.kaeufer.stadt %}
-                                {{ verkauf.kaeufer.plz }} {{ verkauf.kaeufer.stadt }}<br>
-                            {% endif %}
-                            {% if verkauf.kaeufer.land %}
-                                {{ verkauf.kaeufer.land }}
-                            {% endif %}
-                        </div>
-
+                            {% if verkauf.kaeufer.street %}
+                                {{ verkauf.kaeufer.street }} {{ verkauf.kaeufer.house_number }}<br>
+                        {% endif %}
+                        {% if verkauf.kaeufer.zip_code and verkauf.kaeufer.city %}
+                            {{ verkauf.kaeufer.zip_code }} {{ verkauf.kaeufer.city }}<br>
+                        {% endif %}
+                        {% if verkauf.kaeufer.country %}
+                            {{ verkauf.kaeufer.country }}
+                        {% endif %}
+                    </div>
+                        {% endif %}
                         <p><strong>Verkauft am:</strong> {{ verkauf.gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
                     </div>
                 {% endfor %}

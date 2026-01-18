@@ -196,21 +196,19 @@ def meine_produkte(request):
                 elif produkt.ist_unverkauft():
                     unverkaufte_produkte.append(produkt)
 
-            # Verkaufte Produkte
-            verkaufte_produkte = []
-            archivierte = Produkt.objects.filter(
-                verkaeufer_profil=user_profile,
-                istArchiviert=True
-            )
+            # Verkaufte Produkte (kauf_bestaetigt=True), egal ob archiviert oder nicht
+            verkaufte_gebote = Gebot.objects.filter(
+                produkt__verkaeufer_profil=user_profile,
+                kauf_bestaetigt=True
+            ).select_related('produkt', 'bieter')
 
-            for produkt in archivierte:
-                hoechstgebot = produkt.hoechstgebot()
-                if hoechstgebot and hoechstgebot.kauf_bestaetigt:
-                    verkaufte_produkte.append({
-                        'produkt': produkt,
-                        'gebot': hoechstgebot,
-                        'kaeufer': hoechstgebot.bieter
-                    })
+            verkaufte_produkte = []
+            for gebot in verkaufte_gebote:
+                verkaufte_produkte.append({
+                    'produkt': gebot.produkt,
+                    'gebot': gebot,
+                    'kaeufer': gebot.bieter
+                })
 
             archivierte_produkte = []
 

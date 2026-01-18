@@ -6,6 +6,7 @@ from django.utils import timezone
 from .models import Gebot
 from produkt.models import Produkt
 from django import forms
+from profil.forms import LieferadresseForm
 
 class GebotForm(forms.ModelForm):
     class Meta:
@@ -81,22 +82,43 @@ def meine_gebote(request):
     })
 
 
-# NEU: Kaufbestätigung
+# Kaufbestätigung
 @login_required
 def kauf_bestaetigen(request, gebot_id):
     gebot = get_object_or_404(Gebot, pk=gebot_id, bieter=request.user.profile)
 
-    # Prüfe ob Gebot gewonnen wurde
+    # Prüfen, ob Gebot gewonnen wurde
     if not gebot.ist_gewonnen():
         messages.error(request, "Dieses Gebot hat nicht gewonnen.")
         return redirect('gebot:meine_gebote')
 
-    # Prüfe ob bereits bestätigt
+    # Prüfen, ob bereits bestätigt
     if gebot.kauf_bestaetigt:
         messages.warning(request, "Kauf bereits bestätigt.")
         return redirect('gebot:meine_gebote')
 
-    # Bestätige Kauf
+    # Prüfen, ob Käufer Adresse hat
+    profile = request.user.profile
+    adresse_vorhanden = all([profile.street, profile.house_number, profile.zip_code, profile.city, profile.country])
+
+    if not adresse_vorhanden:
+        # Formular anzeigen / speichern
+        from profil.forms import LieferadresseForm
+        if request.method == "POST":
+            form = LieferadresseForm(request.POST, instance=profile)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Lieferadresse gespeichert. Du kannst jetzt den Kauf bestätigen.")
+                return redirect('gebot:kauf_bestaetigen', gebot_id=gebot.pk)
+        else:
+            form = LieferadresseForm(instance=profile)
+
+        return render(request, "gebot/lieferadresse_form.html", {
+            "form": form,
+            "produkt": gebot.produkt
+        })
+
+    # Wenn Adresse vorhanden, Kauf bestätigen
     gebot.kauf_bestaetigt = True
     gebot.kauf_bestaetigt_am = timezone.now()
     gebot.save()
