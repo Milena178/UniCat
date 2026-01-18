@@ -26,6 +26,10 @@
                     <td>{{ produkt.verkaeufer_profil.username }}</td>
                     <td>{{ produkt.erstelltAm }}</td>
                     <td>
+                        {# Produkt ansehen #}
+                        <a href="{% url 'produkt:produkt_detail' produkt.pk %}" class="btn btn-info btn-sm" target="_blank">
+                            Produkt Ansehen
+                        </a>
                         {# Produkt wieder freigeben #}
                         <form action="{% url 'produkt:support_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
                             {% csrf_token %}

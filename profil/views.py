@@ -1,15 +1,14 @@
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, get_user_model
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Avg
 
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render
 from django.views import generic
-from django.views.generic import DetailView, UpdateView, DeleteView
+from django.views.generic import UpdateView, DeleteView
 
 from gebot.models import Gebot
 from .models import UserProfile, Review, SupportRequest, SupportMessage
@@ -18,8 +17,35 @@ from .forms import UserProfileForm, ReviewForm, SupportRequestForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 
+# Custom Form für UserCreation
+class CustomUserCreationForm(forms.ModelForm):
+    password1 = forms.CharField(label="Passwort", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Passwort bestätigen", widget=forms.PasswordInput)
+    first_name = forms.CharField(label="Vorname", max_length=30, required=True)
+    last_name = forms.CharField(label="Nachname", max_length=30, required=True)
+    email = forms.EmailField(label="E-Mail", required=True)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name', 'email')
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Die Passwörter stimmen nicht überein.")
+        return password2
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+# SignUp View
 class SignUp(generic.CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
@@ -34,9 +60,8 @@ class SignUp(generic.CreateView):
         # User einloggen
         login(self.request, user)
 
-        # Direkt zur Profil-Bearbeitung
-        return redirect('profil:profil_edit', pk=user.profile.pk)
-
+        # Direkt zur Profil-Bearbeitung weiterleiten
+        return redirect('profil:profil_detail', pk=user.pk)
 #Eigenes Profil bearbeiten
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
@@ -62,18 +87,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 #Profil anzeigen nach der erstellung
     def get_success_url(self):
         # Nach Erstellung auf Profil-Detail weiterleiten
-        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.pk})
-
-#Profil anzeigen
-class ProfileDetailView(DetailView):
-    model = UserProfile
-    template_name = 'profil/profil_detail.html'
-    context_object_name = 'profile'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['reviews'] = self.object.reviews.all()
-        return context
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.user.pk})
 
 #Bewertungen
 @login_required
@@ -120,37 +134,65 @@ def review_create(request, gebot_id):
         'gebot': gebot
     })
 
-#Bewertungen Durchschnitt
+from django.shortcuts import get_object_or_404
+from django.views.generic import DetailView
+from django.db.models import Avg
+from .models import UserProfile
+from django.contrib.auth import get_user_model
+
 class ProfileDetailView(DetailView):
     model = UserProfile
     template_name = 'profil/profil_detail.html'
     context_object_name = 'profile'
 
+    def get_object(self, queryset=None):
+        User = get_user_model()
+        user_id = self.kwargs.get('pk')
+        user = get_object_or_404(User, pk=user_id)
+
+        # Profil holen oder erstellen
+        profile, created = UserProfile.objects.get_or_create(
+            user=user,
+            defaults={'username': user.username}
+        )
+        return profile
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Alle Reviews des Profils
+        # Bewertungen
         context['reviews'] = self.object.reviews.all()
-
-        # Durchschnitt aller Reviews des Profils
         durchschnitt = self.object.reviews.aggregate(avg_sterne=Avg('sterne'))['avg_sterne']
         context['profil_durchschnitt'] = round(durchschnitt or 0, 2)
 
-        # Aktive Produkte des Profilbesitzers (nur für fremde Profile sichtbar)
-        if self.request.user != self.object.user:
-            from produkt.models import Produkt
-            from django.utils import timezone  # HINZUGEFÜGT
+        # Private Daten sichtbar?
+        user = self.request.user
+        context['darf_private_daten_sehen'] = False
 
-            # Alle nicht-archivierten Produkte holen
+        if user.is_authenticated:
+            if user == self.object.user:
+                # Profilbesitzer selbst
+                context['darf_private_daten_sehen'] = True
+            else:
+                # Prüfen: hat dieser Nutzer dem Profil verkauft?
+                from gebot.models import Gebot
+                hat_verkauft = Gebot.objects.filter(
+                    produkt__verkaeufer_profil=self.object,
+                    bieter__user=user,
+                    kauf_bestaetigt=True
+                ).exists()
+                if hat_verkauft:
+                    context['darf_private_daten_sehen'] = True
+
+        # Produkte nur bei fremden Profilen anzeigen
+        if user != self.object.user:
+            from produkt.models import Produkt
             produkte = Produkt.objects.filter(
                 verkaeufer_profil=self.object,
                 istArchiviert=False
             )
-
-            # Manuell filtern nach Auktionsende (da auktion_aktiv() eine Methode ist)
-            aktive_produkte = [p for p in produkte if p.auktion_aktiv()]
-
-            context['user_produkte'] = aktive_produkte
+            # Nur aktive Auktionen
+            context['user_produkte'] = [p for p in produkte if p.auktion_aktiv()]
         else:
             context['user_produkte'] = []
 
