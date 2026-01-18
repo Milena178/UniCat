@@ -4,146 +4,142 @@
 {% block title %}Meine Gebote{% endblock %}
 
 {% block content %}
-    <h1>Meine Gebote</h1>
+<h1>Meine Gebote</h1>
 
-    <h2>Aktive & Beendete Gebote</h2>
-    <table>
+<h2>Aktive & Beendete Gebote</h2>
+<table>
+    <tr>
+        <th>Produkt</th>
+        <th>Mein Gebot</th>
+        <th>Status</th>
+        <th>Aktion</th>
+    </tr>
+
+    {% for gebot in gebote %}
         <tr>
-            <th>Produkt</th>
-            <th>Mein Gebot</th>
-            <th>Status</th>
-            <th>Aktion</th>
+            <td>
+                <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
+                    {{ gebot.produkt.name }}
+                </a>
+            </td>
+            <td>{{ gebot.biethoehe }} €</td>
+            <td>
+                {% if gebot.produkt.auktion_aktiv %}
+                    <span id="countdown-{{ gebot.produkt.pk }}">
+                        {{ gebot.produkt|format_countdown }}
+                    </span>
+                {% else %}
+                    Beendet
+                {% endif %}
+            </td>
+            <td>
+                {% if gebot.produkt.auktion_aktiv %}
+                    {% if gebot == gebot.produkt.hoechstgebot %}
+                        Führend 🟢
+                    {% else %}
+                        Überboten 🔴
+                    {% endif %}
+                {% else %}
+                    {% if gebot.ist_gewonnen %}
+                        <strong>Gewonnen 🏆</strong>
+                        <form method="post"
+                              action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}"
+                              style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary">
+                                Gewonnenes Produkt kaufen
+                            </button>
+                        </form>
+                    {% else %}
+                        Verloren ❌
+                    {% endif %}
+                {% endif %}
+            </td>
         </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4">Du hast noch keine aktiven Gebote.</td>
+        </tr>
+    {% endfor %}
+</table>
 
-        {% for gebot in gebote %}
-            <tr>
-                <td>
-                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
-                        {{ gebot.produkt.name }}
-                    </a>
-                </td>
-                <td>{{ gebot.biethoehe }} €</td>
-                <td>
-                    {% if gebot.produkt.auktion_aktiv %}
-                        <span id="countdown-{{ gebot.produkt.pk }}">
-                            {{ gebot.produkt|format_countdown }}
-                        </span>
-                    {% else %}
-                        Beendet
+{% if gekaufte_produkte %}
+    <h2>Gekaufte Produkte</h2>
+    <div class="gekaufte-produkte">
+        {% for gebot in gekaufte_produkte %}
+            <div class="produkt-card">
+                {% if gebot.produkt.bild %}
+                    <img src="{{ gebot.produkt.bild.url }}"
+                         alt="{{ gebot.produkt.name }}"
+                         class="product-image-small">
+                {% endif %}
+
+                <h3>{{ gebot.produkt.name }}</h3>
+
+                <p><strong>Kaufpreis:</strong> {{ gebot.biethoehe }} €</p>
+
+                <p>
+                    <strong>Verkäufer:</strong>
+                    {{ gebot.produkt.verkaeufer_profil.user.get_full_name|default:gebot.produkt.verkaeufer_profil.user.username }}
+                    {% if gebot.kauf_bestaetigt %}
+                        <br><strong>E-Mail:</strong> {{ gebot.produkt.verkaeufer_profil.user.email }}
                     {% endif %}
-                </td>
-                <td>
-                    {% if gebot.produkt.auktion_aktiv %}
-                        {% if gebot == gebot.produkt.hoechstgebot %}
-                            Führend 🟢
-                        {% else %}
-                            Überboten 🔴
-                        {% endif %}
-                    {% else %}
-                        {% if gebot.ist_gewonnen %}
-                            <strong>Gewonnen 🏆</strong>
-                            <form method="post"
-                                  action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}"
-                                  style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-primary">
-                                    Gewonnenes Produkt kaufen
-                                </button>
-                            </form>
-                        {% else %}
-                            Verloren ❌
-                        {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="4">Du hast noch keine aktiven Gebote.</td>
-            </tr>
-        {% endfor %}
-    </table>
+                </p>
 
-    {% if gekaufte_produkte %}
-        <h2>Gekaufte Produkte</h2>
-        <div class="gekaufte-produkte">
-            {% for gebot in gekaufte_produkte %}
-                <div class="produkt-card">
-                    {% if gebot.produkt.bild %}
-                        <img src="{{ gebot.produkt.bild.url }}"
-                             alt="{{ gebot.produkt.name }}"
-                             class="product-image-small">
-                    {% endif %}
+                <p><strong>Gekauft am:</strong> {{ gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
 
-                    <h3>{{ gebot.produkt.name }}</h3>
-
-                    <p>
-                        <strong>Kaufpreis:</strong>
-                        {{ gebot.biethoehe }} €
-                    </p>
-
-                    <p>
-                        <strong>Verkäufer:</strong>
-                        {{ gebot.produkt.verkaeufer_profil.user.get_full_name|default:gebot.produkt.verkaeufer_profil.user.username }}
-                    </p>
-
-                    <p>
-                        <strong>Gekauft am:</strong>
-                        {{ gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}
-                    </p>
-
-                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
-                        Details ansehen
-                    </a>
+                <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
+                    Details ansehen
+                </a>
 
                 {# Bewertung #}
                 {% if gebot.produkt.verkaeufer_profil.user != request.user %}
                     {% if not gebot.review %}
-                        <a href="{% url 'profil:review_create' gebot.pk %}"
-                            class="btn-primary">
+                        <a href="{% url 'profil:review_create' gebot.pk %}" class="btn-primary">
                             Verkäufer bewerten
                         </a>
-                            {% else %}
-                                <small>✔ Verkäufer bereits bewertet</small>
-                        {% endif %}
+                    {% else %}
+                        <small>✔ Verkäufer bereits bewertet</small>
                     {% endif %}
+                {% endif %}
 
-                </div>
-                <hr>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <script>
-        {% for gebot in gebote %}
-        {% if gebot.produkt.auktion_aktiv %}
-        (function() {
-            const endTime = {% countdown_js gebot.produkt %};
-            const countdownEl = document.getElementById('countdown-{{ gebot.produkt.pk }}');
-
-            function update() {
-                const remaining = endTime - Date.now();
-                if (remaining <= 0) {
-                    countdownEl.textContent = 'Beendet';
-                    location.reload();
-                    return;
-                }
-
-                const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-
-                let text = '';
-                if (days > 0) text += `${days}T `;
-                if (hours > 0 || days > 0) text += `${hours}h `;
-                text += `${minutes}min`;
-
-                countdownEl.textContent = text;
-            }
-
-            update();
-            setInterval(update, 60000);
-        })();
-        {% endif %}
+            </div>
+            <hr>
         {% endfor %}
-    </script>
+    </div>
+{% endif %}
+
+<script>
+{% for gebot in gebote %}
+{% if gebot.produkt.auktion_aktiv %}
+(function() {
+    const endTime = {% countdown_js gebot.produkt %};
+    const countdownEl = document.getElementById('countdown-{{ gebot.produkt.pk }}');
+
+    function update() {
+        const remaining = endTime - Date.now();
+        if (remaining <= 0) {
+            countdownEl.textContent = 'Beendet';
+            location.reload();
+            return;
+        }
+
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+        let text = '';
+        if (days > 0) text += `${days}T `;
+        if (hours > 0 || days > 0) text += `${hours}h `;
+        text += `${minutes}min`;
+
+        countdownEl.textContent = text;
+    }
+
+    update();
+    setInterval(update, 60000);
+})();
+{% endif %}
+{% endfor %}
+</script>
 {% endblock %}
