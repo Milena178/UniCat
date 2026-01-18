@@ -20,6 +20,7 @@ urlpatterns = [
     path('review/<int:pk>/delete/', views.ReviewDeleteView.as_view(), name='review_delete'),
     path('review/<int:pk>/vote/<str:direction>/', views.review_vote, name='review_vote'),
     path('review/<int:pk>/report/', views.review_report, name='review_report'),
+    path('review/create/<int:gebot_id>/',views.review_create,name='review_create'),
 
     #Customer Service
     path('cs/reviews/', views.cs_review_list, name='cs_review_list'),

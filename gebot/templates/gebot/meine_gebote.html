@@ -17,11 +17,17 @@
 
         {% for gebot in gebote %}
             <tr>
-                <td><a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">{{ gebot.produkt.name }}</a></td>
+                <td>
+                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
+                        {{ gebot.produkt.name }}
+                    </a>
+                </td>
                 <td>{{ gebot.biethoehe }} €</td>
                 <td>
                     {% if gebot.produkt.auktion_aktiv %}
-                        <span id="countdown-{{ gebot.produkt.pk }}">{{ gebot.produkt|format_countdown }}</span>
+                        <span id="countdown-{{ gebot.produkt.pk }}">
+                            {{ gebot.produkt|format_countdown }}
+                        </span>
                     {% else %}
                         Beendet
                     {% endif %}
@@ -36,9 +42,13 @@
                     {% else %}
                         {% if gebot.ist_gewonnen %}
                             <strong>Gewonnen 🏆</strong>
-                            <form method="post" action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}" style="display: inline;">
+                            <form method="post"
+                                  action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}"
+                                  style="display: inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn-primary">Gewonnenes Produkt kaufen</button>
+                                <button type="submit" class="btn-primary">
+                                    Gewonnenes Produkt kaufen
+                                </button>
                             </form>
                         {% else %}
                             Verloren ❌
@@ -59,14 +69,46 @@
             {% for gebot in gekaufte_produkte %}
                 <div class="produkt-card">
                     {% if gebot.produkt.bild %}
-                        <img src="{{ gebot.produkt.bild.url }}" alt="{{ gebot.produkt.name }}" class="product-image-small">
+                        <img src="{{ gebot.produkt.bild.url }}"
+                             alt="{{ gebot.produkt.name }}"
+                             class="product-image-small">
                     {% endif %}
+
                     <h3>{{ gebot.produkt.name }}</h3>
-                    <p><strong>Kaufpreis:</strong> {{ gebot.biethoehe }} €</p>
-                    <p><strong>Verkäufer:</strong> {{ gebot.produkt.verkaeufer_profil.user.get_full_name|default:gebot.produkt.verkaeufer_profil.user.username }}</p>
-                    <p><strong>Gekauft am:</strong> {{ gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
-                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">Details ansehen</a>
+
+                    <p>
+                        <strong>Kaufpreis:</strong>
+                        {{ gebot.biethoehe }} €
+                    </p>
+
+                    <p>
+                        <strong>Verkäufer:</strong>
+                        {{ gebot.produkt.verkaeufer_profil.user.get_full_name|default:gebot.produkt.verkaeufer_profil.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Gekauft am:</strong>
+                        {{ gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}
+                    </p>
+
+                    <a href="{% url 'produkt:produkt_detail' gebot.produkt.pk %}">
+                        Details ansehen
+                    </a>
+
+                {# Bewertung #}
+                {% if gebot.produkt.verkaeufer_profil.user != request.user %}
+                    {% if not gebot.review %}
+                        <a href="{% url 'profil:review_create' gebot.pk %}"
+                            class="btn-primary">
+                            Verkäufer bewerten
+                        </a>
+                            {% else %}
+                                <small>✔ Verkäufer bereits bewertet</small>
+                        {% endif %}
+                    {% endif %}
+
                 </div>
+                <hr>
             {% endfor %}
         </div>
     {% endif %}

@@ -19,6 +19,7 @@
     <strong>Adresse:</strong>
     <p>{{ profile.street }} {{ profile.house_number }}</p>
     <p>{{ profile.zip_code }} {{ profile.city }}</p>
+    <p>{{ profile.zip_code }} {{ profile.city }}</p>
     <p>{{ profile.country }}</p>
 {% endif %}
 
@@ -106,15 +107,6 @@
 <hr>
 
 <h2>Bewertungen</h2>
-
-{# ===== Bewertung schreiben (nur andere User) ===== #}
-{% if user.is_authenticated and user != profile.user %}
-    <p>
-        <a href="{% url 'profil:review_add' profile.pk %}" class="btn btn-success">
-            Bewertung schreiben
-        </a>
-    </p>
-{% endif %}
 
 {% for review in reviews %}
     <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">

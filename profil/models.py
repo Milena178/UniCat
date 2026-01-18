@@ -2,6 +2,9 @@ from datetime import date
 from django.db import models
 from django.conf import settings
 
+from gebot.models import Gebot
+
+
 def user_directory_path(instance, filename):
     # Profilbilder landen unter: media/profile_pictures/user_<id>/<filename>
     return f'profile_pictures/user_{instance.user.id}/{filename}'
@@ -43,35 +46,39 @@ class UserProfile(models.Model):
         return self.username
 
 class Review(models.Model):
-    # Sterne-Bewertung (1–5)
     STERNE_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
-    # Bewertetes Profil
     profile = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
         related_name='reviews'
     )
-    # Autor der Bewertung
+
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
 
-    # Bewertungsdaten
+    # NEU: genau ein Review pro Kauf
+    gebot = models.OneToOneField(
+        Gebot,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
     sterne = models.IntegerField(choices=STERNE_CHOICES)
     text = models.TextField()
-
-    # Zeit der erstellung
     erstellt_am = models.DateTimeField(auto_now_add=True)
-
-    # Bewertungen melden
     gemeldet = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-erstellt_am']
         verbose_name = 'Bewertung'
         verbose_name_plural = 'Bewertungen'
+
+    def __str__(self):
+        return f"{self.author.username} → {self.profile.username}"
 
     # Gibt alle Upvotes für diese Bewertung zurück
     def get_upvotes(self):

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -10,15 +11,12 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
 from django.views.generic import DetailView, UpdateView, DeleteView
 
+from gebot.models import Gebot
 from .models import UserProfile, Review, SupportRequest, SupportMessage
 from .forms import UserProfileForm, ReviewForm, SupportRequestForm
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
-
-#Signup-View
-from .models import UserProfile
-from produkt.models import Produkt
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
@@ -85,11 +83,24 @@ def review_vote(request, pk, direction):
     return redirect('profil:profil_detail', pk=review.profile.pk)
 
 @login_required
-def review_create(request, pk):
-    profile = get_object_or_404(UserProfile, pk=pk)
+def review_create(request, gebot_id):
+    gebot = get_object_or_404(
+        Gebot,
+        pk=gebot_id,
+        bieter=request.user.profile,
+        kauf_bestaetigt=True
+    )
 
+    profile = gebot.produkt.verkaeufer_profil
+
+    # Verkäufer darf sich nicht selbst bewerten
     if profile.user == request.user:
-        return redirect('profil:profil_detail', pk=pk)
+        return redirect('profil:profil_detail', pk=profile.pk)
+
+    # Schon bewertet?
+    if hasattr(gebot, 'review'):
+        messages.warning(request, "Dieser Kauf wurde bereits bewertet.")
+        return redirect('profil:profil_detail', pk=profile.pk)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -97,14 +108,16 @@ def review_create(request, pk):
             review = form.save(commit=False)
             review.profile = profile
             review.author = request.user
+            review.gebot = gebot
             review.save()
-            return redirect('profil:profil_detail', pk=pk)
+            return redirect('profil:profil_detail', pk=profile.pk)
     else:
         form = ReviewForm()
 
     return render(request, 'bewertung/review_form.html', {
         'form': form,
-        'profile': profile
+        'profile': profile,
+        'gebot': gebot
     })
 
 #Bewertungen Durchschnitt
