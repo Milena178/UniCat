@@ -1,130 +1,133 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Profil {{ profile.username }}{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/user.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<h1>{{ profile.username }}</h1>
+<div class="user-profile">
 
-{# Profilbild und Bio immer anzeigen #}
-{% if profile.profile_picture %}
-    <img src="{{ profile.profile_picture.url }}" alt="Profilbild von {{ profile.username }}" width="150">
-{% endif %}
-<p>{{ profile.bio }}</p>
+    <!-- PROFILKOPF -->
+    <div class="profile-top">
 
-{# Private Infos nur für Besitzer #}
-{% if darf_private_daten_sehen %}
-    <hr>
-    <h2>Private Informationen</h2>
-    <p><strong>Offizieller Name:</strong> {{ profile.user.get_full_name|default:profile.username }}</p>
-    <p><strong>E-Mail:</strong> {{ profile.user.email }}</p>
-    <p><strong>Adresse:</strong><br>
-        {{ profile.street }} {{ profile.house_number }}<br>
-        {{ profile.zip_code }} {{ profile.city }}<br>
-        {{ profile.country }}
-    </p>
-{% endif %}
+        <!-- LINKS -->
+        <div class="profile-left">
+            <h1 class="username_profil">{{ profile.username }}</h1>
 
-<hr>
+            {% if profile.profile_picture %}
+                <img src="{{ profile.profile_picture.url }}" class="profile-avatar">
+            {% else %}
+                <img src="{% static 'images/default-avatar.png' %}" class="profile-avatar">
+            {% endif %}
 
-{# Profil bearbeiten & Produkte verwalten nur für Besitzer #}
-{% if user.is_authenticated and user == profile.user %}
-    <p>
-        <a href="{% url 'profil:profil_edit' profile.pk %}" class="btn btn-primary">Profil bearbeiten</a>
-        <a href="{% url 'produkt:meine_produkte' %}" class="btn btn-primary">Meine Produkte verwalten</a>
-    </p>
-    <hr>
-{% endif %}
-
-{# Aktive Produkte nur bei Fremden anzeigen #}
-{% if user != profile.user %}
-    <h2>Aktuelle Angebote von {{ profile.username }}</h2>
-    <div class="product-grid">
-        {% for produkt in user_produkte %}
-            <div class="product-card">
-                <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
-                    {% if produkt.bild %}
-                        <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
-                    {% else %}
-                        <div class="no-image">Kein Bild</div>
-                    {% endif %}
-                    <h3>{{ produkt.name }}</h3>
-                    <p><strong>Mindestpreis: {{ produkt.mindestpreis }} €</strong></p>
-                    {% if produkt.hoechstes_gebot %}
-                        <p><strong>Aktuelles Höchstgebot: {{ produkt.hoechstes_gebot }} €</strong></p>
-                    {% else %}
-                        <p>Noch keine Gebote</p>
-                    {% endif %}
-                    <p><small>Endet: {{ produkt.auktion_endet|date:"d.m.Y H:i" }}</small></p>
-
-                    {% if produkt.auktion_aktiv %}
-                        {% with stunden_bis_ende=produkt.auktion_ende|timeuntil %}
-                            {% if "Stunde" in stunden_bis_ende or "Minute" in stunden_bis_ende %}
-                                <p class="urgent">🔥 Endet bald!</p>
-                            {% endif %}
-                        {% endwith %}
-                    {% endif %}
-
-                    {% if produkt.tags.exists %}
-                        <div class="tags">
-                            {% for tag in produkt.tags.all %}
-                                <span class="tag">{{ tag.name }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+            <p class="bio">
+                {{ profile.bio|default:"Keine Beschreibung vorhanden." }}
+            </p>
+            {% if user == profile.user %}
+                <a href="{% url 'profil:profil_edit' profile.pk %}" class="btn btn-primary">
+                    Profil bearbeiten
                 </a>
-            </div>
+            {% endif %}
+        </div>
+
+        <!-- RECHTS -->
+        {% if darf_private_daten_sehen %}
+        <div class="profile-right">
+            <h3>Private Informationen</h3>
+
+            <p><strong>Name:</strong>
+                {{ profile.user.get_full_name|default:profile.username }}
+            </p>
+
+            <p><strong>E-Mail:</strong> {{ profile.user.email }}</p>
+
+            <p id="daten">
+                {{ profile.street }} {{ profile.house_number }}<br>
+                {{ profile.zip_code }} {{ profile.city }}<br>
+                {{ profile.country }}
+            </p>
+        </div>
+        {% endif %}
+
+    </div>
+
+<!-- BEWERTUNGEN -->
+<div class="reviews">
+    <h2>Bewertungen</h2>
+
+    <p class="rating-summary">
+        Durchschnitt: {{ profil_durchschnitt|default:"0" }} ★
+    </p>
+
+    {% for review in reviews %}
+        <div class="review-card">
+            <strong>{{ review.author.username }}</strong>
+            <p>
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.sterne %}★{% else %}☆{% endif %}
+                {% endfor %}
+            </p>
+            <p>{{ review.text }}</p>
+
+            <!-- Buttons nur für den Autor -->
+            {% if user == review.author %}
+                <div class="review-actions">
+                    <a href="{% url 'profil:review_edit' review.pk %}" class="btn btn-secondary btn-small">
+                        Bearbeiten
+                    </a>
+                    <a href="{% url 'profil:review_delete' review.pk %}" class="btn btn-danger btn-small">
+                        Löschen
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <p>Noch keine Bewertungen.</p>
+    {% endfor %}
+</div>
+
+<!-- PRODUKTE + BUTTON -->
+<div class="profile-bottom">
+
+    {% if user == profile.user %}
+    <!-- BUTTON separat -->
+    <div class="product-actions">
+        <a href="{% url 'produkt:meine_produkte' %}" class="btn btn-secondary">
+            Produkte verwalten
+        </a>
+    </div>
+    {% endif %}
+
+ <!-- PRODUKTE unter dem Button -->
+    <h2>Aktive Produkte</h2>
+
+    <div class="products">
+
+        {% for produkt in user_produkte %}
+        <div class="product-card">
+            <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
+                {% if produkt.bild %}
+                    <img src="{{ produkt.bild.url }}">
+                {% else %}
+                    <div class="no-image">Kein Bild</div>
+                {% endif %}
+                <h3>{{ produkt.name }}</h3>
+                <p><strong>{{ produkt.mindestpreis }} €</strong></p>
+            </a>
+        </div>
         {% empty %}
-            <p>{{ profile.username }} hat derzeit keine aktiven Angebote.</p>
+        <p>Keine aktiven Produkte.</p>
         {% endfor %}
     </div>
-    <hr>
-{% endif %}
 
-{# Profilbewertung #}
-<h2>Bewertungen</h2>
-<p>Durchschnitt: {{ profil_durchschnitt|default:"0" }} Sterne
-{% for i in "12345" %}
-    {% if forloop.counter <= profil_durchschnitt|default:0 %}★{% else %}☆{% endif %}
-{% endfor %}
-</p>
-<hr>
+</div>
 
-{# Einzelbewertungen #}
-{% for review in reviews %}
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>{{ review.author.username }}</strong> – {{ review.sterne }} Sterne
-        <p>
-            {% for i in "12345" %}
-                {% if forloop.counter <= review.sterne %}★{% else %}☆{% endif %}
-            {% endfor %}
-        </p>
-        <p>{{ review.text }}</p>
-        <p>
-            👍 <a href="{% url 'profil:review_vote' review.pk 'up' %}">{{ review.get_upvotes_count }}</a>
-            👎 <a href="{% url 'profil:review_vote' review.pk 'down' %}">{{ review.get_downvotes_count }}</a>
-        </p>
 
-        {# Bearbeiten / Löschen nur für Autor #}
-        {% if user == review.author %}
-            <p>
-                <a href="{% url 'profil:review_edit' review.pk %}">Bearbeiten</a> |
-                <a href="{% url 'profil:review_delete' review.pk %}">Löschen</a>
-            </p>
-        {% endif %}
-
-        {# Review melden #}
-        {% if user.is_authenticated and user != review.author %}
-            {% if not review.gemeldet %}
-                <form action="{% url 'profil:review_report' review.pk %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning btn-sm">Melden</button>
-                </form>
-            {% else %}
-                <span style="color:red;">Gemeldet</span>
-            {% endif %}
-        {% endif %}
-    </div>
-{% endfor %}
+</div>
 
 {% endblock %}

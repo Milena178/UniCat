@@ -1,0 +1,198 @@
+/* Grundlayout */
+.user-profile {
+    max-width: 90%;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas:
+        "profile reviews"
+        "products products";
+    gap: 40px;
+}
+
+/* Profil */
+.profile-top {
+    grid-area: profile;
+    display: flex;
+    gap: 40px;
+    background: #fff;
+    padding: 5rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* linker Bereich */
+.profile-left {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.username_profil {
+    font-size: 2.6rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.bio {
+    font-size: 1.05rem;
+    color: #555;
+}
+
+/* Button unter Avatar + Bio */
+.profile-left .btn {
+    margin-top: 20px;
+    align-self: flex-start;
+}
+
+/* Rechter Bereich*/
+.profile-right {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+.profile-right h3 {
+    margin-bottom: 2rem;
+}
+
+/* Button unter privaten Daten */
+.profile-right .btn {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #3d70e1;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+/* Unterer Bereich*/
+.profile-bottom {
+    display: flex;
+    flex-direction: column; /* damit Button oben, Produkte unten */
+    gap: 1rem; /* Abstand zwischen Button und Produkten */
+}
+
+.profile-bottom h2 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+/* Produkte */
+.products {
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 1rem;          /* Abstand zwischen Buttons, falls mehrere */
+    justify-content: flex-start;
+    margin-bottom: 1rem; /* Abstand zu Produkten */
+    width: max-content;  /* verhindert, dass der Button die volle Breite einnimmt */
+}
+
+.no-image {
+    height: 180px;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+/* Bewertungen */
+.reviews {
+    margin-top: 0;
+    grid-area: reviews;
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.rating-summary {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.review-card {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+/* Kleine Buttons unter der Bewertung */
+.review-actions {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Kleine Buttons */
+.review-actions .btn-small {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 0.3rem;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* Farben */
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}

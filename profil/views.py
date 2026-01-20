@@ -22,6 +22,7 @@ from django.views.generic import DetailView
 from django.db.models import Avg
 from .models import UserProfile
 from django.contrib.auth import get_user_model
+from produkt.models import Produkt
 
 # Custom Form für UserCreation
 class CustomUserCreationForm(forms.ModelForm):
@@ -164,30 +165,34 @@ class ProfileDetailView(DetailView):
 
         if user.is_authenticated:
             if user == self.object.user:
-                # Profilbesitzer selbst
+                # Profilbesitzer
                 context['darf_private_daten_sehen'] = True
+                context['darf_email_sehen'] = True
             else:
-                # Prüfen: hat dieser Nutzer dem Profil verkauft?
-                from gebot.models import Gebot
-                hat_verkauft = Gebot.objects.filter(
+                # Käufer?
+                hat_gekauft = Gebot.objects.filter(
                     produkt__verkaeufer_profil=self.object,
                     bieter__user=user,
                     kauf_bestaetigt=True
                 ).exists()
-                if hat_verkauft:
-                    context['darf_private_daten_sehen'] = True
+
+                if hat_gekauft:
+                    context['darf_email_sehen'] = True
 
         # Produkte nur bei fremden Profilen anzeigen
-        if user != self.object.user:
-            from produkt.models import Produkt
             produkte = Produkt.objects.filter(
-                verkaeufer_profil=self.object,
-                istArchiviert=False
+                verkaeufer_profil=self.object
             )
-            # Nur aktive Auktionen
-            context['user_produkte'] = [p for p in produkte if p.auktion_aktiv()]
-        else:
-            context['user_produkte'] = []
+
+            if user == self.object.user:
+                # Eigener Nutzer: alles sehen
+                context['user_produkte'] = produkte
+            else:
+                # Fremde Nutzer: nur aktive, nicht archivierte Produkte
+                context['user_produkte'] = [
+                    p for p in produkte
+                    if p.auktion_aktiv() and not p.istArchiviert
+                ]
 
         return context
 
