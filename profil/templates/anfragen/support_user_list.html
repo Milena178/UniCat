@@ -1,43 +1,54 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Mein Kundenservice-Postfach{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/anfrage.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2>Meine Support-Anfragen</h2>
+<div class="cs-support-detail">
 
-{% if anfragen %}
-<ul style="list-style:none; padding:0;">
-    {% for anfrage in anfragen %}
-        <li style="border:1px solid #ccc; padding:12px; margin-bottom:10px;">
-            <strong>
-                Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}
-            </strong>
-            <br>
-            <small>Status: {{ anfrage.get_status_display }}</small>
+    <h1>Meine Support-Anfragen</h1>
+    <p class="lead">Hier siehst du alle deine bisherigen Anfragen.</p>
 
-            <div style="margin-top:8px;">
-                <a href="{% url 'profil:support_detail' anfrage.pk %}">
-                    Öffnen
-                </a>
-            </div>
-        </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>Du hast noch keine Support-Anfragen.</p>
-{% endif %}
+    {% if anfragen %}
+        <ul class="support-list">
+            {% for anfrage in anfragen %}
+                <li class="support-item">
+                    <div class="support-item-header">
+                        <strong>
+                            Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}
+                        </strong>
+                        <span class="support-status">
+                            {{ anfrage.get_status_display }}
+                        </span>
+                    </div>
 
-<hr>
+                    <div class="support-item-actions">
+                        <a href="{% url 'profil:support_detail' anfrage.pk %}"
+                           class="btn btn-primary">
+                            Öffnen
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="lead">Du hast noch keine Support-Anfragen.</p>
+    {% endif %}
 
-<p>
-    <a href="{% url 'profil:support_create' %}">
-        ➕ Neue Anfrage erstellen
-    </a>
-</p>
+    <hr>
 
-<p>
-    <a href="{% url 'home' %}">
-        ← Zurück zur Startseite
-    </a>
-</p>
+    <div class="support-actions">
+        <a href="{% url 'profil:support_create' %}" class="btn btn-primary">
+            ➕ Neue Anfrage erstellen
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-secondary">
+            ← Zurück zur Startseite
+        </a>
+    </div>
+
+</div>
 {% endblock %}

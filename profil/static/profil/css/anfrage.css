@@ -32,13 +32,13 @@
     border-top: 1px solid #e0e0e0;
 }
 
-/* === Nachrichten === */
+/* Nachrichten */
 .cs-support-detail .message {
     background: #f8f9fb;
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 14px 18px;
-    margin-bottom: 15px;
+    margin: 1rem;
 }
 
 .cs-support-detail .message strong {
@@ -50,7 +50,7 @@
     margin-left: 6px;
 }
 
-/* === Antwort Formular === */
+/* Antwort Formular*/
 .cs-support-detail textarea {
     width: 100%;
     min-height: 120px;
@@ -60,9 +60,10 @@
     font-size: 1rem;
     font-family: 'Roboto', sans-serif;
     resize: vertical;
+    margin:1rem;
 }
 
-/* === Buttons allgemein === */
+/* Buttons */
 .cs-support-detail .btn {
     display: inline-block;
     padding: 10px 18px;
@@ -95,7 +96,7 @@
     background-color: #8b0000;
 }
 
-/* === Zurück-Link === */
+/* Zurück-Link */
 .cs-support-detail .cs-back {
     margin-top: 30px;
 }
@@ -113,4 +114,131 @@
 
 .cs-support-detail .cs-back a:hover {
     background: #495057;
+}
+
+/* Nachricht an Support */
+.cs-support-detail {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Überschriften */
+.cs-support-detail h1 {
+    margin-bottom: 10px;
+}
+
+.cs-support-detail .lead {
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Formular */
+.support-form {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Inputs */
+.form-group input,
+.form-group textarea,
+.support-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+/* Buttons */
+.form-actions {
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #1976d2;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #125aa0;
+}
+
+.btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    margin-left: 10px;
+}
+
+.btn-secondary:hover {
+    background-color: #cfcfcf;
+}
+
+/* Support Nachrichten Liste */
+.support-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+}
+
+.support-item {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px 18px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+.support-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.support-status {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+.support-item-actions {
+    margin-top: 12px;
+}
+
+/* Aktionen unten */
+.support-actions {
+    margin-top: 25px;
+}
+
+.support-actions .btn {
+    margin-right: 10px;
 }
