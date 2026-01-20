@@ -70,10 +70,9 @@
     color: #ffffff;
 }
 
-
 /* Gemeldete Bewertungen */
 .cs-reviews {
-    max-width: 900px;
+    max-width: 80%;
     margin: 50px auto;
     padding: 40px;
     background: #ffffff;
@@ -114,6 +113,7 @@
 }
 
 .cs-reviews a.btn {
+    margin-left: 0.5rem;
     display: inline-block;
     padding: 6px 12px;
     border-radius: 5px;
@@ -139,6 +139,243 @@
 }
 
 .cs-reviews a.btn.btn-secondary:hover {
+    background-color: #495057;
+}
+
+/* Zurück-Link */
+.cs-back {
+    margin-top: 30px;
+}
+
+.cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #3d70e1;
+    border-radius: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-back a:hover {
+    background: #1e40af;
+    color: #ffffff;
+}
+
+/* Gemeldete Produkte */
+.cs-produkt {
+    max-width: 80%;
+    margin: 50px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    font-family: 'Roboto', sans-serif;
+}
+
+.cs-produkt h1 {
+    font-size: 28px;
+    margin-bottom: 1rem;
+}
+
+.cs-produkt table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.cs-produkt th,
+.cs-produkt td {
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.cs-produkt th {
+    background-color: #f5f7fa;
+    font-weight: 500;
+}
+
+.cs-produkt tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.cs-produkt tr:hover {
+    background-color: #eef2f7;
+}
+
+/* Buttons innerhalb der Tabelle */
+.cs-produkt a.btn,
+.cs-produkt button.btn {
+    margin-left: 0.5rem;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Löschen */
+.cs-produkt .btn-danger {
+    background-color: #ff4a4a;
+    color: #fff;
+}
+
+.cs-produkt .btn-danger:hover {
+    background-color: #c40000;
+}
+
+/* Freigeben */
+.cs-produkt .btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.cs-produkt .btn-success:hover {
+    background-color: #1e7e34;
+}
+
+/* Ansehen / Sekundär */
+.cs-produkt .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.cs-produkt .btn-secondary:hover {
+    background-color: #495057;
+}
+
+/* Zurück-Link */
+.cs-produkt .cs-back {
+    margin-top: 30px;
+}
+
+.cs-produkt .cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #3d70e1;
+    border-radius: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-produkt .cs-back a:hover {
+    background: #1e40af;
+    color: #ffffff;
+}
+
+/* Support-Anfragen */
+.cs-support {
+    max-width: 90%;
+    margin: 50px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    font-family: 'Roboto', sans-serif;
+}
+
+.cs-support h1 {
+    font-size: 28px;
+    margin-bottom: 1rem;
+}
+
+.cs-support table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.cs-support th,
+.cs-support td {
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.cs-support th {
+    background-color: #f5f7fa;
+    font-weight: 500;
+}
+
+.cs-support tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.cs-support tr:hover {
+    background-color: #eef2f7;
+}
+
+/* Buttons */
+.cs-support a.btn,
+.cs-support button.btn {
+    margin-left: 0.5rem;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+/* Öffnen-Button */
+.cs-support .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.cs-support .btn-secondary:hover {
+    background-color: #495057;
+}
+
+/* Löschen-Button */
+.cs-support .btn-danger {
+    background-color: #ff4a4a;
+    color: #fff;
+}
+
+.cs-support .btn-danger:hover {
+    background-color: #c40000;
+}
+
+/* Zurück-Link */
+.cs-back {
+    margin-top: 30px;
+}
+
+.cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #3d70e1;
+    border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-back a:hover {
+    background: #1e40af;
+}
+
+
+.cs-support a.btn.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.cs-support a.btn.btn-secondary:hover {
     background-color: #495057;
 }
 

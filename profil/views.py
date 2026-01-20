@@ -93,14 +93,14 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 #Profil anzeigen nach der erstellung
     def get_success_url(self):
         # Nach Erstellung auf Profil-Detail weiterleiten
-        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.user.pk})
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.pk})
 
 #Bewertungen
 @login_required
 def review_vote(request, pk, direction):
     review = get_object_or_404(Review, pk=pk)
     review.vote(request.user, direction)
-    return redirect('profil:profil_detail', pk=review.profile.user.pk)
+    return redirect('profil:profil_detail', pk=review.profile.pk)
 
 @login_required
 def review_create(request, gebot_id):
@@ -115,12 +115,12 @@ def review_create(request, gebot_id):
 
     # Verkäufer darf sich nicht selbst bewerten
     if profile.user == request.user:
-        return redirect('profil:profil_detail', pk=profile.user.pk)
+        return redirect('profil:profil_detail', pk=profile.pk)
 
     # Schon bewertet?
     if hasattr(gebot, 'review'):
         messages.warning(request, "Dieser Kauf wurde bereits bewertet.")
-        return redirect('profil:profil_detail', pk=profile.user.pk)
+        return redirect('profil:profil_detail', pk=profile.pk)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -130,7 +130,7 @@ def review_create(request, gebot_id):
             review.author = request.user
             review.gebot = gebot
             review.save()
-            return redirect('profil:profil_detail', pk=profile.user.pk)
+            return redirect('profil:profil_detail', pk=profile.pk)
     else:
         form = ReviewForm()
 
@@ -211,14 +211,14 @@ def cs_review_list(request):
 def cs_review_disable(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.delete()  # Review löschen
-    return redirect('profil:cs_review_list', pk=review.profile.pk)
+    return redirect('profil:cs_review_list')
 
 @staff_member_required
 def cs_review_unreport(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.gemeldet = False
     review.save()
-    return redirect('profil:cs_review_list', pk=review.profile.pk)
+    return redirect('profil:cs_review_list')
 
 #Review bearbeiten/löschen
 class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -230,7 +230,7 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.get_object().author == self.request.user
 
     def get_success_url(self):
-        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.profile.user.pk})
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.profile.pk})
 
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -241,10 +241,8 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
     def get_success_url(self):
-        return reverse_lazy(
-            'profil:profil_detail',
-            kwargs={'pk': self.object.profile.user.pk}
-        )
+        review = self.get_object()
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': review.profile.pk})
 
 @staff_member_required
 def support_request_answer(request, pk):

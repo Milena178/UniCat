@@ -1,57 +1,61 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Support-Anfragen{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/admin.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2>Support-Anfragen (Admin)</h2>
 
-{% if anfragen %}
-<table border="1" cellpadding="8" cellspacing="0" width="100%">
-    <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Betreff</th>
-        <th>Status</th>
-        <th>Aktionen</th>
-    </tr>
+<div class="cs-support">
+    <h1>Support-Anfragen (Admin)</h1>
+    <hr>
 
-    {% for anfrage in anfragen %}
-    <tr>
-        <td>#{{ anfrage.id }}</td>
-        <td>{{ anfrage.user.username }}</td>
-        <td>
-            <a href="{% url 'profil:support_detail' anfrage.pk %}">
-                {{ anfrage.subject }}
-            </a>
-        </td>
-        <td>
-            {{ anfrage.get_status_display }}
-        </td>
-        <td>
-            <a href="{% url 'profil:support_detail' anfrage.pk %}">
-                Öffnen
-            </a>
+    {% if anfragen %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Betreff</th>
+                    <th>Status</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anfrage in anfragen %}
+                    <tr>
+                        <td>#{{ anfrage.id }}</td>
+                        <td>{{ anfrage.user.username }}</td>
+                        <td>
+                            <a href="{% url 'profil:support_detail' anfrage.pk %}">
+                                {{ anfrage.subject }}
+                            </a>
+                        </td>
+                        <td>{{ anfrage.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'profil:support_detail' anfrage.pk %}" class="btn btn-secondary btn-sm">Öffnen</a>
 
-            <form
-                method="post"
-                action="{% url 'profil:support_delete' anfrage.pk %}"
-                style="display:inline;"
-            >
-                {% csrf_token %}
-                <button type="submit"
-                        onclick="return confirm('Anfrage wirklich löschen?')">
-                    Löschen
-                </button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>Keine offenen oder beantworteten Anfragen.</p>
-{% endif %}
+                            <form method="post" action="{% url 'profil:support_delete' anfrage.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Anfrage wirklich löschen?')">
+                                    Löschen
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Keine offenen oder beantworteten Anfragen.</p>
+    {% endif %}
 
-<p>
-    <a href="{% url 'profil:admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
-</p>
+    <div class="cs-back">
+        <a href="{% url 'profil:admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
+    </div>
+</div>
+
 {% endblock %}

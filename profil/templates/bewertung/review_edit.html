@@ -3,7 +3,6 @@
 {% block title %}Bewertung bearbeiten{% endblock %}
 
 {% block content %}
-
 <h1>Bewertung bearbeiten</h1>
 
 <form method="post">
@@ -13,9 +12,8 @@
 </form>
 
 <p>
-    <a href="{% url 'profil:profil_detail' object.profile.pk %}">
+    <a href="{% url 'profil:profil_detail' pk=object.profile.user.pk %}">
         Zurück zum Profil
     </a>
 </p>
-
 {% endblock %}

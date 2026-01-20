@@ -1,56 +1,63 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Gemeldete Produkte{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/admin.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<h1>Gemeldete Produkte</h1>
-<hr>
+<div class="cs-produkt">
+    <h1>Gemeldete Produkte</h1>
+    <hr>
 
-{% if produkte %}
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Verkäufer</th>
-                <th>Erstellt am</th>
-                <th>Aktionen</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for produkt in produkte %}
+    {% if produkte %}
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ produkt.id }}</td>
-                    <td>{{ produkt.name }}</td>
-                    <td>{{ produkt.verkaeufer_profil.username }}</td>
-                    <td>{{ produkt.erstelltAm }}</td>
-                    <td>
-                        {# Produkt ansehen #}
-                        <a href="{% url 'produkt:produkt_detail' produkt.pk %}" class="btn btn-info btn-sm" target="_blank">
-                            Produkt Ansehen
-                        </a>
-                        {# Produkt wieder freigeben #}
-                        <form action="{% url 'produkt:support_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm">Freigeben</button>
-                        </form>
-                        {# Produkt löschen #}
-                        <form action="{% url 'produkt:support_produkt_delete' produkt.pk %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Verkäufer</th>
+                    <th>Erstellt am</th>
+                    <th>Aktionen</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Keine gemeldeten Produkte.</p>
-{% endif %}
+            </thead>
+            <tbody>
+                {% for produkt in produkte %}
+                    <tr>
+                        <td>{{ produkt.id }}</td>
+                        <td>{{ produkt.name }}</td>
+                        <td>{{ produkt.verkaeufer_profil.username }}</td>
+                        <td>{{ produkt.erstelltAm|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            <!-- Produkt ansehen -->
+                            <a href="{% url 'produkt:produkt_detail' produkt.pk %}" class="btn btn-secondary btn-sm" target="_blank">Ansehen</a>
 
-<p>
-    <a href="{% url 'profil:admin_dashboard' %}">Zurück zum Admin Dashboard</a>
-</p>
+                            <!-- Produkt wieder freigeben -->
+                            <form action="{% url 'produkt:support_produkt_unreport' produkt.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Freigeben</button>
+                            </form>
+
+                            <!-- Produkt löschen -->
+                            <form action="{% url 'produkt:support_produkt_delete' produkt.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Keine gemeldeten Produkte.</p>
+    {% endif %}
+
+    <div class="cs-back">
+        <a href="{% url 'profil:admin_dashboard' %}">Zurück zum Admin Dashboard</a>
+    </div>
+</div>
 
 {% endblock %}

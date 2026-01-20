@@ -3,7 +3,6 @@
 {% block title %}Bewertung löschen{% endblock %}
 
 {% block content %}
-
 <h1>Bewertung löschen</h1>
 
 <p>Möchtest du diese Bewertung wirklich löschen?</p>
@@ -14,9 +13,8 @@
 </form>
 
 <p>
-    <a href="{% url 'profil:profil_detail' object.profile.pk %}">
+    <a href="{% url 'profil:profil_detail' pk=object.profile.user.pk %}">
         Abbrechen
     </a>
 </p>
-
 {% endblock %}
