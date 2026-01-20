@@ -11,11 +11,17 @@ from django.views import generic
 from django.views.generic import UpdateView, DeleteView
 
 from gebot.models import Gebot
-from .models import UserProfile, Review, SupportRequest, SupportMessage
+from .models import Review, SupportRequest, SupportMessage
 from .forms import UserProfileForm, ReviewForm, SupportRequestForm
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
+
+from django.shortcuts import get_object_or_404
+from django.views.generic import DetailView
+from django.db.models import Avg
+from .models import UserProfile
+from django.contrib.auth import get_user_model
 
 # Custom Form für UserCreation
 class CustomUserCreationForm(forms.ModelForm):
@@ -94,7 +100,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 def review_vote(request, pk, direction):
     review = get_object_or_404(Review, pk=pk)
     review.vote(request.user, direction)
-    return redirect('profil:profil_detail', pk=review.profile.pk)
+    return redirect('profil:profil_detail', pk=review.profile.user.pk)
 
 @login_required
 def review_create(request, gebot_id):
@@ -109,12 +115,12 @@ def review_create(request, gebot_id):
 
     # Verkäufer darf sich nicht selbst bewerten
     if profile.user == request.user:
-        return redirect('profil:profil_detail', pk=profile.pk)
+        return redirect('profil:profil_detail', pk=profile.user.pk)
 
     # Schon bewertet?
     if hasattr(gebot, 'review'):
         messages.warning(request, "Dieser Kauf wurde bereits bewertet.")
-        return redirect('profil:profil_detail', pk=profile.pk)
+        return redirect('profil:profil_detail', pk=profile.user.pk)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -124,7 +130,7 @@ def review_create(request, gebot_id):
             review.author = request.user
             review.gebot = gebot
             review.save()
-            return redirect('profil:profil_detail', pk=profile.pk)
+            return redirect('profil:profil_detail', pk=profile.user.pk)
     else:
         form = ReviewForm()
 
@@ -133,12 +139,6 @@ def review_create(request, gebot_id):
         'profile': profile,
         'gebot': gebot
     })
-
-from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView
-from django.db.models import Avg
-from .models import UserProfile
-from django.contrib.auth import get_user_model
 
 class ProfileDetailView(DetailView):
     model = UserProfile
@@ -150,7 +150,6 @@ class ProfileDetailView(DetailView):
         user_id = self.kwargs.get('pk')
         user = get_object_or_404(User, pk=user_id)
 
-        # Profil holen oder erstellen
         profile, created = UserProfile.objects.get_or_create(
             user=user,
             defaults={'username': user.username}
@@ -218,14 +217,14 @@ def cs_review_list(request):
 def cs_review_disable(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.delete()  # Review löschen
-    return redirect('profil:cs_review_list')
+    return redirect('profil:cs_review_list', pk=review.profile.pk)
 
 @staff_member_required
 def cs_review_unreport(request, pk):
     review = get_object_or_404(Review, pk=pk)
     review.gemeldet = False
     review.save()
-    return redirect('profil:cs_review_list')
+    return redirect('profil:cs_review_list', pk=review.profile.pk)
 
 #Review bearbeiten/löschen
 class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -237,10 +236,8 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.get_object().author == self.request.user
 
     def get_success_url(self):
-        return reverse_lazy(
-            'profil:profil_detail',
-            kwargs={'pk': self.object.profile.pk}
-        )
+        return reverse_lazy('profil:profil_detail', kwargs={'pk': self.object.profile.user.pk})
+
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Review
@@ -252,7 +249,7 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy(
             'profil:profil_detail',
-            kwargs={'pk': self.object.profile.pk}
+            kwargs={'pk': self.object.profile.user.pk}
         )
 
 @staff_member_required

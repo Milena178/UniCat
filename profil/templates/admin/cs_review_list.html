@@ -1,38 +1,48 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Gemeldete Bewertungen – Customer Service{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/admin.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Gemeldete Bewertungen</h1>
+<div class="cs-reviews">
+    <h1>Gemeldete Bewertungen</h1>
 
-{% if reviews %}
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>Bewertung</th>
-            <th>Autor</th>
-            <th>Profil</th>
-            <th>Gemeldet am</th>
-            <th>Aktionen</th>
-        </tr>
-        {% for review in reviews %}
-        <tr>
-            <td>{{ review.text|truncatechars:200 }} ({{ review.sterne }} Sterne)</td>
-            <td>{{ review.author.username }}</td>
-            <td><a href="{% url 'profil:profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
-            <td>{{ review.erstellt_am }}</td>
-            <td>
-                <a href="{% url 'profil:cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
-                <a href="{% url 'profil:cs_review_unreport' review.pk %}" class="btn btn-secondary btn-sm">Meldung zurücksetzen</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>Keine gemeldeten Bewertungen.</p>
-{% endif %}
+    {% if reviews %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Bewertung</th>
+                    <th>Autor</th>
+                    <th>Profil</th>
+                    <th>Gemeldet am</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for review in reviews %}
+                <tr>
+                    <td>{{ review.text|truncatechars:200 }} ({{ review.sterne }} Sterne)</td>
+                    <td>{{ review.author.username }}</td>
+                    <td><a href="{% url 'profil:profil_detail' review.profile.pk %}">{{ review.profile.username }}</a></td>
+                    <td>{{ review.erstellt_am }}</td>
+                    <td>
+                        <a href="{% url 'profil:cs_review_disable' review.pk %}" class="btn btn-danger btn-sm">Löschen</a>
+                        <a href="{% url 'profil:cs_review_unreport' review.pk %}" class="btn btn-secondary btn-sm">Meldung zurücksetzen</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Keine gemeldeten Bewertungen.</p>
+    {% endif %}
 
-    <p>
+    <div class="cs-back">
         <a href="{% url 'profil:admin_dashboard' %}">Zurück zur Kundenservice Seite</a>
-    </p>
-
+    </div>
+</div>
 {% endblock %}

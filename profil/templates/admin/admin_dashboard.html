@@ -1,32 +1,43 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Admin Dashboard{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/admin.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<h1>Admin Dashboard</h1>
-<hr>
+<div class="admin-dashboard">
 
-<h2>Admin-Bereich</h2>
+    <h1>Admin Dashboard</h1>
+    <hr>
 
-<ul>
-    <li>
-        <a href="{% url 'profil:support_request_list' %}">
-            Support-Anfragen verwalten
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'profil:cs_review_list' %}">
-            Gemeldete Bewertungen prüfen
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'produkt:support_produkt_list' %}">
-            Gemeldete Produkte prüfen
-        </a>
-    </li>
-</ul>
-    <p>
+    <h2>Admin-Bereich</h2>
+
+    <ul class="admin-menu">
+        <li>
+            <a href="{% url 'profil:support_request_list' %}">
+                Support-Anfragen verwalten
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'profil:cs_review_list' %}">
+                Gemeldete Bewertungen prüfen
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'produkt:support_produkt_list' %}">
+                Gemeldete Produkte prüfen
+            </a>
+        </li>
+    </ul>
+
+    <p class="admin-back">
         <a href="{% url 'home' %}">Zurück zur Startseite</a>
     </p>
+
+</div>
+
 {% endblock %}
