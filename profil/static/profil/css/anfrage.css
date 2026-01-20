@@ -1,0 +1,116 @@
+.cs-support-detail {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Überschriften */
+.cs-support-detail h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.cs-support-detail h2 {
+    margin-top: 30px;
+    font-size: 20px;
+}
+
+/* Zusatztext */
+.cs-support-detail .lead {
+    font-size: 1.05rem;
+    color: #555;
+}
+
+/* Trennlinien */
+.cs-support-detail hr {
+    margin: 25px 0;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* === Nachrichten === */
+.cs-support-detail .message {
+    background: #f8f9fb;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 15px;
+}
+
+.cs-support-detail .message strong {
+    color: #222;
+}
+
+.cs-support-detail .message small {
+    color: #777;
+    margin-left: 6px;
+}
+
+/* === Antwort Formular === */
+.cs-support-detail textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    resize: vertical;
+}
+
+/* === Buttons allgemein === */
+.cs-support-detail .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Antwort senden */
+.cs-support-detail .btn-primary {
+    background-color: #3d70e1;
+    color: #ffffff;
+}
+
+.cs-support-detail .btn-primary:hover {
+    background-color: #1e40af;
+}
+
+/* Admin: Anfrage schließen */
+.cs-support-detail .btn-close {
+    background-color: #c62828;
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+.cs-support-detail .btn-close:hover {
+    background-color: #8b0000;
+}
+
+/* === Zurück-Link === */
+.cs-support-detail .cs-back {
+    margin-top: 30px;
+}
+
+.cs-support-detail .cs-back a {
+    display: inline-block;
+    padding: 9px 16px;
+    background: #6c757d;
+    color: #ffffff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.cs-support-detail .cs-back a:hover {
+    background: #495057;
+}

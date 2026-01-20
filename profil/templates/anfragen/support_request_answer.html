@@ -1,57 +1,60 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Support-Anfrage beantworten{% endblock %}
+{% block title %}Support-Anfrage #{{ anfrage.id }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/anfrage.css' %}">
+{% endblock %}
 
 {% block content %}
-<h2>Anfrage #{{ anfrage.id }} – {{ anfrage.subject }}</h2>
+<div class="cs-support-detail">
+    <h1>Support-Anfrage <span class="lead">#{{ anfrage.id }} – {{ anfrage.subject }}</span></h1>
+    <hr>
 
-<p>
-    <strong>Von:</strong> {{ anfrage.user.username }}
-</p>
+    <p class="lead"><strong>Von:</strong> {{ anfrage.user.username }}</p>
+    <p class="lead"><strong>Status:</strong> {{ anfrage.get_status_display }}</p>
 
-<p>
-    <strong>Status:</strong> {{ anfrage.get_status_display }}
-</p>
+    <hr>
 
-<hr>
+    <h2>Konversation</h2>
+    {% for message in anfrage.messages.all %}
+        <div class="message">
+            <strong>{{ message.sender.username }}</strong>
+            <small>({{ message.created_at|date:"d.m.Y H:i" }})</small>
+            <p>{{ message.text }}</p>
+        </div>
+    {% empty %}
+        <p class="lead">Noch keine Nachrichten.</p>
+    {% endfor %}
 
-<h3>Konversation</h3>
+    {% if anfrage.status != 'closed' %}
+        <hr>
+        <h2>Antwort schreiben</h2>
+        <form method="post" class="answer-form">
+            {% csrf_token %}
+            <textarea name="text" rows="5" required></textarea>
+            <br><br>
+            <button type="submit" class="btn btn-primary">Antwort senden</button>
+        </form>
 
-{% for message in anfrage.messages.all %}
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>{{ message.sender.username }}</strong>
-        <small>({{ message.created_at|date:"d.m.Y H:i" }})</small>
-        <p>{{ message.text }}</p>
+        {% if user.is_staff %}
+            <hr>
+            <form method="post" action="{% url 'profil:support_close' anfrage.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-close">Anfrage schließen</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p class="lead"><strong>Diese Anfrage wurde abgeschlossen.</strong></p>
+    {% endif %}
+
+    <div class="cs-back">
+        {% if user.is_staff %}
+            <a href="{% url 'profil:support_request_list' %}">← Zurück zur Übersicht</a>
+        {% else %}
+            <a href="{% url 'profil:support_user_list' %}">← Zurück zur Übersicht</a>
+        {% endif %}
     </div>
-{% empty %}
-    <p>Noch keine Nachrichten.</p>
-{% endfor %}
-
-<hr>
-
-{% if anfrage.status != 'closed' %}
-<h3>Antwort schreiben</h3>
-
-<form method="post">
-    {% csrf_token %}
-    <textarea name="text" rows="5" style="width:100%;" required></textarea>
-    <br><br>
-    <button type="submit">Antwort senden</button>
-</form>
-
-<hr>
-
-<form method="post" action="{% url 'profil:support_close' anfrage.pk %}">
-    {% csrf_token %}
-    <button style="background:#c00;color:#fff;">
-        Problem gelöst – Anfrage schließen
-    </button>
-</form>
-{% else %}
-<p><strong>Dieses Anfrage ist geschlossen.</strong></p>
-{% endif %}
-
-<p>
-    <a href="{% url 'profil:support_request_list' %}">Zurück zur Übersicht</a>
-</p>
+</div>
 {% endblock %}
