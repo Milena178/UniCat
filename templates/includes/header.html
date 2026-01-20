@@ -25,14 +25,14 @@
                 <div class="user-profile">
 
                     <div class="user-info">
-                        <a href="{% url 'profil:profil_detail' user.pk %}" class="username">{{ user.username }}</a>
+                        <a href="{% url 'profil:profil_detail' user.profile.pk %}" class="username">{{ user.username }}</a>
                         <form method="post" action="{% url 'logout' %}" class="logout-form">
                             {% csrf_token %}
                             <button type="submit" class="logout-btn">Logout</button>
                         </form>
                     </div>
 
-                    <a href="{% url 'profil:profil_detail' user.pk %}" class="profile-image">
+                    <a href="{% url 'profil:profil_detail' user.profile.pk %}" class="profile-image">
                         {% if user.profile.profile_picture %}
                             <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" style="width: 5em; height: auto;">
                         {% else %}

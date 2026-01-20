@@ -10,7 +10,9 @@
     <!-- Verkäufer Info -->
     {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
         <strong>Anbieter:</strong>
-        <a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">{{ produkt.verkaeufer_profil.username }}</a>
+        <a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">
+            {{ produkt.verkaeufer_profil.user.get_full_name|default:produkt.verkaeufer_profil.user.username }}
+        </a>
         {% if produkt.verkaeufer_profil.bio %}
             <br><small>{{ produkt.verkaeufer_profil.bio|truncatewords:20 }}</small>
         {% endif %}

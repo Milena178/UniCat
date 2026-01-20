@@ -146,14 +146,8 @@ class ProfileDetailView(DetailView):
     context_object_name = 'profile'
 
     def get_object(self, queryset=None):
-        User = get_user_model()
-        user_id = self.kwargs.get('pk')
-        user = get_object_or_404(User, pk=user_id)
-
-        profile, created = UserProfile.objects.get_or_create(
-            user=user,
-            defaults={'username': user.username}
-        )
+        profile_id = self.kwargs.get('pk')
+        profile = get_object_or_404(UserProfile, pk=profile_id)
         return profile
 
     def get_context_data(self, **kwargs):
