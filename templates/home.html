@@ -2,6 +2,11 @@
 
 {% block title %}UniCat – Home{% endblock %}
 
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/home-seite.css' %}">
+{% endblock %}
+
 {% block content %}
 <h1 id="start">UniCat</h1>
 

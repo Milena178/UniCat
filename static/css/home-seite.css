@@ -1,0 +1,55 @@
+/*Startseite*/
+#start {
+    display: none;
+}
+
+.bildheader {
+    background-image:
+        linear-gradient(to top, rgba(34, 14, 25, 0.16),#220e19),
+        url("../images/atelier.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding-top: 4em;
+
+    text-align: center;
+    color: #e3d6bf;
+}
+
+.bildheader h3{
+    margin-top: 2em;
+    color: #e3d6bf;
+}
+
+.bildheader a{
+    display: inline-block;
+    color: #e3d6bf;
+    min-width: 25%;
+    border-radius: 2em;
+    padding: 1em 1em;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.buttons-gross,
+.login-gross{
+    background-color: #b5728a;
+    width: 20em;
+    padding-top: 3em;
+    text-align: center;
+    margin-top: 1em;
+}
+
+.login-gross{
+    width: 8em;
+    padding-top: 1.5em;
+    margin: 1em 0.5em 1em 0.5em;
+}
+
+.buttons-gross:hover,
+.login-gross:hover {
+    background-color: #933b5b;
+}
