@@ -2,7 +2,7 @@
     max-width: 900px;
     margin: 50px auto;
     padding: 40px;
-    background: #e3d6bf;
+    background: #9f9679;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     font-family: 'Roboto', sans-serif;
@@ -31,17 +31,17 @@
 .cs-support-detail hr {
     margin: 25px 0;
     border: none;
-    border-top: 1px solid #933b5b;
+    border-top: 1px solid  #e3d6bf;
 }
 
 /* Nachrichten */
 .cs-support-detail .message {
-    background: #b5728a;
+    background:  #e3d6bf;
     border: 1px solid #933b5b;
     border-radius: 6px;
     padding: 14px 18px;
     margin: 1rem;
-    color: #e3d6bf;
+    color: #220e19;
 }
 
 .cs-support-detail .message strong {
@@ -49,7 +49,7 @@
 }
 
 .cs-support-detail .message small {
-    color: #e3d6bf;
+    color: #220e19;
     margin-left: 6px;
 }
 
@@ -202,8 +202,8 @@
     border-radius: 6px;
     padding: 15px 18px;
     margin-bottom: 15px;
-    background: #b5728a;
-    color: #e3d6bf;
+    background: #e3d6bf;
+    color: #220e19;
 }
 
 .support-item-header {
