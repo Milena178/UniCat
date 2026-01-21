@@ -58,17 +58,17 @@ class SignUp(generic.CreateView):
     def form_valid(self, form):
         user = form.save()
 
-        # Leeres Profil direkt anlegen
-        UserProfile.objects.create(
+        profile = UserProfile.objects.create(
             user=user,
-            username=user.username  # sinnvoll vorbelegen
+            username=user.username
         )
 
         # User einloggen
         login(self.request, user)
 
         # Direkt zur Profil-Bearbeitung weiterleiten
-        return redirect('profil:profil_detail', pk=user.pk)
+        return redirect('profil:profil_detail', pk=profile.pk)
+
 #Eigenes Profil bearbeiten
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
