@@ -219,3 +219,79 @@
     background: #3d70e1;
     color: #ffffff;
 }
+
+/* Bewertung löschen – Confirmation */
+.review-delete-wrapper {
+    max-width: 520px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Card */
+.review-delete-card {
+    background: #ffffff;
+    padding: 2rem 2.2rem;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    border-right: 6px solid #dc3545;
+    border-bottom: 6px solid #dc3545;
+}
+
+/* Titel */
+.review-delete-title {
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #dc3545;
+}
+
+/* Text */
+.review-delete-text {
+    font-size: 1rem;
+    color: #34495e;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Aktionen */
+.review-delete-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Bestätigen */
+.review-delete-confirm {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: #dc3545;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.review-delete-confirm:hover {
+    background: #c82333;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+/* Abbrechen */
+.review-delete-cancel {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-decoration: none;
+    border: 1px solid #ced4da;
+    border-radius: 0.6rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.review-delete-cancel:hover {
+    background: #f1f3f5;
+    color: #343a40;
+}

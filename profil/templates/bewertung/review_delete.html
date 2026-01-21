@@ -1,20 +1,32 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/reviews.css' %}">
+{% endblock %}
 
 {% block title %}Bewertung löschen{% endblock %}
 
 {% block content %}
-<h1>Bewertung löschen</h1>
+<div class="review-delete-wrapper">
+    <div class="review-delete-card">
+        <h1 class="review-delete-title">Bewertung löschen</h1>
 
-<p>Möchtest du diese Bewertung wirklich löschen?</p>
+        <p class="review-delete-text">
+            Möchtest du diese Bewertung wirklich löschen?
+        </p>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Ja, löschen</button>
-</form>
+        <form method="post" class="review-delete-actions">
+            {% csrf_token %}
+            <button type="submit" class="review-delete-confirm">
+                Ja, löschen
+            </button>
 
-<p>
-    <a href="{% url 'profil:profil_detail' pk=object.profile.user.pk %}">
-        Abbrechen
-    </a>
-</p>
+            <a href="{% url 'profil:profil_detail' pk=object.profile.user.pk %}"
+               class="review-delete-cancel">
+                Abbrechen
+            </a>
+        </form>
+    </div>
+</div>
 {% endblock %}
