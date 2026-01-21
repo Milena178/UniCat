@@ -156,6 +156,14 @@ def produkt_liste(request):
             produkte_mit_ende.sort(key=lambda x: x[1])
             produkte = [p[0] for p in produkte_mit_ende]
 
+        jetzt = timezone.now()
+        for produkt in produkte:
+            ende = produkt.auktion_ende()
+            if produkt.auktion_aktiv() and (ende - jetzt) <= timedelta(hours=3):
+                produkt.endet_sehr_bald = True
+            else:
+                produkt.endet_sehr_bald = False
+
     return render(request, "produkt/produkt_liste.html", {
         "produkte": produkte,
         "filter_form": form,

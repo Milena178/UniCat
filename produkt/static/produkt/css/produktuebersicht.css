@@ -1,0 +1,299 @@
+#alle_produkte{
+    display: none;
+}
+
+.filter-section {
+    background: #9f9679;
+    border-radius: 1em;
+    padding: 1.5em;
+    margin-bottom: 1em;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Suchleiste */
+.search-row {
+    width: 100%;
+}
+
+.search-group {
+    position: relative;
+    width: 100%;
+}
+
+.search-group input {
+    width: 100%;
+    padding: 14px 50px 14px 20px;
+    background: #e3d6bf;
+    border: 2px solid #9f9679;
+    border-radius: 0.7em;
+    transition: all 0.3s ease;
+}
+
+.search-group input:focus {
+    outline: none;
+    border-color: #933b5b;
+    background: #e3d6bf;
+}
+
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: #b5728a;
+    padding: 8px 12px;
+    border-radius: 0.7em;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background: #933b5b;
+}
+
+/* Filter Zeile */
+.filters-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #220e19;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group label svg {
+    color: #220e19;
+}
+
+.filter-group select {
+    padding: 10px 14px;
+    border: 2px solid #9f9679;
+    border-radius: 0.7em;
+    font-size: 14px;
+    background: #e3d6bf;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #933b5b;
+}
+
+/* Checkbox Filter */
+.checkbox-filter {
+    justify-content: flex-end;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 2px solid #9f9679;
+    border-radius: 0.7em;
+    background: #e3d6bf;
+}
+
+.checkbox-label:hover {
+    border-color: #933b5b;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #933b5b;
+}
+
+.checkbox-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #220e19;
+}
+
+/* Tags */
+.tags-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tags-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #220e19;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tags-label svg {
+    color: #220e19;
+}
+
+.tags-checkboxes {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tags-checkboxes > * {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tags-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #e3d6bf;
+    border-radius: 0.7em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.tags-checkboxes label:hover {
+    border-color: #933b5b;
+    background: #e3d6bf;
+}
+
+.tags-checkboxes input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #933b5b;
+}
+
+.tags-checkboxes input[type="checkbox"]:checked + * {
+    color: #e3d6bf; !important;
+    border-color: #933b5b; !important;
+}
+
+/* Buttons */
+.filter-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 1em 2em;
+    border-radius: 2em;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+}
+
+.btn-primary {
+    background: #933b5b;
+    color: #e3d6bf;
+}
+
+.btn-primary:hover {
+    background: #b5728a;
+}
+
+.btn-reset {
+    background: #b5728a;
+    color: #e3d6bf;
+}
+
+.btn-reset:hover {
+    background: #933b5b;
+    color: #e3d6bf;
+}
+
+/*Produktkaerten*/
+.product-grid{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.product-card{
+    background-color: #aabaae;
+    width: 20em;
+    border-radius: 1em;
+
+    margin-bottom: 1em;
+    padding: 1.5em;
+}
+
+.product-card:hover {
+    transform: scale(1.1);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.product-card a{
+    color: #933b5b;
+    text-decoration: none;
+
+}
+
+.product-card .product-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 0.7em;
+    margin-bottom: 0.5em;
+}
+
+.product-card .no-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #e3d6bf;
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 0.7em;
+    margin-bottom: 0.5em;
+}
+
+.seller-info,
+.product-price,
+.auktion-info {
+    margin-bottom: 0.5em;
+}
+
+.tags {
+    margin-top: 1em;
+}
+.tag {
+    background-color: #e3d6bf;
+    border-radius: 0.7em;
+    padding: 0.3em 0.7em;
+}
+
+
+

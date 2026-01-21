@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% load produkt_tags %}
+{% load static %}
 
 {% block title %}{{ produkt.name }}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'produkt/css/produkt.css' %}">
+{% endblock %}
 
 {% block content %}
 
