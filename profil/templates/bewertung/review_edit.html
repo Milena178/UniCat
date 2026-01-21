@@ -1,19 +1,27 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/reviews.css' %}">
+{% endblock %}
 
 {% block title %}Bewertung bearbeiten{% endblock %}
 
 {% block content %}
-<h1>Bewertung bearbeiten</h1>
+<div class="review-edit-wrapper">
+    <h1 class="review-edit-title">Bewertung bearbeiten</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Speichern</button>
-</form>
+    <form method="post" class="review-edit-form">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-<p>
-    <a href="{% url 'profil:profil_detail' pk=object.profile.user.pk %}">
-        Zurück zum Profil
-    </a>
-</p>
+        <div class="review-edit-actions">
+            <button type="submit" class="review-edit-submit">Speichern</button>
+            <a href="{% url 'profil:profil_detail' pk=object.profile.pk %}"
+               class="review-edit-back">
+                Zurück zum Profil
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}
