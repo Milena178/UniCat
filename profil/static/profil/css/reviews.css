@@ -1,0 +1,111 @@
+/* Bewertung schreiben */
+.review-form-wrapper {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Titel */
+.review-form-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Formular */
+.review-form {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.review-form p {
+    margin-bottom: 1.2rem;
+}
+
+/* Labels */
+.review-form label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #34495e;
+}
+
+/* Inputs */
+.review-form input[type="text"],
+.review-form textarea,
+.review-form select {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.95rem;
+    border: 1px solid #ccd1d6;
+    border-radius: 6px;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Fokus */
+.review-form input:focus,
+.review-form textarea:focus,
+.review-form select:focus {
+    outline: none;
+    border-color: #3d70e1;
+    box-shadow: 0 0 0 2px rgba(61,112,225,0.15);
+}
+
+/* Fehler */
+.review-form .errorlist {
+    margin: 0.3rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+    color: #dc3545;
+}
+
+/* =============================
+   Aktionen (Buttons)
+   ============================= */
+.review-form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Absenden */
+.review-submit {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: #3d70e1;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.review-submit:hover {
+    background: #345fc7;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Abbrechen */
+.review-cancel {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: #dc3545;
+    border-radius: 0.6rem;
+    text-decoration: none;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.review-cancel:hover {
+    background: #c82333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
