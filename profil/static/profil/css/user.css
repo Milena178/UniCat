@@ -1,5 +1,5 @@
 /* Grundlayout */
-.user-profile {
+.user-profil {
     max-width: 90%;
     margin: 0 auto;
     font-family: 'Roboto', sans-serif;
@@ -14,6 +14,7 @@
 
 /* Profil */
 .profile-top {
+    margin: 2rem;
     grid-area: profile;
     display: flex;
     gap: 40px;
@@ -149,7 +150,7 @@
 
 /* Bewertungen */
 .reviews {
-    margin-top: 0;
+    margin: 2rem;
     grid-area: reviews;
     flex: 1;
     background: #fff;
