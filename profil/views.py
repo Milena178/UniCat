@@ -208,7 +208,6 @@ def review_report(request, pk):
 #Kunden-Service Meldungen Ansehen
 @staff_member_required
 def cs_review_list(request):
-    """Liste aller gemeldeten Reviews"""
     reviews = Review.objects.filter(gemeldet=True).order_by('-erstellt_am')
     return render(request, 'admin/cs_review_list.html', {'reviews': reviews})
 
@@ -249,6 +248,7 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         review = self.get_object()
         return reverse_lazy('profil:profil_detail', kwargs={'pk': review.profile.pk})
 
+#Support Anfragen (Admin)
 @staff_member_required
 def support_request_answer(request, pk):
     anfrage = get_object_or_404(SupportRequest, pk=pk)
@@ -273,7 +273,7 @@ def support_request_answer(request, pk):
         {'anfrage': anfrage}
     )
 
-
+#Anfrage erstellen
 @login_required
 def support_request_create(request):
     if request.method == 'POST':
@@ -298,11 +298,13 @@ def support_request_create(request):
 
     return render(request, 'anfragen/support_request_form.html', {'form': form})
 
+#Liste der Anfragen
 @login_required
 def support_user_list(request):
     anfragen = SupportRequest.objects.filter(user=request.user)
     return render(request, 'anfragen/support_user_list.html', {'anfragen': anfragen})
 
+#Anfrage details (Chat)
 @login_required
 def support_request_detail(request, pk):
     anfrage = get_object_or_404(SupportRequest, pk=pk)
@@ -332,6 +334,7 @@ def support_request_detail(request, pk):
         {'anfrage': anfrage}
     )
 
+#Liste der anrfagen support
 @staff_member_required
 def support_request_list(request):
     anfragen = SupportRequest.objects.exclude(

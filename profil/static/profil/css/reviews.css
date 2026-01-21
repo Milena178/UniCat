@@ -66,9 +66,6 @@
     color: #dc3545;
 }
 
-/* =============================
-   Aktionen (Buttons)
-   ============================= */
 .review-form-actions {
     margin-top: 1.5rem;
     display: flex;
@@ -220,7 +217,7 @@
     color: #ffffff;
 }
 
-/* Bewertung löschen – Confirmation */
+/* Bewertung löschen*/
 .review-delete-wrapper {
     max-width: 520px;
     margin: 4rem auto;

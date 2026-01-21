@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, # Profil wird gelöscht, wenn User gelöscht wird
-        related_name='profile'    # Zugriff über user.profile
+        related_name='profile'
     )
 
     # Angezeigte Daten
@@ -59,7 +59,7 @@ class Review(models.Model):
         on_delete=models.CASCADE
     )
 
-    # NEU: genau ein Review pro Kauf
+    # ein Review pro Kauf
     gebot = models.OneToOneField(
         Gebot,
         on_delete=models.CASCADE,
@@ -175,6 +175,7 @@ class ReviewVote(models.Model):
         return f"{self.user.username} → {self.vote_type}"
 
 class SupportRequest(models.Model):
+    #Status vom request
     STATUS_OPEN = 'open'
     STATUS_ANSWERED = 'answered'
     STATUS_CLOSED = 'closed'
@@ -185,31 +186,40 @@ class SupportRequest(models.Model):
         (STATUS_CLOSED, 'Geschlossen'),
     ]
 
+    # User
+    # Wird der User gelöscht, werden seine Support Anfragen gelöscht
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='support_requests'
     )
+    # Betreff
     subject = models.CharField(max_length=200)
+    # Aktueller Status
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
         default=STATUS_OPEN
     )
+    # Zeitpunkt der Erstellung
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Anfrage #{self.id} – {self.subject}"
 
 class SupportMessage(models.Model):
+
+    # Wird die Anfrage gelöscht, werden auch alle Nachrichten gelöscht
     request = models.ForeignKey(
         SupportRequest,
         on_delete=models.CASCADE,
         related_name='messages'
     )
+
+    # Absender der Nachricht
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.TextField() #inhalt
+    created_at = models.DateTimeField(auto_now_add=True)  # Zeitpunkt

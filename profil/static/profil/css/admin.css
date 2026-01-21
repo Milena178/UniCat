@@ -329,7 +329,7 @@
     cursor: pointer;
 }
 
-/* Öffnen-Button */
+/* Öffnen Button */
 .cs-support .btn-secondary {
     background-color: #6c757d;
     color: #fff;
@@ -339,7 +339,7 @@
     background-color: #495057;
 }
 
-/* Löschen-Button */
+/* Löschen Button */
 .cs-support .btn-danger {
     background-color: #ff4a4a;
     color: #fff;
@@ -347,11 +347,6 @@
 
 .cs-support .btn-danger:hover {
     background-color: #c40000;
-}
-
-/* Zurück-Link */
-.cs-back {
-    margin-top: 30px;
 }
 
 .cs-back a {
@@ -379,7 +374,7 @@
     background-color: #495057;
 }
 
-/* Zurück-Link */
+/* Zurück Link */
 .cs-back {
     margin-top: 30px;
 }

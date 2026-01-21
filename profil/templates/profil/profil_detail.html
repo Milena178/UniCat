@@ -11,10 +11,8 @@
 
 <div class="user-profil">
 
-    <!-- PROFILKOPF -->
     <div class="profile-top">
 
-        <!-- LINKS -->
         <div class="profile-left">
             <h1 class="username_profil">{{ profile.username }}</h1>
 
@@ -34,7 +32,6 @@
             {% endif %}
         </div>
 
-        <!-- RECHTS -->
         {% if darf_private_daten_sehen %}
         <div class="profile-right">
             <h3>Private Informationen</h3>
@@ -55,7 +52,6 @@
 
     </div>
 
-<!-- BEWERTUNGEN -->
 <div class="reviews">
     <h2>Bewertungen</h2>
 
@@ -73,7 +69,13 @@
             </p>
             <p>{{ review.text }}</p>
 
-            <!-- Buttons nur für den Autor -->
+            {% if user.is_authenticated and user != review.author and not review.gemeldet %}
+                <form method="post" action="{% url 'profil:review_report' review.pk %}" class="review-report-form">
+                {% csrf_token %}
+                    <button type="submit" class="meldung-btn">Bewertung melden</button>
+                </form>
+            {% endif %}
+
             {% if user == review.author %}
                 <div class="review-actions">
                     <a href="{% url 'profil:review_edit' review.pk %}" class="btn btn-secondary btn-small">
@@ -91,11 +93,9 @@
     {% endfor %}
 </div>
 
-<!-- PRODUKTE + BUTTON -->
 <div class="profile-bottom">
 
     {% if user == profile.user %}
-    <!-- BUTTON separat -->
     <div class="product-actions">
         <a href="{% url 'produkt:meine_produkte' %}" class="btn btn-secondary">
             Produkte verwalten
@@ -103,7 +103,6 @@
     </div>
     {% endif %}
 
- <!-- PRODUKTE unter dem Button -->
     <h2>Aktive Produkte</h2>
 
     <div class="products">

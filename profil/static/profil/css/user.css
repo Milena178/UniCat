@@ -72,7 +72,6 @@
     margin-bottom: 2rem;
 }
 
-/* Button unter privaten Daten */
 .profile-right .btn {
     margin-top: auto;
     align-self: flex-start;
@@ -100,8 +99,8 @@
 /* Unterer Bereich*/
 .profile-bottom {
     display: flex;
-    flex-direction: column; /* damit Button oben, Produkte unten */
-    gap: 1rem; /* Abstand zwischen Button und Produkten */
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .profile-bottom h2 {
@@ -133,10 +132,10 @@
 
 .product-actions {
     display: flex;
-    gap: 1rem;          /* Abstand zwischen Buttons, falls mehrere */
+    gap: 1rem;
     justify-content: flex-start;
-    margin-bottom: 1rem; /* Abstand zu Produkten */
-    width: max-content;  /* verhindert, dass der Button die volle Breite einnimmt */
+    margin-bottom: 1rem;
+    width: max-content;
 }
 
 .no-image {
@@ -170,14 +169,12 @@
     margin-bottom: 12px;
 }
 
-/* Kleine Buttons unter der Bewertung */
 .review-actions {
     margin-top: 0.5rem;
     display: flex;
     gap: 0.5rem;
 }
 
-/* Kleine Buttons */
 .review-actions .btn-small {
     padding: 0.3rem 0.6rem;
     font-size: 0.85rem;
@@ -197,6 +194,29 @@
     background: #6c757d;
     color: #fff;
 }
+
+/* Meldung Button */
+.meldung-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+/* Hover-Effekt */
+.meldung-btn:hover {
+    background-color: #bb2d3b;
+}
+
+.review-report-form {
+    margin: 0;
+    display: inline;
+}
+
 /* Profil bearbeiten */
 .edit-profile-wrapper {
     max-width: 60%;
@@ -213,7 +233,6 @@
     color: #2c3e50;
 }
 
-/* Formular-Card */
 .edit-profile-form {
     background: #ffffff;
     padding: 2.5rem;
@@ -221,7 +240,6 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
-/* form.as_p Wrapper */
 .edit-profile-form p {
     margin-bottom: 1.25rem;
 }
@@ -251,7 +269,6 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Fokus */
 .edit-profile-form input:focus,
 .edit-profile-form textarea:focus,
 .edit-profile-form select:focus {
@@ -266,15 +283,6 @@
     margin-top: 0.25rem;
     font-size: 0.8rem;
     color: #7f8c8d;
-}
-
-/* Fehler */
-.edit-profile-form .errorlist {
-    margin: 0.4rem 0 0;
-    padding: 0;
-    list-style: none;
-    font-size: 0.85rem;
-    color: #dc3545;
 }
 
 /* Submit-Button */
@@ -300,7 +308,7 @@
     background: #2c52b0;
 }
 
-/* Checkbox (einheitlich) */
+/* Checkbox  */
 .edit-profile-form input[type="checkbox"] {
     accent-color: #3d70e1;
     width: 16px;
