@@ -1,13 +1,51 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'profil/css/user.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<h1>Profil bearbeiten</h1>
+<div class="edit-profile-wrapper">
+    <h1 class="edit-profile-title">Profil bearbeiten</h1>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Speichern</button>
-</form>
+    <form method="post" enctype="multipart/form-data" class="edit-profile-form">
+        {% csrf_token %}
+
+        {# Alle Felder außer Profilbild automatisch #}
+        {% for field in form %}
+            {% if field.name != 'profile_picture' %}
+                <p>{{ field.label_tag }}{{ field }}</p>
+            {% endif %}
+        {% endfor %}
+
+        {# Profilbildfeld separat #}
+        <div class="edit-profile-field edit-profile-picture-field">
+            {{ form.profile_picture.label_tag }}
+
+            {% if form.instance.profile_picture %}
+                <div class="profile-picture-preview">
+                    <img src="{{ form.instance.profile_picture.url }}" alt="Profilbild" class="profile-picture-img">
+                </div>
+            {% endif %}
+
+            <div class="profile-picture-inputs">
+                {# Input zum Ändern #}
+                {{ form.profile_picture }}
+
+                {# Zurücksetzen Checkbox mit Text davor #}
+                {% if form.profile_picture.field.widget.clear_checkbox_label %}
+                    <div class="clearable-file-input">
+                        <span class="clear-label">{{ form.profile_picture.clear_checkbox_label }}</span>
+                        {{ form.profile_picture.clear_checkbox }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <button type="submit" class="edit-profile-submit">Speichern</button>
+    </form>
+</div>
 
 {% endblock %}
