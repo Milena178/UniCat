@@ -1,0 +1,65 @@
+/* Sign-Up Formular */
+.signup-form {
+    max-width: 30%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #9f9679; /* wie Login-Formular */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(34, 14, 25, 0.2);
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+/* Überschrift */
+.signUp-title {
+    text-align: center;
+    margin: 1.5rem;
+    color: #220e19;
+    font-size: 1.8rem;
+}
+/* Labels und Inputs */
+.signup-form p label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: #220e19;
+    text-align: left;
+}
+
+.signup-form p input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #aabaae;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #220e19;
+    background-color: #e3d6bf; /* Hintergrund Input */
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.signup-form p input:focus {
+    border-color: #933b5b;
+    box-shadow: 0 0 0 2px rgba(147, 59, 91, 0.2);
+    outline: none;
+}
+
+/* Sign-Up Button */
+.signup-form .btn-signup {
+    display: inline-block;
+    background-color: #933b5b;
+    color: #e3d6bf;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 2em;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Hover Effekt */
+.signup-form .btn-signup:hover {
+    background-color: #933b5b;
+    color: #fff;
+}

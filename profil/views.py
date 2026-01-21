@@ -35,6 +35,9 @@ class CustomUserCreationForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ('username', 'first_name', 'last_name', 'email')
+        help_texts = {
+            'username': '',  #  der Standard Hilfe Text verschwindet
+        }
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

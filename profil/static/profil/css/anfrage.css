@@ -2,7 +2,7 @@
     max-width: 900px;
     margin: 50px auto;
     padding: 40px;
-    background: #ffffff;
+    background: #e3d6bf;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     font-family: 'Roboto', sans-serif;
@@ -12,55 +12,60 @@
 .cs-support-detail h1 {
     font-size: 26px;
     margin-bottom: 10px;
+    color: #220e19;
 }
 
 .cs-support-detail h2 {
     margin-top: 30px;
     font-size: 20px;
+    color: #220e19;
 }
 
 /* Zusatztext */
 .cs-support-detail .lead {
     font-size: 1.05rem;
-    color: #555;
+    color: #220e19;
 }
 
 /* Trennlinien */
 .cs-support-detail hr {
     margin: 25px 0;
     border: none;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #933b5b;
 }
 
 /* Nachrichten */
 .cs-support-detail .message {
-    background: #f8f9fb;
-    border: 1px solid #ddd;
+    background: #b5728a;
+    border: 1px solid #933b5b;
     border-radius: 6px;
     padding: 14px 18px;
     margin: 1rem;
+    color: #e3d6bf;
 }
 
 .cs-support-detail .message strong {
-    color: #222;
+    color: #220e19;
 }
 
 .cs-support-detail .message small {
-    color: #777;
+    color: #e3d6bf;
     margin-left: 6px;
 }
 
-/* Antwort Formular*/
+/* Antwort Formular */
 .cs-support-detail textarea {
     width: 100%;
     min-height: 120px;
     padding: 12px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #933b5b;
     font-size: 1rem;
     font-family: 'Roboto', sans-serif;
     resize: vertical;
-    margin:1rem;
+    margin: 1rem;
+    background: #e3d6bf;
+    color: #220e19;
 }
 
 /* Buttons */
@@ -73,27 +78,25 @@
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s ease;
+    color: #e3d6bf;
 }
 
 /* Antwort senden */
 .cs-support-detail .btn-primary {
-    background-color: #3d70e1;
-    color: #ffffff;
+    background-color: #933b5b;
 }
 
 .cs-support-detail .btn-primary:hover {
-    background-color: #1e40af;
+    background-color: #b5728a;
 }
 
 /* Admin: Anfrage schließen */
 .cs-support-detail .btn-close {
-    background-color: #c62828;
-    color: #ffffff;
-    margin-top: 10px;
+    background-color: #dc3545;
 }
 
 .cs-support-detail .btn-close:hover {
-    background-color: #8b0000;
+    background-color: #bb2d3b;
 }
 
 /* Zurück-Link */
@@ -104,8 +107,8 @@
 .cs-support-detail .cs-back a {
     display: inline-block;
     padding: 9px 16px;
-    background: #6c757d;
-    color: #ffffff;
+    background: #933b5b;
+    color: #e3d6bf;
     border-radius: 6px;
     text-decoration: none;
     font-size: 0.9rem;
@@ -113,27 +116,7 @@
 }
 
 .cs-support-detail .cs-back a:hover {
-    background: #495057;
-}
-
-/* Nachricht an Support */
-.cs-support-detail {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* Überschriften */
-.cs-support-detail h1 {
-    margin-bottom: 10px;
-}
-
-.cs-support-detail .lead {
-    color: #555;
-    margin-bottom: 30px;
+    background: #b5728a;
 }
 
 /* Formular */
@@ -149,6 +132,7 @@
     display: block;
     font-weight: 600;
     margin-bottom: 6px;
+    color: #220e19;
 }
 
 /* Inputs */
@@ -158,15 +142,18 @@
     width: 100%;
     padding: 10px 12px;
     border-radius: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid #933b5b;
     font-size: 14px;
     font-family: inherit;
+    background: #e3d6bf;
+    color: #220e19;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #1976d2;
+    border-color: #933b5b;
+    box-shadow: 0 0 0 2px rgba(147, 59, 91, 0.15);
 }
 
 /* Buttons */
@@ -185,22 +172,22 @@
 }
 
 .btn-primary {
-    background-color: #1976d2;
-    color: #ffffff;
+    background-color: #933b5b;
+    color: #e3d6bf;
 }
 
 .btn-primary:hover {
-    background-color: #125aa0;
+    background-color: #b5728a;
 }
 
 .btn-secondary {
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: #b5728a;
+    color: #e3d6bf;
     margin-left: 10px;
 }
 
 .btn-secondary:hover {
-    background-color: #cfcfcf;
+    background-color: #933b5b;
 }
 
 /* Support Nachrichten Liste */
@@ -211,11 +198,12 @@
 }
 
 .support-item {
-    border: 1px solid #ddd;
+    border: 1px solid #933b5b;
     border-radius: 6px;
     padding: 15px 18px;
     margin-bottom: 15px;
-    background: #fafafa;
+    background: #b5728a;
+    color: #e3d6bf;
 }
 
 .support-item-header {
@@ -227,7 +215,7 @@
 .support-status {
     font-size: 13px;
     font-weight: 600;
-    color: #555;
+    color: #220e19;
 }
 
 .support-item-actions {

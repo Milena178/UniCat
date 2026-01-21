@@ -18,7 +18,7 @@
     grid-area: profile;
     display: flex;
     gap: 40px;
-    background: #fff;
+    background: #b5728a;
     padding: 5rem;
     border-radius: 10px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
@@ -33,6 +33,7 @@
 }
 
 .username_profil {
+    color: #ffffff;
     font-size: 2.6rem;
     margin-bottom: 20px;
     text-align: center;
@@ -48,7 +49,7 @@
 
 .bio {
     font-size: 1.05rem;
-    color: #555;
+    color:  #e3d6bf;
 }
 
 /* Button unter Avatar + Bio */
@@ -59,17 +60,21 @@
 
 /* Rechter Bereich*/
 .profile-right {
-    background: #f8f9fa;
+    background:  #933b5b;
     padding: 2rem;
     border-radius: 8px;
+    border-color:  #e3d6bf;
+     box-shadow: 0 1px 2px 5px rgba(147, 59, 91, 0.2);
     display: flex;
     flex-direction: column;
 }
 .profile-right p{
     margin-bottom: 1rem;
+    color:  #e3d6bf
 }
 .profile-right h3 {
     margin-bottom: 2rem;
+    color: #ffffff;
 }
 
 .profile-right .btn {
@@ -87,13 +92,8 @@
 }
 
 .btn-primary {
-    background: #3d70e1;
-    color: #fff;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: #fff;
+    background: #933b5b;
+    color: #e3d6bf;
 }
 
 /* Unterer Bereich*/
@@ -117,7 +117,7 @@
 }
 
 .product-card {
-    background: #fff;
+    background: #aabaae;
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
@@ -140,7 +140,7 @@
 
 .no-image {
     height: 180px;
-    background: #ddd;
+    background:#e3d6bf;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,21 +152,25 @@
     margin: 2rem;
     grid-area: reviews;
     flex: 1;
-    background: #fff;
+    background: #9f9679;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+.review-title {
+    color: #220e19;
+    font-weight: bolder;
+}
 .rating-summary {
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .review-card {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
+    border-top: 1px solid #e3d6bf;
+    border-bottom: 1px solid #e3d6bf;
+    padding: 1rem;
 }
 
 .review-actions {
@@ -191,8 +195,8 @@
 }
 
 .btn-secondary {
-    background: #6c757d;
-    color: #fff;
+    background: #b5728a;
+    color: #e3d6bf;
 }
 
 /* Meldung Button */
@@ -230,11 +234,11 @@
     margin-bottom: 1.5rem;
     font-size: 2rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: #220e19;
 }
 
 .edit-profile-form {
-    background: #ffffff;
+    background: #9f9679;
     padding: 2.5rem;
     border-radius: 10px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
@@ -250,7 +254,7 @@
     margin-bottom: 0.4rem;
     font-size: 1.1rem;
     font-weight: 500;
-    color: #34495e;
+    color: #220e19;
 }
 
 /* Inputs */
@@ -265,7 +269,7 @@
     font-size: 0.95rem;
     border: 1px solid #ccd1d6;
     border-radius: 6px;
-    background: #fff;
+    background: #e3d6bf;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -273,7 +277,7 @@
 .edit-profile-form textarea:focus,
 .edit-profile-form select:focus {
     outline: none;
-    border-color: #3d70e1;
+    border-color:#933b5b;
     box-shadow: 0 0 0 2px rgba(61,112,225,0.15);
 }
 
@@ -291,8 +295,8 @@
     padding: 0.7rem 1.4rem;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #ffffff;
-    background: #3d70e1;
+    color: #e3d6bf;
+    background: #933b5b;
     border: none;
     border-radius: 0.6rem;
     cursor: pointer;
@@ -300,17 +304,17 @@
 }
 
 .edit-profile-submit:hover {
-    background: #345fc7;
+    background:#933b5b;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .edit-profile-submit:active {
-    background: #2c52b0;
+    background: #933b5b;
 }
 
 /* Checkbox  */
 .edit-profile-form input[type="checkbox"] {
-    accent-color: #3d70e1;
+    accent-color:#933b5b;
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -322,7 +326,7 @@
 .edit-profile-form input[type="checkbox"] + label,
 .edit-profile-form label[for$="-clear"] {
     font-size: 0.9rem;
-    color: #34495e;
+    color:#220e19;
     margin-bottom: 1rem;
 }
 
@@ -346,6 +350,5 @@
     height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid #ccd1d6;
+    border: 1px solid #220e19;
 }
-´

@@ -53,7 +53,7 @@
     </div>
 
 <div class="reviews">
-    <h2>Bewertungen</h2>
+    <h2 class="review-title">Bewertungen</h2>
 
     <p class="rating-summary">
         Durchschnitt: {{ profil_durchschnitt|default:"0" }} ★
@@ -115,7 +115,7 @@
                 {% else %}
                     <div class="no-image">Kein Bild</div>
                 {% endif %}
-                <h3>{{ produkt.name }}</h3>
+                <h3 class="produkt-title">{{ produkt.name }}</h3>
                 <p><strong>{{ produkt.mindestpreis }} €</strong></p>
             </a>
         </div>

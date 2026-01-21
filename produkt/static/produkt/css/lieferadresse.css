@@ -1,0 +1,63 @@
+/* Lieferadresse Formular */
+.lieferadresse-form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #9f9679;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Überschrift */
+.lieferadresse-title {
+    text-align: center;
+    margin: 1.5rem;
+    color: #220e19;
+    font-size: 1.8rem;
+}
+/* Label innerhalb des Formulars */
+.lieferadresse-form p label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: #220e19;
+    font-size: 0.95rem;
+}
+
+/* Inputs innerhalb des Formulars */
+.lieferadresse-form p input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid #aabaae;
+    border-radius: 6px;
+    background-color: #e3d6bf;
+    color: #220e19;
+    font-size: 0.95rem;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.lieferadresse-form p input:focus {
+    border-color: #933b5b;
+    box-shadow: 0 0 0 2px rgba(147, 59, 91, 0.2);
+    outline: none;
+}
+
+/* Submit Button */
+.lieferadresse-form .btn-primary {
+    background-color: #933b5b;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Hover Effekt */
+.lieferadresse-form .btn-primary:hover {
+    background-color: #220e19;
+}
