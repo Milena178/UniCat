@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% load produkt_tags %}
-{% block title %}Meine Produkte{% endblock %}
+{% load static %}
+
+{% block title %}Deine Produkte{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'produkt/css/produktmanager.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Meine Produkte</h1>
+<main>
+<h1>Manage deine Produkte</h1>
 <a href="{% url 'produkt:produkt_erstellen' %}" class="btn-primary">Neues Produkt erstellen</a>
 
 <!-- Filter-Links -->
@@ -18,93 +25,109 @@
 
 {% if not zeige_archiviert %}
     <!-- AKTIVE PRODUKTE -->
-    <h2>Aktive Produkte</h2>
-    {% for produkt in aktive_produkte %}
-        <div class="product-item">
-            <h3><a href="{% url 'produkt:produkt_detail' produkt.pk %}">{{ produkt.name }}</a></h3>
-            {% if produkt.bild %}
-                <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
-            {% else %}
-                <div class="no-image">Kein Bild</div>
-            {% endif %}
-            <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
-            <p>
-                <strong>Aktuelles Höchstgebot:</strong>
-                {% if produkt.hoechstgebot %}
-                    {{ produkt.hoechstgebot.biethoehe }} €
-                {% else %}
-                    Noch keine Gebote
-                {% endif %}
-            </p>
-            <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
-            {% if produkt.tags.exists %}
-                <div class="tags">
-                    {% for tag in produkt.tags.all %}
-                        <span class="tag">{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <p>
-                <strong>⏱️ Verbleibend:</strong>
-                <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
-            </p>
-        </div>
-    {% empty %}
-        <p>Sie haben keine aktiven Produkte.</p>
-    {% endfor %}
+    <div class="einleitung">
+        <h2>Produkte mit laufenden Auktionen</h2>
+        <p>Hier stehen alle Produkte, zu denen gerade noch die Auktion läuft.</p>
+    </div>
+    <div class="product-grid">
+        {% for produkt in aktive_produkte %}
+            <div class="product-card">
+                <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
+
+                    {% if produkt.bild %}
+                        <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                    {% else %}
+                        <div class="no-image"><strong>Kein Bild</strong></div>
+                    {% endif %}
+
+                    <h3>{{ produkt.name }}</h3>
+
+                    <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
+                    <p><strong>Aktuelles Höchstgebot:</strong>
+                        {% if produkt.hoechstgebot %}
+                            {{ produkt.hoechstgebot.biethoehe }} €
+                        {% else %}
+                            Noch keine Gebote
+                        {% endif %}
+                    </p>
+                    <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
+                    <p>
+                        <strong>Verbleibend:</strong>
+                        <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
+                    </p>
+                </a>
+            </div>
+        {% empty %}
+            <h3>Du hast gerade Produkte in Auktion.</h3>
+        {% endfor %}
+
+    </div>
 
     <!-- UNVERKAUFTE PRODUKTE -->
     {% if unverkaufte_produkte %}
+    <div class="einleitung">
         <h2>Unverkaufte Produkte (Auktion beendet)</h2>
+        <p>Hier stehen alle Produkte, zu denen die Auktion ausgelaufen ist. Du hast nun 2 Optionen:</p>
+        <p>  <strong>1.</strong> Du kannst das Produkt bearbeiten und erneut einstellen. Das geht maximal 2 Mal.</p>
+        <p>  <strong>2.</strong> Du kannst das Produkt archivieren. Es ist dann nicht mehr sichtbar.</p>
+    </div>
+
+    <div class="product-grid">
         {% for produkt in unverkaufte_produkte %}
-            <div class="product-item unverkauft">
+            <div class="product-card">
+                <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
+                    {% if produkt.bild %}
+                        <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                    {% else %}
+                        <div class="no-image"><strong>Kein Bild</strong></div>
+                    {% endif %}
+
                 <h3>{{ produkt.name }}</h3>
-                {% if produkt.bild %}
-                    <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
+                {% if produkt.hoechstgebot %}
+                    <div id="verkaufmeldung">
+                        <p ><strong>Das Produkt wurde verkauft!</strong></p>
+                        <p><strong>Warte auf Käufer!</strong></p>
+                    </div>
+                    <p><strong>Höchstes Gebot:</strong> {{ produkt.hoechstgebot.biethoehe }} €</p>
                 {% else %}
-                    <div class="no-image">Kein Bild</div>
+                    <p>Keine Gebote</p>
                 {% endif %}
                 <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
-                <p>
-                    <strong>Höchstes Gebot:</strong>
-                    {% if produkt.hoechstgebot %}
-                        {{ produkt.hoechstgebot.biethoehe }} € (nicht bestätigt)
-                    {% else %}
-                        Keine Gebote
-                    {% endif %}
-                </p>
                 <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
-                <p><strong>Status:</strong> Auktion beendet ohne Verkauf</p>
+
 
                 <div class="product-actions">
                     {% if produkt.kann_relistet_werden %}
-                        <a href="{% url 'produkt:produkt_bearbeiten' produkt.pk %}" class="btn-primary">
-                            🔄 Auktion erneut einstellen ({{ produkt.anzahlListungen }}/3)
+                        <a href="{% url 'produkt:produkt_bearbeiten' produkt.pk %}" class="btn-product-card">
+                            Auktion erneut einstellen
                         </a>
                     {% else %}
                         <p class="warning">⚠️ Maximale Anzahl Listungen erreicht (3/3)</p>
                     {% endif %}
 
-                    <form method="post" action="{% url 'produkt:produkt_archivieren' produkt.pk %}" style="display: inline;">
+                    <form method="post" action="{% url 'produkt:produkt_archivieren' produkt.pk %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn-secondary" onclick="return confirm('Produkt wirklich archivieren?')">
-                            📦 Produkt archivieren
+                        <button type="submit" class="btn-product-card" onclick="return confirm('Produkt wirklich archivieren?')">
+                            Produkt archivieren
                         </button>
                     </form>
                 </div>
+                </a>
             </div>
         {% endfor %}
+        </div>
     {% endif %}
 
     <!-- VERKAUFTE PRODUKTE -->
     {% if verkaufte_produkte %}
-        <h2>Verkaufte Produkte</h2>
-        <div class="verkaufte-produkte">
+        <div class="einleitung">
+            <h2>Verkaufte Produkte</h2>
+            <p>Hier stehen alle Produkte, zu denen die Auktion ausgelaufen ist. Der Käufer hat seinen Kauf bestätigt, du kannst das Produkt abschicken</p>
+        </div>
+        <div class="product-grid">
             {% for verkauf in verkaufte_produkte %}
-                <div class="verkauf-card">
-                    {% if verkauf.produkt.bild %}
-                        <img src="{{ verkauf.produkt.bild.url }}" alt="{{ verkauf.produkt.name }}" class="product-image-small">
-                    {% endif %}
+                <div class="product-card">
+                    <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
                     <h3>{{ verkauf.produkt.name }}</h3>
                     <p><strong>Verkaufspreis:</strong> {{ verkauf.gebot.biethoehe }} €</p>
 
@@ -131,11 +154,11 @@
                     {% endif %}
 
                     <p><strong>Verkauft am:</strong> {{ verkauf.gebot.kauf_bestaetigt_am|date:"d.m.Y H:i" }}</p>
+                    </a>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
-
 {% else %}
     <!-- ARCHIVIERTE PRODUKTE -->
     <h2>Archivierte Produkte</h2>
@@ -189,4 +212,6 @@
 })();
 {% endfor %}
 </script>
+
+    </main>
 {% endblock %}
