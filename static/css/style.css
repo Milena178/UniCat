@@ -6,11 +6,41 @@
     padding: 0;
 }
 
-header {
+body{
+    font-family: 'Roboto', sans-serif;
+    background-color: #e3d6bf;
+}
+
+main{
+    max-width: 1000px;
+    margin: 1em auto;
+}
+
+h1, h2, h3, h4 {
+    color: #933b5b;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h4 {
+    font-size: 1.125rem;
+}
+
+
+/*Header*/
+header{
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: #ffffff;
+    background-color: #933b5b;
 }
 
 header nav {
@@ -18,11 +48,9 @@ header nav {
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 2rem;
-    border-bottom: 1px solid #e5e7eb;
 }
 
 /* Logo */
-
 .logo img {
     height: 48px;
     width: auto;
@@ -30,7 +58,6 @@ header nav {
 }
 
 /* Navigation Links */
-
 .nav-links {
     display: flex;
     align-items: center;
@@ -41,10 +68,9 @@ header nav {
 }
 
 .nav-links a {
-    font-family: 'Roboto', sans-serif;
     position: relative;
     text-decoration: none;
-    color: #1f2937;
+    color: #e3d6bf;
     font-weight: 500;
     font-size: 1.1rem;
     margin: 2rem;
@@ -52,7 +78,7 @@ header nav {
 }
 
 .nav-links a:hover {
-    color: #2563eb;
+    color: #b6aa99;
 }
 
 /* Unterstrich-Hover*/
@@ -63,7 +89,6 @@ header nav {
     bottom: -6px;
     width: 0;
     height: 2px;
-    background-color: #2563eb;
     transition: width 0.2s ease;
 }
 
@@ -92,22 +117,20 @@ header nav {
 }
 
 .username {
-    font-family: 'Roboto', sans-serif;
     font-size: 1.3rem;
     font-weight: 600;
-    color: #111827;
+    color: #e3d6bf;
     text-decoration: none;
 }
 
 /* Logout */
 .logout-btn {
-    font-family: 'Roboto', sans-serif;
     font-size: 0.85rem;
     padding: 0.3rem 0.75rem;
     border-radius: 7px;
 
-    background-color: #ff4a4a;
-    color: #ffffff;
+    background-color: #b5728a;
+    color: #e3d6bf;
 
     border: none;
     outline: none;
@@ -117,7 +140,7 @@ header nav {
 
 
 .logout-btn:hover {
-    background-color: #eb2525;
+    background-color: #933b5b;
 }
 
 /* Profilbild */
@@ -138,32 +161,86 @@ header nav {
 }
 
 .login-btn {
-    font-family: 'Roboto', sans-serif;
     font-size: 0.85rem;
     padding: 0.3rem 0.75rem;
-    border-radius: 4px;
-    background-color: #2563eb;
+    border-radius: 10px;
+    background-color: #b5728a;
     color: #ffffff;
     text-decoration: none;
 }
 
 .login-btn:hover {
-    background-color: #1e40af;
+    background-color: #933b5b;
+    border: 1px solid #b5728a;
 }
 
 .signup-btn {
-    font-family: 'Roboto', sans-serif;
     font-size: 0.85rem;
     padding: 0.3rem 0.75rem;
-    border-radius: 4px;
-    background: transparent;
-    color: #2563eb;
-    border: 1px solid #2563eb;
+    border-radius: 10px;
+    color: #e3d6bf;
+    border: 1px solid #b5728a;
     text-decoration: none;
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .signup-btn:hover {
-    color: #1e40af;
-    border-color: #1e40af;
+    background-color:#b5728a;
+    border-color: #b5728a;
+}
+
+/*Startseite*/
+#start {
+    display: none;
+}
+
+.bildheader {
+    background-image:
+        linear-gradient(to top, rgba(34, 14, 25, 0.16),#220e19),
+        url("../images/atelier.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding-top: 4em;
+
+    text-align: center;
+    color: #e3d6bf;
+}
+
+.bildheader h3{
+    margin-top: 2em;
+    color: #e3d6bf;
+}
+
+.bildheader a{
+    display: inline-block;
+    color: #e3d6bf;
+    min-width: 25%;
+    border-radius: 2em;
+    padding: 1em 1em;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.buttons-gross,
+.login-gross{
+    background-color: #b5728a;
+    width: 20em;
+    padding-top: 3em;
+    text-align: center;
+    margin-top: 1em;
+}
+
+.login-gross{
+    width: 8em;
+    padding-top: 1.5em;
+    margin: 1em 0.5em 1em 0.5em;
+}
+
+.buttons-gross:hover,
+.login-gross:hover {
+    background-color: #933b5b;
 }
