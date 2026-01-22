@@ -2,7 +2,7 @@
     max-width: 850px;
     margin: 70px auto;
     padding: 50px;
-    background:#aabaae;
+    background:#9f9679;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
@@ -76,7 +76,7 @@
     max-width: 80%;
     margin: 50px auto;
     padding: 40px;
-    background: #aabaae;
+    background: #9f9679;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     font-family: 'Roboto', sans-serif;
@@ -143,12 +143,33 @@
     background-color: #933b5b;
 }
 
+/* Zurück-Link */
+.cs-back {
+    margin-top: 30px;
+}
+
+.cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #933b5b;
+    border-radius: 5px;
+    color: #e3d6bf;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-back a:hover {
+    background: #b5728a;
+    color: #e3d6bf;
+}
+
 /* Gemeldete Produkte */
 .cs-produkt {
     max-width: 80%;
     margin: 50px auto;
     padding: 40px;
-    background: #aabaae;
+    background: #9f9679;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     font-family: 'Roboto', sans-serif;
@@ -256,7 +277,7 @@
     max-width: 90%;
     margin: 50px auto;
     padding: 40px;
-    background: #aabaae;
+    background: #9f9679;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     font-family: 'Roboto', sans-serif;
@@ -328,6 +349,21 @@
     background-color: #bb2d3b;
 }
 
+.cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #933b5b;
+    border-radius: 5px;
+    color: #e3d6bf;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-back a:hover {
+    background: #b5728a;
+}
+
 
 .cs-support a.btn.btn-secondary {
     background-color: #b5728a;
@@ -336,4 +372,25 @@
 
 .cs-support a.btn.btn-secondary:hover {
     background-color: #933b5b;
+}
+
+/* Zurück Link */
+.cs-back {
+    margin-top: 30px;
+}
+
+.cs-back a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #933b5b;
+    border-radius: 5px;
+    color: #e3d6bf;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.cs-back a:hover {
+    background: #b5728a;
+    color: #e3d6bf;
 }
