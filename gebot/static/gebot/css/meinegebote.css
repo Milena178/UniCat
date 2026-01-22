@@ -64,13 +64,18 @@ tbody:last-child tr > * {
     padding: 0.3em 1em;
     border-radius: 0.8em;
     margin-left: 2em;
+    cursor: pointer;
+}
+
+.btn-gebot-annehmen:hover {
+    background-color: #b5728a;
 }
 
 .product-grid{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 1em;
 }
 
 .product-card{
@@ -111,4 +116,29 @@ tbody:last-child tr > * {
     aspect-ratio: 1/1;
     border-radius: 0.7em;
     margin-bottom: 0.5em;
+}
+
+.product-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5em;
+    margin-top: 0.5em;
+}
+
+.card-button{
+    background-color: #933b5b;
+    border: none;
+    padding: 0.3em 1em;
+    border-radius: 0.8em;
+    cursor: pointer;
+}
+
+.product-buttons a{
+    color: #e3d6bf;
+    text-align: center;
+}
+
+.card-button:hover{
+    background-color: #b5728a;
 }

@@ -236,15 +236,13 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 1em;
 }
 
 .product-card{
     background-color: #aabaae;
     width: 20em;
     border-radius: 1em;
-
-    margin-bottom: 1em;
     padding: 1.5em;
 }
 
