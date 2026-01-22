@@ -1,11 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'produkt/css/produkt_erstellen.css' %}">
+{% endblock %}
 
 {% block title %}Produkt erstellen{% endblock %}
 
 {% block content %}
+<div class="produkt-create-container">
     <h1>Neues Produkt erstellen</h1>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="produkt-form">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -22,9 +28,9 @@
             {% elif field.name == 'auktionsdauer_stunden' %}
                 {# Beide Felder zusammen anzeigen #}
                 <div class="field-wrapper">
-                    <label>
+                    <label class="field-label">
                         Auktionsdauer
-                        <span style="color: red;">*</span>
+                        <span class="required-asterisk">*</span>
                     </label>
 
                     <div class="duration-fields">
@@ -59,22 +65,22 @@
 
             {% elif field.name == 'tags' %}
                 <div class="field-wrapper">
-                    <label for="{{ field.id_for_label }}">
+                    <label for="{{ field.id_for_label }}" class="field-label">
                         {{ field.label }}
                         {% if field.field.required %}
-                            <span style="color: red;">*</span>
+                            <span class="required-asterisk">*</span>
                         {% endif %}
                     </label>
 
                     <!-- Spezielle Darstellung für Tags -->
                     <div class="tags-container">
                         {% for checkbox in field %}
-                            <label>
+                            <label class="tag-checkbox-label">
                                 {{ checkbox.tag }}
                                 <span>{{ checkbox.choice_label }}</span>
                             </label>
                         {% empty %}
-                            <p style="color: #999; margin: 0;">Keine Tags verfügbar. Ein Administrator muss Tags erstellen.</p>
+                            <p class="no-tags-message">Keine Tags verfügbar. Ein Administrator muss Tags erstellen.</p>
                         {% endfor %}
                     </div>
 
@@ -93,10 +99,10 @@
 
             {% else %}
                 <div class="field-wrapper">
-                    <label for="{{ field.id_for_label }}">
+                    <label for="{{ field.id_for_label }}" class="field-label">
                         {{ field.label }}
                         {% if field.field.required %}
-                            <span style="color: red;">*</span>
+                            <span class="required-asterisk">*</span>
                         {% endif %}
                     </label>
 
@@ -122,53 +128,31 @@
         {% endfor %}
 
         <div class="form-actions">
-            <button type="submit">✓ Produkt erstellen</button>
-            <a href="{% url 'produkt:produkt_liste' %}">✗ Abbrechen</a>
+            <button type="submit" class="btn-submit">✓ Produkt erstellen</button>
+            <a href="{% url 'produkt:produkt_liste' %}" class="btn-cancel">✗ Abbrechen</a>
         </div>
     </form>
+</div>
 
-    <script>
-        // Bild-Vorschau beim Hochladen
-        const bildInput = document.querySelector('input[type="file"]');
-        const imagePreview = document.getElementById('imagePreview');
+<script>
+    // Bild-Vorschau beim Hochladen
+    const bildInput = document.querySelector('input[type="file"]');
+    const imagePreview = document.getElementById('imagePreview');
 
-        if (bildInput) {
-            bildInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.innerHTML = '<img src="' + e.target.result + '" alt="Vorschau">';
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    imagePreview.innerHTML = '';
+    if (bildInput) {
+        bildInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = '<img src="' + e.target.result + '" alt="Vorschau">';
                 }
-            });
-        }
-    </script>
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '';
+            }
+        });
+    }
+</script>
 
-    <style>
-        .duration-fields {
-            display: flex;
-            gap: 20px;
-            margin-top: 8px;
-        }
-
-        .duration-input {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .duration-input label {
-            font-size: 14px;
-            font-weight: normal;
-            color: #666;
-        }
-
-        .duration-input input {
-            width: 100px;
-        }
-    </style>
 {% endblock %}
