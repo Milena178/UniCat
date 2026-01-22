@@ -14,13 +14,10 @@ from gebot.views import GebotForm
 from .models import Produkt
 from .forms import ProduktForm, ProduktFilterForm
 from .utils import generate_produkt_pdf
-from profil.models import Review
-
 
 #  Produkt anlegen
 @login_required
 def produkt_erstellen(request):
-    # ✅ GEÄNDERT: Spezifischer Exception-Check statt blankem except
     if not hasattr(request.user, 'profile'):
         messages.warning(request, "Bitte vervollständigen Sie zuerst Ihr Profil.")
         return redirect("profil:profil_erstellen")  # ✅ GEÄNDERT: Angepasst an deine URL
@@ -174,15 +171,12 @@ def produkt_liste(request):
 
 @login_required
 def meine_produkte(request):
-    # ✅ GEÄNDERT: Profil-Check am Anfang - AUSSERHALB try-except
     if not hasattr(request.user, 'profile'):
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profil:profil_erstellen")  # ✅ GEÄNDERT: Angepasst an deine URL
+        return redirect("profil:profil_erstellen")
 
     user_profile = request.user.profile
 
-    # ✅ GEÄNDERT: Gesamter Code jetzt OHNE try-except, damit Fehler sichtbar werden
-    # Filter-Parameter
     zeige_archiviert = request.GET.get('archiviert', 'false') == 'true'
 
     if zeige_archiviert:

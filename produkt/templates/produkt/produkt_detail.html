@@ -9,36 +9,54 @@
 {% endblock %}
 
 {% block content %}
+<main>
+<div class="productdetail-card">
 
     <h1>{{ produkt.name }}</h1>
 
-    <!-- Verkäufer Info -->
-    {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
-        <strong>Anbieter:</strong>
-        <a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">
-            {{ produkt.verkaeufer_profil.user.get_full_name|default:produkt.verkaeufer_profil.user.username }}
-        </a>
-        {% if produkt.verkaeufer_profil.bio %}
-            <br><small>{{ produkt.verkaeufer_profil.bio|truncatewords:20 }}</small>
-        {% endif %}
-    {% endif %}
-
-    <!-- Bild anzeigen -->
+    <div class="product-image-container">
     {% if produkt.bild %}
-            <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}">
+            <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
     {% else %}
-            <div class="no-image">📷 Kein Bild vorhanden</div>
+            <div class="no-image">Kein Bild vorhanden</div>
+    {% endif %}
+    </div>
+
+    <div class="product-seller-container"><a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">
+    {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
+        <h2>Zum Anbieter:</h2>
+        <div class="anbieter-info-container">
+            <div class="profile-image">
+                {% if user.profile.profile_picture %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="profile-pic">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Profilbild" class="default-profile-pic">
+                {% endif %}
+            </div>
+        <div class="profile-info">
+        <h3>{{ produkt.verkaeufer_profil.user.get_full_name|default:produkt.verkaeufer_profil.user.username }}</h3>
+        {% if produkt.verkaeufer_profil.bio %}
+            {{ produkt.verkaeufer_profil.bio|truncatewords:20 }}
+        {% endif %}
+        </div>
+        </div>
+    {% endif %}
+    </a></div>
+
+    {% if produkt.tags.exists %}
+        <div class="tags">
+            <h3>Kategorien</h3>
+            <div class="tags-container">
+                {% for tag in produkt.tags.all %}
+                    <span class="tag">#{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
 
-    <!-- Tags anzeigen -->
-    {% if produkt.tags.exists %}
-    <div class="tags">
-        <strong>Kategorien:</strong><br>
-        {% for tag in produkt.tags.all %}
-            <span class="tag">#{{ tag.name }}</span>
-        {% endfor %}
-    </div>
-    {% endif %}
+    <div class="auktionsbereich">
+
+    <h3>Auktionsinfos</h3>
 
     <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
 
@@ -52,11 +70,12 @@
     </p>
 
     {% if produkt.auktion_aktiv %}
-        <p>
-            <strong>Verbleibende Zeit:</strong>
-            <span id="countdown-{{ produkt.pk }}" class="countdown">{{ produkt|format_countdown }}</span>
+        <p class="countdown">
+            Verbleibend:
+            <span id="countdown-{{ produkt.pk }}" >{{ produkt|format_countdown }}</span>
         </p>
 
+        <div class="bieten">
         {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
             <h3>Gebot abgeben</h3>
 
@@ -64,27 +83,34 @@
                 <p style="color:red">{{ error }}</p>
             {% endif %}
 
-            <form method="post">
+            <form method="post" class="gebot-form">
                 {% csrf_token %}
-                {{ gebot_form.as_p }}
-                <button type="submit">Bieten</button>
+
+                <div class="form-group">
+
+                    <div class="input-wrapper">
+                        {{ gebot_form.biethoehe }}
+                        <span class="currency">€</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Bieten</button>
             </form>
+        </div>
         {% elif user.is_authenticated and user == produkt.verkaeufer_profil.user %}
-            <p><em>Sie können nicht auf Ihr eigenes Produkt bieten.</em></p>
+            <p class="countdown">Sie können nicht auf Ihr eigenes Produkt bieten.</p>
         {% else %}
-            <p>Bitte anmelden, um zu bieten.</p>
+            <p class="countdown">Bitte anmelden, um zu bieten.</p>
         {% endif %}
+        </div>
     {% else %}
-        <p><strong>Auktion beendet</strong></p>
+        <p class="countdown">Auktion beendet</p>
     {% endif %}
 
     <!-- PDF Download & Navigation -->
     <div class="actions">
         <a href="{% url 'produkt:produkt_pdf' produkt.pk %}" class="btn-download">
             📄 Produktinfo als PDF herunterladen
-        </a>
-        <a href="{% url 'produkt:produkt_liste' %}" class="btn-back">
-            ← Zurück zur Übersicht
         </a>
     </div>
 
@@ -99,6 +125,8 @@
         {% endif %}
     {% endif %}
 
+    </div>
+
      <script>
         {% if produkt.auktion_aktiv %}
         // Live Countdown
@@ -111,7 +139,7 @@
 
             if (remaining <= 0) {
                 countdownEl.textContent = 'Auktion beendet';
-                countdownEl.style.color = 'red';
+                countdownEl.parentElement.classList.add('urgent');
                 location.reload(); // Seite neu laden
                 return;
             }
@@ -128,10 +156,11 @@
 
             countdownEl.textContent = text;
 
-            // Warnung bei weniger als 5 Minuten
-            if (remaining < 5 * 60 * 1000) {
-                countdownEl.style.color = 'red';
-                countdownEl.style.fontWeight = 'bold';
+            // Hintergrund rot bei weniger als 3 Stunden
+            if (remaining < 3 * 60 * 60 * 1000) {
+                countdownEl.parentElement.classList.add('urgent');
+            } else {
+                countdownEl.parentElement.classList.remove('urgent');
             }
         }
 
@@ -140,12 +169,6 @@
         {% endif %}
      </script>
 
-    <style>
-        .countdown {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2c5aa0;
-        }
-    </style>
-
+</div>
+</main>
 {% endblock %}
