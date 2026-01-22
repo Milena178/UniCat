@@ -1,0 +1,110 @@
+/* Haupt-Container */
+.produkt-bearbeiten-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #9f9679;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Überschrift */
+.produkt-bearbeiten-container h1 {
+    margin-bottom: 24px;
+    text-align: center;
+    color: #220e19;
+}
+
+/* Info-Box */
+.produkt-bearbeiten-container .info-box {
+    background: #e3d6bf;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 6px;
+    border: solid 3px #933b5b;
+    border-right: #933b5b;
+    border-top: #933b5b;
+}
+
+/* Formular */
+.produkt-bearbeiten-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Formular-Gruppen */
+.produkt-bearbeiten-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.produkt-bearbeiten-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Inputs, Textarea, Select */
+.produkt-bearbeiten-form input,
+.produkt-bearbeiten-form textarea,
+.produkt-bearbeiten-form select {
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #e3d6bf;
+    border: solid 1px #9f9679;
+}
+
+/* Fokus-Zustand */
+.produkt-bearbeiten-form input:focus,
+.produkt-bearbeiten-form textarea:focus,
+.produkt-bearbeiten-form select:focus {
+    outline: none;
+    border-color: #933b5b;
+}
+
+/* Aktuelles Bild */
+.produkt-bearbeiten-container .current-image {
+    margin-bottom: 10px;
+}
+
+.produkt-bearbeiten-container .current-image img {
+    display: block;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+/* Formular-Aktionen */
+.produkt-bearbeiten-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+/* Buttons */
+.produkt-bearbeiten-form .btn-primary {
+    background: #933b5b;
+    color: #e3d6bf;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.produkt-bearbeiten-form .btn-primary:hover {
+    background: #b5728a;
+}
+
+.produkt-bearbeiten-form .btn-secondary {
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #b5728a;
+    color: #e3d6bf;
+}
+
+.produkt-bearbeiten-form .btn-secondary:hover {
+    background: #b5728a;
+}

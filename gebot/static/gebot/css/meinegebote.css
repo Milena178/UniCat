@@ -10,30 +10,25 @@ table{
     background-color: #e3d6bf;
     width: 100%;
     border-collapse: collapse;
+    border: 2px solid #933b5b;
+    box-shadow: 0 0 1px 3px #933b5b;
     border-radius: 0.7em;
 }
 
 th {
     color: #933b5b;
-    border: 2px solid #9f9679;
-    border-bottom: 4px solid #9f9679;
-    border-top: none;
-    border-left: none;
+    border: 2px solid #933b5b;
+    border-radius: 3px;
     padding: 0.5em;
     text-align: center;
 }
 
 th:first-child {
-    border-right: 4px solid #9f9679;
-}
-
-th:last-child {
-
-    border-right: none;
+    border-right: 2px solid #933b5b;
 }
 
 td {
-    border: 2px solid #9f9679;
+    border: 2px solid #933b5b;
     border-left: none;
     padding: 0.5em;
     text-align: center;
@@ -49,7 +44,7 @@ td:last-child {
 }
 
 td:first-child {
-    border-right: 4px solid #9f9679;
+    border-right: 2px solid #933b5b;
     font-weight: bold;
 }
 
@@ -64,18 +59,13 @@ tbody:last-child tr > * {
     padding: 0.3em 1em;
     border-radius: 0.8em;
     margin-left: 2em;
-    cursor: pointer;
-}
-
-.btn-gebot-annehmen:hover {
-    background-color: #b5728a;
 }
 
 .product-grid{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 1em;
+    justify-content: space-between;
 }
 
 .product-card{
@@ -116,29 +106,4 @@ tbody:last-child tr > * {
     aspect-ratio: 1/1;
     border-radius: 0.7em;
     margin-bottom: 0.5em;
-}
-
-.product-buttons{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.5em;
-    margin-top: 0.5em;
-}
-
-.card-button{
-    background-color: #933b5b;
-    border: none;
-    padding: 0.3em 1em;
-    border-radius: 0.8em;
-    cursor: pointer;
-}
-
-.product-buttons a{
-    color: #e3d6bf;
-    text-align: center;
-}
-
-.card-button:hover{
-    background-color: #b5728a;
 }
