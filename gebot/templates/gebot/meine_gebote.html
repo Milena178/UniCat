@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 {% load produkt_tags %}
+{% load static %}
 
 {% block title %}Meine Gebote{% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'gebot/css/meinegebote.css' %}">
+{% endblock %}
+
 {% block content %}
+<main>
 <h1>Meine Gebote</h1>
 
+<div class="gebote">
 <h2>Aktive & Beendete Gebote</h2>
 <table>
     <tr>
@@ -41,12 +48,12 @@
                     {% endif %}
                 {% else %}
                     {% if gebot.ist_gewonnen %}
-                        <strong>Gewonnen 🏆</strong>
+                        Gewonnen 🏆
                         <form method="post"
                               action="{% url 'gebot:kauf_bestaetigen' gebot.pk %}"
                               style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn-primary">
+                            <button type="submit" class="btn-gebot-annehmen">
                                 Gewonnenes Produkt kaufen
                             </button>
                         </form>
@@ -62,16 +69,19 @@
         </tr>
     {% endfor %}
 </table>
+</div>
 
 {% if gekaufte_produkte %}
     <h2>Gekaufte Produkte</h2>
-    <div class="gekaufte-produkte">
+    <div class="product-grid">
         {% for gebot in gekaufte_produkte %}
-            <div class="produkt-card">
+            <div class="product-card">
                 {% if gebot.produkt.bild %}
                     <img src="{{ gebot.produkt.bild.url }}"
                          alt="{{ gebot.produkt.name }}"
                          class="product-image-small">
+                {% else %}
+                    <div class="no-image"><strong>Kein Bild</strong></div>
                 {% endif %}
 
                 <h3>{{ gebot.produkt.name }}</h3>
@@ -104,7 +114,6 @@
                 {% endif %}
 
             </div>
-            <hr>
         {% endfor %}
     </div>
 {% endif %}
@@ -142,4 +151,5 @@
 {% endif %}
 {% endfor %}
 </script>
+</main>
 {% endblock %}

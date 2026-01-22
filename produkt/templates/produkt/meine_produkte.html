@@ -11,15 +11,15 @@
 {% block content %}
 <main>
 <h1>Manage deine Produkte</h1>
-<a href="{% url 'produkt:produkt_erstellen' %}" class="btn-primary">Neues Produkt erstellen</a>
+<a href="{% url 'produkt:produkt_erstellen' %}" class="btn-new">Neues Produkt erstellen</a>
 
 <!-- Filter-Links -->
 <div class="filter-tabs">
     <a href="{% url 'produkt:meine_produkte' %}" class="{% if not zeige_archiviert %}active{% endif %}">
-        Aktive & Unverkaufte Produkte
+        Aktive & unverkaufte Produkte anzeigen
     </a>
     <a href="{% url 'produkt:meine_produkte' %}?archiviert=true" class="{% if zeige_archiviert %}active{% endif %}">
-        Archivierte Produkte
+        Archivierte Produkte anzeigen
     </a>
 </div>
 
@@ -162,8 +162,9 @@
 {% else %}
     <!-- ARCHIVIERTE PRODUKTE -->
     <h2>Archivierte Produkte</h2>
+    <div class="product-grid">
     {% for produkt in archivierte_produkte %}
-        <div class="product-item archiviert">
+        <div class="product-card">
             <h3>{{ produkt.name }}</h3>
             {% if produkt.bild %}
                 <img src="{{ produkt.bild.url }}" alt="{{ produkt.name }}" class="product-image">
@@ -173,17 +174,14 @@
             <p><strong>Mindestpreis:</strong> {{ produkt.mindestpreis }} €</p>
             <p><strong>Listung:</strong> {{ produkt.anzahlListungen }}/3</p>
             <p><strong>Erstellt am:</strong> {{ produkt.erstelltAm|date:"d.m.Y H:i" }}</p>
-            {% if produkt.tags.exists %}
-                <div class="tags">
-                    {% for tag in produkt.tags.all %}
-                        <span class="tag">{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-            {% endif %}
+
         </div>
+
     {% empty %}
         <p>Keine archivierten Produkte vorhanden.</p>
     {% endfor %}
+
+    </div>
 {% endif %}
 
 <script>

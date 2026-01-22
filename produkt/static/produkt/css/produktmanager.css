@@ -1,3 +1,37 @@
+.btn-new{
+    display: inline-block;
+    color: #e3d6bf;
+    min-width: 25%;
+    border-radius: 2em;
+    padding: 1em 1em;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+
+    background-color: #b5728a;
+    width: 20em;
+    text-align: center;
+}
+
+.btn-new:hover{
+    background-color: #933b5b;
+}
+
+.filter-tabs a{
+    display: inline-block;
+    color: #e3d6bf;
+    background-color: #933b5b;
+    border-radius: 2em;
+    padding: 0.5em 1.5em;
+    margin: 1em 0.5em 1em 0;
+    text-decoration: none;
+}
+
+.btn-new:hover{
+    background-color: #b5728a;
+}
+
+
 .einleitung{
     margin-bottom: 1em;
 }
