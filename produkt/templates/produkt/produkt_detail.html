@@ -22,6 +22,10 @@
     {% endif %}
     </div>
 
+
+    <p class="product-description">{{ produkt.beschreibung }}</p>
+
+
     <div class="product-seller-container"><a href="{% url 'profil:profil_detail' produkt.verkaeufer_profil.pk %}">
     {% if user.is_authenticated and user != produkt.verkaeufer_profil.user %}
         <h2>Zum Anbieter:</h2>

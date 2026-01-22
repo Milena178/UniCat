@@ -37,6 +37,11 @@
     font-size: 1.5em;
 }
 
+.product-description {
+    color: #933b5b;
+    margin-bottom: 2em;
+}
+
 .product-seller-container {
     background-color: #e3d6bf;
     border: 10px solid #933b5b;
