@@ -37,7 +37,6 @@ class ProduktForm(forms.ModelForm):
             "bild",
             "tags",
             "mindestpreis",
-            # auktionsdauer wird nicht direkt verwendet
         ]
 
         widgets = {
@@ -52,7 +51,7 @@ class ProduktForm(forms.ModelForm):
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].required = False
 
-        # Wenn Produkt bearbeitet wird, Stunden/Minuten aus auktionsdauer extrahieren
+        # Wenn Produkt bearbeitet wird, Stunden und Minuten aus auktionsdauer extrahieren
         if self.instance and self.instance.pk and hasattr(self.instance,
                                                           'auktionsdauer') and self.instance.auktionsdauer:
             total_seconds = int(self.instance.auktionsdauer.total_seconds())
@@ -67,7 +66,7 @@ class ProduktForm(forms.ModelForm):
         stunden = cleaned_data.get('auktionsdauer_stunden', 0)
         minuten = cleaned_data.get('auktionsdauer_minuten', 0)
 
-        # Validierung: Mindestens 1 Minute Auktionsdauer
+        # Mindestens 1 Minute Auktionsdauer
         total_minutes = (stunden * 60) + minuten
 
         if total_minutes < 1:

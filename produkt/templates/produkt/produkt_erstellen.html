@@ -24,7 +24,6 @@
 
         {% for field in form %}
             {% if field.name == 'auktionsdauer_minuten' %}
-                {# Minuten-Feld wird zusammen mit Stunden-Feld angezeigt, daher hier überspringen #}
             {% elif field.name == 'auktionsdauer_stunden' %}
                 {# Beide Felder zusammen anzeigen #}
                 <div class="field-wrapper">
@@ -72,7 +71,6 @@
                         {% endif %}
                     </label>
 
-                    <!-- Spezielle Darstellung für Tags -->
                     <div class="tags-container">
                         {% for checkbox in field %}
                             <label class="tag-checkbox-label">
@@ -135,7 +133,7 @@
 </div>
 
 <script>
-    // Bild-Vorschau beim Hochladen
+    // Bild Vorschau beim Hochladen
     const bildInput = document.querySelector('input[type="file"]');
     const imagePreview = document.getElementById('imagePreview');
 

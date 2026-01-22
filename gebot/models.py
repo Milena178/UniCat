@@ -31,7 +31,6 @@ class Gebot(models.Model):
         return f"{self.biethoehe} € auf {self.produkt}"
 
     def ist_gewonnen(self):
-        """Prüft ob dies das Gewinner-Gebot ist"""
         return (
                 not self.produkt.auktion_aktiv() and
                 self == self.produkt.hoechstgebot()

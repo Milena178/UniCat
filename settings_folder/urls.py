@@ -29,6 +29,6 @@ urlpatterns = [
     path('user/', include('profil.urls')),
 ]
 
-# Für Media-Dateien (Bilder, PDFs) im Development
+# Für Media-Dateien (Bilder, PDFs)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

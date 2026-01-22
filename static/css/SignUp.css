@@ -3,7 +3,7 @@
     max-width: 30%;
     margin: 2rem auto;
     padding: 2rem;
-    background-color: #9f9679; /* wie Login-Formular */
+    background-color: #9f9679;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(34, 14, 25, 0.2);
     font-family: 'Roboto', sans-serif;
@@ -34,7 +34,7 @@
     border-radius: 6px;
     font-size: 0.95rem;
     color: #220e19;
-    background-color: #e3d6bf; /* Hintergrund Input */
+    background-color: #e3d6bf;
     transition: border 0.3s, box-shadow 0.3s;
 }
 

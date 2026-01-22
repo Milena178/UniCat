@@ -20,7 +20,7 @@ from .utils import generate_produkt_pdf
 def produkt_erstellen(request):
     if not hasattr(request.user, 'profile'):
         messages.warning(request, "Bitte vervollständigen Sie zuerst Ihr Profil.")
-        return redirect("profil:profil_erstellen")  # ✅ GEÄNDERT: Angepasst an deine URL
+        return redirect("profil:profil_erstellen")
 
     user_profile = request.user.profile
 
@@ -205,7 +205,7 @@ def meine_produkte(request):
             elif produkt.ist_unverkauft():
                 unverkaufte_produkte.append(produkt)
 
-        # Verkaufte Produkte (kauf_bestaetigt=True), egal ob archiviert oder nicht
+        # Verkaufte Produkte, egal ob archiviert oder nicht
         verkaufte_gebote = Gebot.objects.filter(
             produkt__verkaeufer_profil=user_profile,
             kauf_bestaetigt=True

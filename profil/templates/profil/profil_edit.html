@@ -13,7 +13,7 @@
     <form method="post" enctype="multipart/form-data" class="edit-profile-form">
         {% csrf_token %}
 
-        {# Alle Felder außer Profilbild automatisch #}
+        {# Alle Felder außer Profilbild #}
         {% for field in form %}
             {% if field.name != 'profile_picture' %}
                 <p>{{ field.label_tag }}{{ field }}</p>
@@ -31,10 +31,9 @@
             {% endif %}
 
             <div class="profile-picture-inputs">
-                {# Input zum Ändern #}
                 {{ form.profile_picture }}
 
-                {# Zurücksetzen Checkbox mit Text davor #}
+                {# Zurücksetzen Checkbox #}
                 {% if form.profile_picture.field.widget.clear_checkbox_label %}
                     <div class="clearable-file-input">
                         <span class="clear-label">{{ form.profile_picture.clear_checkbox_label }}</span>

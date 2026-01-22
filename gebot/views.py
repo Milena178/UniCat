@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.contrib import messages
 from django.utils import timezone
 from .models import Gebot
 from produkt.models import Produkt
 from django import forms
-from profil.forms import LieferadresseForm
 
 class GebotForm(forms.ModelForm):
     class Meta:

@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -36,7 +36,7 @@ class CustomUserCreationForm(forms.ModelForm):
         model = get_user_model()
         fields = ('username', 'first_name', 'last_name', 'email')
         help_texts = {
-            'username': '',  #  der Standard Hilfe Text verschwindet
+            'username': '',
         }
 
     def clean_password2(self):
@@ -121,7 +121,7 @@ def review_create(request, gebot_id):
     if profile.user == request.user:
         return redirect('profil:profil_detail', pk=profile.pk)
 
-    # Schon bewertet?
+    # Schon bewertet
     if hasattr(gebot, 'review'):
         messages.warning(request, "Dieser Kauf wurde bereits bewertet.")
         return redirect('profil:profil_detail', pk=profile.pk)
@@ -162,7 +162,7 @@ class ProfileDetailView(DetailView):
         durchschnitt = self.object.reviews.aggregate(avg_sterne=Avg('sterne'))['avg_sterne']
         context['profil_durchschnitt'] = round(durchschnitt or 0, 2)
 
-        # Private Daten sichtbar?
+        # Private Daten sichtbarkeit
         user = self.request.user
         context['darf_private_daten_sehen'] = False
 
@@ -172,7 +172,7 @@ class ProfileDetailView(DetailView):
                 context['darf_private_daten_sehen'] = True
                 context['darf_email_sehen'] = True
             else:
-                # Käufer?
+                # Käufer
                 hat_gekauft = Gebot.objects.filter(
                     produkt__verkaeufer_profil=self.object,
                     bieter__user=user,
@@ -188,7 +188,7 @@ class ProfileDetailView(DetailView):
             )
 
             if user == self.object.user:
-                # Eigener Nutzer: alles sehen
+                # Nutzer: alles sehen
                 context['user_produkte'] = produkte
             else:
                 # Fremde Nutzer: nur aktive, nicht archivierte Produkte

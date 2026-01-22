@@ -52,7 +52,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Redirect nach Login / Logout
-LOGIN_REDIRECT_URL = '/home/'   # oder name='home', wenn du namespaced URLs verwendest
+LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/home/'  # Nach Logout auf Home
 LOGIN_URL = '/home/'  # Passe an deine Login-URL an
 

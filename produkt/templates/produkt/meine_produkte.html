@@ -24,7 +24,7 @@
 </div>
 
 {% if not zeige_archiviert %}
-    <!-- AKTIVE PRODUKTE -->
+    <!-- Aktive Produkte -->
     <div class="einleitung">
         <h2>Produkte mit laufenden Auktionen</h2>
         <p>Hier stehen alle Produkte, zu denen gerade noch die Auktion läuft.</p>
@@ -63,7 +63,7 @@
 
     </div>
 
-    <!-- UNVERKAUFTE PRODUKTE -->
+    <!-- Unverkaufte Produkte -->
     {% if unverkaufte_produkte %}
     <div class="einleitung">
         <h2>Unverkaufte Produkte (Auktion beendet)</h2>
@@ -118,7 +118,7 @@
         </div>
     {% endif %}
 
-    <!-- VERKAUFTE PRODUKTE -->
+    <!-- Verkaufte Produkte -->
     {% if verkaufte_produkte %}
         <div class="einleitung">
             <h2>Verkaufte Produkte</h2>
@@ -160,7 +160,7 @@
         </div>
     {% endif %}
 {% else %}
-    <!-- ARCHIVIERTE PRODUKTE -->
+    <!-- Archivierte Produkte -->
     <h2>Archivierte Produkte</h2>
     <div class="product-grid">
     {% for produkt in archivierte_produkte %}

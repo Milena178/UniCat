@@ -22,7 +22,7 @@ class Produkt(models.Model):
         'profil.UserProfile',
         on_delete=models.CASCADE,
         related_name="produkte",
-        null = True, #  WICHTIG, AM ENDE MUSS DAS WEG!
+        null = True,
         blank = True
     )
 
@@ -90,7 +90,6 @@ class Produkt(models.Model):
 
     #  wurde das Produkt verkauft?
     def ist_unverkauft(self):
-        """Auktion beendet, aber kein Gebot oder Gebot nicht bestätigt"""
         if not self.auktion_beendet():
             return False
 
@@ -108,11 +107,6 @@ class Produkt(models.Model):
         return self.anzahlListungen < 3
 
     def archive(self):
-        """
-        WICHTIG: Archiviert nur wenn:
-        1. Produkt wurde verkauft (Gebot bestätigt), ODER
-        2. Produkt wurde bereits 3x gelistet und ist immer noch unverkauft
-        """
         hoechstgebot = self.hoechstgebot()
 
         # Fall 1: Produkt wurde verkauft
@@ -128,7 +122,6 @@ class Produkt(models.Model):
             return
 
     def relisten(self):
-        """Produkt erneut einstellen - NUR Counter erhöhen und Status zurücksetzen"""
         if self.anzahlListungen >= 3:
             return False
 

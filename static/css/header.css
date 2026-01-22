@@ -44,7 +44,6 @@ header nav {
     color: #b6aa99;
 }
 
-/* Unterstrich-Hover*/
 .nav-links a::after {
     content: "";
     position: absolute;

@@ -6,7 +6,7 @@ from gebot.models import Gebot
 
 
 def user_directory_path(instance, filename):
-    # Profilbilder landen unter: media/profile_pictures/user_<id>/<filename>
+    # Profilbilder landen
     return f'profile_pictures/user_{instance.user.id}/{filename}'
 
 class UserProfile(models.Model):
@@ -186,7 +186,6 @@ class SupportRequest(models.Model):
         (STATUS_CLOSED, 'Geschlossen'),
     ]
 
-    # User
     # Wird der User gelöscht, werden seine Support Anfragen gelöscht
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
