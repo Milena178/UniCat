@@ -16,15 +16,16 @@ from .forms import ProduktForm, ProduktFilterForm
 from .utils import generate_produkt_pdf
 from profil.models import Review
 
+
 #  Produkt anlegen
 @login_required
 def produkt_erstellen(request):
-    # Prüfe ob User ein Profil hat, falls nicht -> erstellen lassen
-    try:
-        user_profile = request.user.profile
-    except:
-        messages.warning(request, "Bitte vervolständigen Sie zuerst Ihr Profil.")
-        return redirect("profil:profil_edit",pk=request.user.profile.pk)
+    # ✅ GEÄNDERT: Spezifischer Exception-Check statt blankem except
+    if not hasattr(request.user, 'profile'):
+        messages.warning(request, "Bitte vervollständigen Sie zuerst Ihr Profil.")
+        return redirect("profil:profil_erstellen")  # ✅ GEÄNDERT: Angepasst an deine URL
+
+    user_profile = request.user.profile
 
     if request.method == "POST":
         form = ProduktForm(request.POST, request.FILES)
@@ -41,6 +42,7 @@ def produkt_erstellen(request):
     return render(request, "produkt/produkt_erstellen.html", {
         "form": form
     })
+
 
 #  Produkt anzeigen
 def produkt_detail(request, pk):
@@ -172,64 +174,66 @@ def produkt_liste(request):
 
 @login_required
 def meine_produkte(request):
-    try:
-        user_profile = request.user.profile
-
-        # Filter-Parameter
-        zeige_archiviert = request.GET.get('archiviert', 'false') == 'true'
-
-        if zeige_archiviert:
-            # Archivierte Produkte
-            produkte = Produkt.objects.filter(
-                verkaeufer_profil=user_profile,
-                istArchiviert=True
-            )
-            archivierte_produkte = produkte
-            aktive_produkte = []
-            unverkaufte_produkte = []
-            verkaufte_produkte = []
-        else:
-            # Aktive und unverkaufte Produkte
-            alle_produkte = Produkt.objects.filter(
-                verkaeufer_profil=user_profile,
-                istArchiviert=False
-            )
-
-            aktive_produkte = []
-            unverkaufte_produkte = []
-
-            for produkt in alle_produkte:
-                if produkt.auktion_aktiv():
-                    aktive_produkte.append(produkt)
-                elif produkt.ist_unverkauft():
-                    unverkaufte_produkte.append(produkt)
-
-            # Verkaufte Produkte (kauf_bestaetigt=True), egal ob archiviert oder nicht
-            verkaufte_gebote = Gebot.objects.filter(
-                produkt__verkaeufer_profil=user_profile,
-                kauf_bestaetigt=True
-            ).select_related('produkt', 'bieter')
-
-            verkaufte_produkte = []
-            for gebot in verkaufte_gebote:
-                verkaufte_produkte.append({
-                    'produkt': gebot.produkt,
-                    'gebot': gebot,
-                    'kaeufer': gebot.bieter
-                })
-
-            archivierte_produkte = []
-
-        return render(request, "produkt/meine_produkte.html", {
-            "aktive_produkte": aktive_produkte,
-            "unverkaufte_produkte": unverkaufte_produkte,
-            "verkaufte_produkte": verkaufte_produkte,
-            "archivierte_produkte": archivierte_produkte,
-            "zeige_archiviert": zeige_archiviert
-        })
-    except:
+    # ✅ GEÄNDERT: Profil-Check am Anfang - AUSSERHALB try-except
+    if not hasattr(request.user, 'profile'):
         messages.warning(request, "Bitte erstellen Sie zuerst Ihr Profil.")
-        return redirect("profil:profil_edit", pk=request.user.profile.pk)
+        return redirect("profil:profil_erstellen")  # ✅ GEÄNDERT: Angepasst an deine URL
+
+    user_profile = request.user.profile
+
+    # ✅ GEÄNDERT: Gesamter Code jetzt OHNE try-except, damit Fehler sichtbar werden
+    # Filter-Parameter
+    zeige_archiviert = request.GET.get('archiviert', 'false') == 'true'
+
+    if zeige_archiviert:
+        # Archivierte Produkte
+        produkte = Produkt.objects.filter(
+            verkaeufer_profil=user_profile,
+            istArchiviert=True
+        )
+        archivierte_produkte = produkte
+        aktive_produkte = []
+        unverkaufte_produkte = []
+        verkaufte_produkte = []
+    else:
+        # Aktive und unverkaufte Produkte
+        alle_produkte = Produkt.objects.filter(
+            verkaeufer_profil=user_profile,
+            istArchiviert=False
+        )
+
+        aktive_produkte = []
+        unverkaufte_produkte = []
+
+        for produkt in alle_produkte:
+            if produkt.auktion_aktiv():
+                aktive_produkte.append(produkt)
+            elif produkt.ist_unverkauft():
+                unverkaufte_produkte.append(produkt)
+
+        # Verkaufte Produkte (kauf_bestaetigt=True), egal ob archiviert oder nicht
+        verkaufte_gebote = Gebot.objects.filter(
+            produkt__verkaeufer_profil=user_profile,
+            kauf_bestaetigt=True
+        ).select_related('produkt', 'bieter')
+
+        verkaufte_produkte = []
+        for gebot in verkaufte_gebote:
+            verkaufte_produkte.append({
+                'produkt': gebot.produkt,
+                'gebot': gebot,
+                'kaeufer': gebot.bieter
+            })
+
+        archivierte_produkte = []
+
+    return render(request, "produkt/meine_produkte.html", {
+        "aktive_produkte": aktive_produkte,
+        "unverkaufte_produkte": unverkaufte_produkte,
+        "verkaufte_produkte": verkaufte_produkte,
+        "archivierte_produkte": archivierte_produkte,
+        "zeige_archiviert": zeige_archiviert
+    })
 
 
 # Produkt bearbeiten für Relisting
@@ -263,6 +267,7 @@ def produkt_bearbeiten(request, pk):
         "produkt": produkt
     })
 
+
 # Produkt endgültig archivieren
 @login_required
 @require_POST
@@ -277,6 +282,7 @@ def produkt_archivieren(request, pk):
     messages.success(request, f"Produkt '{produkt.name}' wurde archiviert.")
     return redirect("produkt:meine_produkte")
 
+
 @login_required
 def produkt_report(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
@@ -287,12 +293,14 @@ def produkt_report(request, pk):
 
     return redirect('produkt:produkt_detail', pk=produkt.pk)
 
+
 @staff_member_required
 def support_produkt_list(request):
     produkte = Produkt.objects.filter(gemeldet=True).order_by('-erstelltAm')
     return render(request, "admin/support_produkt_list.html", {
         "produkte": produkte
     })
+
 
 @staff_member_required
 @require_POST
@@ -301,6 +309,7 @@ def support_produkt_unreport(request, pk):
     produkt.gemeldet = False
     produkt.save()
     return redirect('produkt:support_produkt_list')
+
 
 @staff_member_required
 @require_POST

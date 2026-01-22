@@ -127,7 +127,7 @@
         <div class="product-grid">
             {% for verkauf in verkaufte_produkte %}
                 <div class="product-card">
-                    <a href="{% url 'produkt:produkt_detail' produkt.pk %}">
+                    <a href="{% url 'produkt:produkt_detail' verkauf.produkt.pk %}">
                     <h3>{{ verkauf.produkt.name }}</h3>
                     <p><strong>Verkaufspreis:</strong> {{ verkauf.gebot.biethoehe }} €</p>
 
