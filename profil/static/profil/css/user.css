@@ -123,6 +123,12 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+.product-card a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
+
 .product-card img {
     width: 100%;
     height: 180px;
