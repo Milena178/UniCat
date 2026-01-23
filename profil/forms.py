@@ -1,5 +1,7 @@
 from django import forms
 from .models import UserProfile, Review, SupportRequest
+from django import forms
+from django.contrib.auth import get_user_model
 
 
 class UserProfileForm(forms.ModelForm):
@@ -37,3 +39,31 @@ class LieferadresseForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'placeholder': 'Stadt'}),
             'country': forms.TextInput(attrs={'placeholder': 'Land'}),
         }
+
+class CustomUserCreationForm(forms.ModelForm):
+    password1 = forms.CharField(
+        label="Passwort",
+        widget=forms.PasswordInput
+    )
+    password2 = forms.CharField(
+        label="Passwort bestätigen",
+        widget=forms.PasswordInput
+    )
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name', 'email')
+        help_texts = {
+            'username': '',
+        }
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+
+        if password1 != password2:
+            raise forms.ValidationError(
+                "Die Passwörter stimmen nicht überein."
+            )
+
+        return password2

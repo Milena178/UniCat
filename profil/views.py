@@ -1,18 +1,15 @@
 from django.contrib import messages
-from django.contrib.auth import login
-from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, render
-from django.views import generic
+from django.shortcuts import  render
 from django.views.generic import UpdateView, DeleteView
 
 from gebot.models import Gebot
 from .models import Review, SupportRequest, SupportMessage
-from .forms import UserProfileForm, ReviewForm, SupportRequestForm
+from .forms import UserProfileForm, ReviewForm, SupportRequestForm, CustomUserCreationForm
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
@@ -21,55 +18,28 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 from django.db.models import Avg
 from .models import UserProfile
-from django.contrib.auth import get_user_model
 from produkt.models import Produkt
 
-# Custom Form für UserCreation
-class CustomUserCreationForm(forms.ModelForm):
-    password1 = forms.CharField(label="Passwort", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Passwort bestätigen", widget=forms.PasswordInput)
-    first_name = forms.CharField(label="Vorname", max_length=30, required=True)
-    last_name = forms.CharField(label="Nachname", max_length=30, required=True)
-    email = forms.EmailField(label="E-Mail", required=True)
+from django.contrib.auth import login
+from django.shortcuts import redirect
+from django.views import generic
 
-    class Meta:
-        model = get_user_model()
-        fields = ('username', 'first_name', 'last_name', 'email')
-        help_texts = {
-            'username': '',
-        }
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Die Passwörter stimmen nicht überein.")
-        return password2
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
-
-# SignUp View
 class SignUp(generic.CreateView):
     form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
-        user = form.save()
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password1'])
+        user.save()
 
         profile = UserProfile.objects.create(
             user=user,
             username=user.username
         )
 
-        # User einloggen
         login(self.request, user)
 
-        # Direkt zur Profil-Bearbeitung weiterleiten
         return redirect('profil:profil_detail', pk=profile.pk)
 
 #Eigenes Profil bearbeiten

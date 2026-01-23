@@ -80,7 +80,6 @@ def produkt_detail(request, pk):
 
 
 # PDF Download
-@login_required
 def produkt_pdf_download(request, pk):
     produkt = get_object_or_404(Produkt, pk=pk)
 
