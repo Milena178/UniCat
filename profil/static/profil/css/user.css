@@ -193,6 +193,29 @@
     font-weight: 500;
     display: inline-block;
 }
+/* Review Votes */
+.review-votes {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 0.8rem;
+}
+
+/* Vote Buttons */
+.vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid #933b5b;
+    background: #933b5b;
+    border-radius: 6px;
+    color: #e3d6bf;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
 
 /* Farben */
 .btn-danger {

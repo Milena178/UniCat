@@ -86,6 +86,26 @@
                     </a>
                 </div>
             {% endif %}
+            {% if user.is_authenticated and user != review.author %}
+                <div class="review-votes">
+
+                <form method="post"
+                    action="{% url 'profil:review_vote' review.pk 'up' %}">
+                {% csrf_token %}
+            <button type="submit" class="vote-btn">
+                👍 {{ review.get_upvotes_count }}
+            </button>
+            </form>
+            <form method="post"
+                action="{% url 'profil:review_vote' review.pk 'down' %}">
+            {% csrf_token %}
+        <button type="submit" class="vote-btn">
+            👎 {{ review.get_downvotes_count }}
+        </button>
+    </form>
+</div>
+{% endif %}
+
 
         </div>
     {% empty %}
@@ -125,8 +145,6 @@
     </div>
 
 </div>
-
-
 </div>
 
 {% endblock %}
